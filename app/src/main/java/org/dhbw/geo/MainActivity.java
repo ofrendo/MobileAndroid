@@ -14,7 +14,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DBHelper db = new DBHelper(this);
-        db.testLog();
+        db.logDB();
     }
 
     @Override
