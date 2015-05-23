@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity {
 
         // DB Stuff
         DBHelper db = new DBHelper(this);
-        db.testLog();
+        db.logDB();
 
         // Set correct radio button for wifi status
         boolean wifiStatus = HardwareController.getInstance().isWifiEnabled(this);
