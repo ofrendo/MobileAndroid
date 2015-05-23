@@ -1,6 +1,7 @@
 package org.dhbw.geo.hardware;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 
 /**
@@ -9,6 +10,7 @@ import android.net.wifi.WifiManager;
 public class HardwareController {
 
     private static HardwareController instance;
+    private Context context;
 
     private HardwareController() {
 
@@ -21,12 +23,16 @@ public class HardwareController {
         return instance;
     }
 
-    public boolean isWifiEnabled(Context context) {
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public boolean isWifiEnabled() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return wifiManager.isWifiEnabled();
     }
 
-    public void setWifi(boolean newStatus, Context context) {
+    public void setWifi(boolean newStatus) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
         boolean currentStatus = wifiManager.isWifiEnabled();
@@ -36,6 +42,14 @@ public class HardwareController {
         }
 
         wifiManager.setWifiEnabled(newStatus);
+    }
+
+    public int test() {
+        /*AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
+        audioManager.setRingerMode();
+        audioManager.set
+        audioManager.setRingerMode(aManager.RINGER_MODE_SILENT);*/
+        return 0;
     }
 
 }

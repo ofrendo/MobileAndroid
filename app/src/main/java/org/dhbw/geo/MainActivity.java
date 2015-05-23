@@ -26,13 +26,15 @@ public class MainActivity extends ActionBarActivity {
         db.logDB();
 
         // Set correct radio button for wifi status
-        boolean wifiStatus = HardwareController.getInstance().isWifiEnabled(this);
+        boolean wifiStatus = HardwareController.getInstance().isWifiEnabled();
         RadioButton startButton = (wifiStatus == true) ?
                 (RadioButton) this.findViewById(R.id.radioButtonWifiEnable) :
                 (RadioButton) this.findViewById(R.id.radioButtonWifiDisable);
         startButton.setChecked(true);
 
         Log.i(TAG, "Start wifi status is: " + wifiStatus);
+
+        //
 
     }
 
@@ -59,10 +61,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onWifiEnable(View view) {
-        HardwareController.getInstance().setWifi(true, view.getContext());
+        HardwareController.getInstance().setWifi(true);
     }
 
     public void onWifiDisable(View view) {
-        hardwareController.getInstance().setWifi(false, view.getContext());
+        hardwareController.getInstance().setWifi(false);
     }
 }
