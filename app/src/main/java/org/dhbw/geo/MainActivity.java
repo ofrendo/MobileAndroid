@@ -26,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
         db.logDB();
 
         // Set correct radio button for wifi status
+        HardwareController.getInstance().setContext(this);
         boolean wifiStatus = HardwareController.getInstance().isWifiEnabled();
         RadioButton startButton = (wifiStatus == true) ?
                 (RadioButton) this.findViewById(R.id.radioButtonWifiEnable) :
