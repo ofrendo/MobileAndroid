@@ -5,7 +5,41 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hardware tests"
+            android:id="@+id/textViewHardwareHeader" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/radioGroupWifi">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wifi ON"
+                android:id="@+id/radioButtonWifiEnable"
+                android:layout_gravity="left|bottom"
+                android:checked="false"
+                android:onClick="onWifiEnable" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wifi OFF"
+                android:id="@+id/radioButtonWifiDisable"
+                android:checked="false"
+                android:onClick="onWifiDisable" />
+
+        </RadioGroup>
+    </LinearLayout>
 
 </RelativeLayout>
