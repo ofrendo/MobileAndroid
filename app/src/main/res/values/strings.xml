@@ -15,4 +15,8 @@
     <string name="RuleGeneralTitle">General</string>
     <string name="RuleConditionTitle">Condition</string>
     <string name="RuleActionTitle">Action</string>
+    <string name="RuleGeneralName">Name</string>
+    <string name="RuleGeneralDelete">Delete</string>
+    <string name="RuleGeneralActive">Active</string>
+
 </resources>
