@@ -82,6 +82,13 @@
                 android:checked="false" />
         </RadioGroup>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Page"
+            android:id="@+id/button"
+            android:onClick="onRuleClick" />
+
     </LinearLayout>
 
 </RelativeLayout>

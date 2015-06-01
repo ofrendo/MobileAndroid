@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.dhbw.geo" >
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +19,22 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".Rule"
+            android:label="@string/title_activity_rule" >
+        </activity>
+        <activity
+            android:name=".RuleGeneral"
+            android:label="@string/title_activity_rule_general" >
+        </activity>
+        <activity
+            android:name=".RuleCondition"
+            android:label="@string/title_activity_rule_condition" >
+        </activity>
+        <activity
+            android:name=".RuleAction"
+            android:label="@string/title_activity_rule_action" >
         </activity>
     </application>
 

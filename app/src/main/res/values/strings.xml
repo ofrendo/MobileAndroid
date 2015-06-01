@@ -3,4 +3,16 @@
 
     <string name="hello_world">Hello world! 3</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_rule">Rule</string>
+    <string name="tabGeneral">General</string>
+    <string name="tabConditions">Conditions</string>
+    <string name="title_activity_rule_general">RuleGeneral</string>
+    <string name="title_activity_rule_condition">RuleCondition</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_rule_action">RuleAction</string>
+    <string name="RuleGeneralTitle">General</string>
+    <string name="RuleConditionTitle">Condition</string>
+    <string name="RuleActionTitle">Action</string>
 </resources>
