@@ -5,3 +5,13 @@
 .DS_Store
 /build
 /captures
+
+
+
+
+# Android studio
+*.iml
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build/
