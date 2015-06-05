@@ -1,4 +1,4 @@
-package org.dhbw.geo;
+package org.dhbw.geo.ui;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -9,7 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
+import org.dhbw.geo.DBHelper;
+import org.dhbw.geo.R;
 import org.dhbw.geo.hardware.HardwareController;
+import org.dhbw.geo.ui.Rule;
 
 
 public class MainActivity extends ActionBarActivity {

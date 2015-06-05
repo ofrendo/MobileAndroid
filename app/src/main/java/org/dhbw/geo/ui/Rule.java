@@ -1,12 +1,13 @@
-package org.dhbw.geo;
+package org.dhbw.geo.ui;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.app.TabActivity;
 import android.widget.TabHost;
+
+import org.dhbw.geo.R;
 
 
 public class Rule extends TabActivity implements TabHost.OnTabChangeListener{

@@ -72,27 +72,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                     });
 
                     break;
-                case Child.ACTIVATE:
-
-                    CheckBox checkboxActivate = new CheckBox(activity);
-                    checkboxActivate.setChecked(childObject.checked);
-                    rowContainer.addView(checkboxActivate);
-                    checkboxActivate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            childObject.checked = isChecked;
-                            Group group = (Group)getGroup(groupPosition);
-                            if (isChecked){
-                                group.setColor(Group.COLORACTIVE);
-                            }
-                            else{
-                                group.setColor(Group.COLORINACTIVE);
-                            }
-
-                        }
-                    });
-
-                    break;
                 default: break;
             }
         }
@@ -149,7 +128,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         Group group = (Group) getGroup(groupPosition);
         ((CheckedTextView) convertView).setText(group.string);
         ((CheckedTextView) convertView).setChecked(isExpanded);
-        ((CheckedTextView) convertView).setBackgroundColor(group.color);
         return convertView;
     }
 
