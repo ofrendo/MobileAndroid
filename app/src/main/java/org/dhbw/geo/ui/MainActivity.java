@@ -1,6 +1,7 @@
 package org.dhbw.geo.ui;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 
 import org.dhbw.geo.DBHelper;
 import org.dhbw.geo.R;
@@ -17,7 +19,6 @@ import org.dhbw.geo.ui.Rule;
 
 public class MainActivity extends ActionBarActivity {
 
-    private HardwareController hardwareController;
     private static final String TAG = "MainActivity";
 
     @Override
@@ -40,6 +41,8 @@ public class MainActivity extends ActionBarActivity {
         Log.i(TAG, "Start wifi status is: " + wifiStatus);
 
         //
+
+
 
     }
 
@@ -70,8 +73,26 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onWifiDisable(View view) {
-        hardwareController.getInstance().setWifi(false);
+        HardwareController.getInstance().setWifi(false);
     }
+
+    public void onSoundStreamMusic(View view) {
+        // Set sound status radio group to correct music setting
+        boolean currentStatus = HardwareController.getInstance().getStatus(AudioManager.STREAM_MUSIC);
+        RadioButton currentStatusButton = (currentStatus == true) ?
+                (RadioButton) this.findViewById(R.id.radioButtonSoundOn) :
+                (RadioButton) this.findViewById(R.id.radioButtonSoundMute);
+        currentStatusButton.setChecked(true);
+    }
+    public void onSoundStreamRing(View view) {
+        // Set sound status radio group to correct music setting
+        boolean currentStatus = HardwareController.getInstance().getStatus(AudioManager.STREAM_RING);
+        RadioButton currentStatusButton = (currentStatus == true) ?
+                (RadioButton) this.findViewById(R.id.radioButtonSoundOn) :
+                (RadioButton) this.findViewById(R.id.radioButtonSoundMute);
+        currentStatusButton.setChecked(true);
+    }
+
     public void onRuleClick (View view ){
         //Neues Intent anlegen
         Intent nextScreen = new Intent(getApplicationContext(), Rule.class);

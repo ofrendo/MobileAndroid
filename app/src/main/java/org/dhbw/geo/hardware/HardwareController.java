@@ -44,12 +44,15 @@ public class HardwareController {
         wifiManager.setWifiEnabled(newStatus);
     }
 
-    public int test() {
-        /*AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
-        audioManager.setRingerMode();
+    public boolean getStatus(int stream) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
+        return audioManager.getStreamVolume(stream) != 0;
+    }
+
+    public void setStatus(int stream, boolean status) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
+        audioManager.setStreamMute(stream, status); //Set mute or unmute
         audioManager.set
-        audioManager.setRingerMode(aManager.RINGER_MODE_SILENT);*/
-        return 0;
     }
 
 }

@@ -48,31 +48,48 @@
 
         </RadioGroup>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Sound stream"
+            android:id="@+id/textViewSoundHeader" />
+
         <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/radioGroupSound">
+            android:id="@+id/radioGroupSoundStream"
+            android:orientation="horizontal">
 
-            <TextView
+            <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Sound (not implemented)"
-                android:id="@+id/textViewSoundHeader" />
+                android:text="Music"
+                android:id="@+id/radioButtonStreamMusic"
+                android:checked="false"
+                android:onClick="onSoundStreamMusic" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ring"
+                android:id="@+id/radioButtonStreamRing"
+                android:checked="false"
+                android:onClick="onSoundStreamRing" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioGroupSoundStatus">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="On"
                 android:id="@+id/radioButtonSoundOn"
-                android:checked="false" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vibrate"
-                android:id="@+id/radioButtonSoundVibrate"
-                android:checked="false" />
+                android:checked="false"
+                android:clickable="false" />
 
             <RadioButton
                 android:layout_width="wrap_content"
@@ -80,6 +97,7 @@
                 android:text="Mute"
                 android:id="@+id/radioButtonSoundMute"
                 android:checked="false" />
+
         </RadioGroup>
 
         <Button
