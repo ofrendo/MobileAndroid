@@ -1,5 +1,6 @@
 package org.dhbw.geo;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
+import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.hardware.HardwareController;
 
 
@@ -67,5 +69,19 @@ public class MainActivity extends ActionBarActivity {
 
     public void onWifiDisable(View view) {
         hardwareController.getInstance().setWifi(false);
+    }
+    public void onRuleClick (View view ){
+        //Neues Intent anlegen
+        Intent nextScreen = new Intent(getApplicationContext(), Rule.class);
+
+        //Intent mit den Daten fuellen
+       // nextScreen.putExtra("Vorname", inputVorname.getText().toString());
+       // nextScreen.putExtra("Nachname", inputNachname.getText().toString());
+
+        // Log schreiben fuer Logausgabe
+        //Log.e("n", inputVorname.getText()+"."+ inputNachname.getText());
+
+        // Intent starten und zur zweiten Activity wechseln
+        startActivity(nextScreen);
     }
 }

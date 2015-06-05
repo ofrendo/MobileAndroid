@@ -1,4 +1,4 @@
-package org.dhbw.geo;
+package org.dhbw.geo.database;
 
 /**
  * Created by Matthias on 02.06.2015.
