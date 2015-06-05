@@ -5,6 +5,7 @@ package org.dhbw.geo.ListView;
  */
 import android.app.Activity;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,7 +14,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
+import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,6 +93,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
+
     @Override
     public int getChildrenCount(int groupPosition) {
         return groups.get(groupPosition).children.size();
@@ -120,15 +125,49 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, boolean isExpanded,
+                             View convertView, final ViewGroup parent) {
+        //get Group element
+        final Group group = (Group) getGroup(groupPosition);
+
         if (convertView == null) {
+            //inflate/create View
             convertView = inflater.inflate(R.layout.listrow_group, null);
+            RelativeLayout header = (RelativeLayout)convertView.findViewById(R.id.HeaderRow);
+            Switch switchObject = (Switch)convertView.findViewById(R.id.switch1);
+
+            switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    group.setActive(isChecked);
+                }
+            });
+
         }
-        Group group = (Group) getGroup(groupPosition);
+       /* Group group = (Group) getGroup(groupPosition);
         ((CheckedTextView) convertView).setText(group.string);
         ((CheckedTextView) convertView).setChecked(isExpanded);
+        return convertView; */
+
+
+        CheckedTextView text = (CheckedTextView)convertView.findViewById(R.id.textView1);
+
+        text.setText(group.string);
+        text.setChecked(isExpanded);
+        //because the header contains an additional clickable object we need to reasign an onclicklistener vor expanding/collapsing
+        text.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExpandableListView list = (ExpandableListView) activity.findViewById(R.id.expandableListView);
+                if (list.isGroupExpanded(groupPosition)) {
+                    list.collapseGroup(groupPosition);
+                } else {
+                    list.expandGroup(groupPosition);
+                }
+            }
+        });
         return convertView;
+
     }
 
     @Override
@@ -138,6 +177,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 }

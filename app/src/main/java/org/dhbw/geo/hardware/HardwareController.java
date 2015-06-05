@@ -52,7 +52,6 @@ public class HardwareController {
     public void setStatus(int stream, boolean status) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         audioManager.setStreamMute(stream, status); //Set mute or unmute
-        audioManager.set
     }
 
 }

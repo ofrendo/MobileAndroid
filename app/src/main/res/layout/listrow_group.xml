@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/textView1"
-    android:layout_width="wrap_content"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:layout_marginLeft="8dp"
-    android:gravity="left"
-    android:paddingLeft="32dp"
-    android:paddingTop="8dp"
-    android:text="Test"
-    android:textSize="@dimen/abc_text_size_large_material"
-    android:textStyle="bold" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/HeaderRow">
+
+    <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:gravity="left"
+        android:paddingLeft="32dp"
+        android:paddingTop="8dp"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="test" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/switch1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/textView1" />
+
+
+</RelativeLayout>
