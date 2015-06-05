@@ -14,6 +14,7 @@ public class Group {
 
     public String string;
     public final List<Child> children = new ArrayList<Child>();
+    public boolean active;
 
 
     public Group(String string) {
@@ -21,6 +22,9 @@ public class Group {
     }
     public void add(Child child){
         children.add(child);
+    }
+    public void setActive (boolean active){
+        this.active = active;
     }
 
 
