@@ -1,4 +1,4 @@
-package org.dhbw.geo;
+package org.dhbw.geo.ui;
 
 import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ExpandableListView;
 
 import org.dhbw.geo.ListView.*;
+import org.dhbw.geo.R;
 
 import java.util.ArrayList;
 

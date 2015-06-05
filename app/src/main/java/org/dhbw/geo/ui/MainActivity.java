@@ -1,4 +1,4 @@
-package org.dhbw.geo;
+package org.dhbw.geo.ui;
 
 import android.content.Intent;
 import android.media.AudioManager;
@@ -11,8 +11,14 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+<<<<<<< HEAD:app/src/main/java/org/dhbw/geo/MainActivity.java
 import org.dhbw.geo.database.DBHelper;
+=======
+import org.dhbw.geo.DBHelper;
+import org.dhbw.geo.R;
+>>>>>>> 077bd1572b057f99f82fe6d0431914ce1bdf0137:app/src/main/java/org/dhbw/geo/ui/MainActivity.java
 import org.dhbw.geo.hardware.HardwareController;
+import org.dhbw.geo.ui.Rule;
 
 
 public class MainActivity extends ActionBarActivity {

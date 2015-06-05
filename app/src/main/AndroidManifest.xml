@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,19 +21,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Rule"
+            android:name=".ui.Rule"
             android:label="@string/title_activity_rule" >
         </activity>
         <activity
-            android:name=".RuleGeneral"
+            android:name=".ui.RuleGeneral"
             android:label="@string/title_activity_rule_general" >
         </activity>
         <activity
-            android:name=".RuleCondition"
+            android:name=".ui.RuleCondition"
             android:label="@string/title_activity_rule_condition" >
         </activity>
         <activity
-            android:name=".RuleAction"
+            android:name=".ui.RuleAction"
             android:label="@string/title_activity_rule_action" >
         </activity>
     </application>

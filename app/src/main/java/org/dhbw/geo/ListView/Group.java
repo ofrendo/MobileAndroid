@@ -14,9 +14,7 @@ public class Group {
 
     public String string;
     public final List<Child> children = new ArrayList<Child>();
-    public int color = COLORACTIVE;
-    public static final int COLORACTIVE = Color.BLUE;
-    public static final int COLORINACTIVE = Color.TRANSPARENT;
+
 
     public Group(String string) {
         this.string = string;
@@ -24,11 +22,9 @@ public class Group {
     public void add(Child child){
         children.add(child);
     }
-    public void setColor (int color){
-        this.color = color;
 
 
-    }
+
 
 
 }
