@@ -1,6 +1,5 @@
 package org.dhbw.geo.database;
 
-import org.dhbw.geo.Rule;
 import org.dhbw.geo.database.DBObject;
 
 /**

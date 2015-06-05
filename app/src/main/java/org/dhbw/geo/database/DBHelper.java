@@ -23,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_FENCE = "Fence";
     public static final String TABLE_CONDITION_TIME = "ConditionTime";
     public static final String TABLE_DAY_STATUS = "ActionSimple";
-    public static final String TABLE_RULE = "DBRule";
+    public static final String TABLE_RULE = "Rule";
     public static final String TABLE_RULE_CONDITION = "RuleCondition";
     // the database instance
     private SQLiteDatabase db;
