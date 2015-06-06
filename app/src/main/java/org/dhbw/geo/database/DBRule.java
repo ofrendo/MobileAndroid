@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Matthias on 12.05.2015.
  */
-public abstract class DBRule extends DBObject {
+public class DBRule extends DBObject {
     private String name;
 
     private ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
@@ -27,4 +27,13 @@ public abstract class DBRule extends DBObject {
         action.setRule(this);
     }
 
+    @Override
+    public void writeToDB() {
+
+    }
+
+    @Override
+    public void deleteFromDB() {
+
+    }
 }

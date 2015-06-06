@@ -1,6 +1,5 @@
 package org.dhbw.geo.database;
 
-import org.dhbw.geo.database.DBObject;
 /**
  * Created by Matthias on 12.05.2015.
  */
