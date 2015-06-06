@@ -4,8 +4,7 @@ package org.dhbw.geo.ListView;
  * Created by Joern on 05.06.2015.
  */
 import android.app.Activity;
-import android.util.SparseArray;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +14,8 @@ import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import org.dhbw.geo.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
@@ -47,22 +46,85 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     public long getChildId(int groupPosition, int childPosition) {
         return 0;
     }
-
+    final String tag = "getChild";
     @Override
-    public View getChildView(final int groupPosition, final int childPosition,
+    public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         final Child childObject = (Child) getChild(groupPosition,childPosition);
         //final String children = (String) getChild(groupPosition, childPosition);
+
+        final String groupName = ((Group)getGroup(groupPosition)).string;
+
+        Log.i(tag, "group"+groupPosition);
+        Log.i(tag, "child" + childPosition);
+
+
+
         final String children = childObject.name;
         TextView text = null;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listrow_details, null);
-
-            LinearLayout rowContainer = (LinearLayout) convertView.findViewById(R.id.RowContainer);
-            text = (TextView) convertView.findViewById(R.id.textView1);
-            text.setText(children);
+        if (convertView == convertView) {
+        Log.i(tag, groupPosition + " "+childPosition+ "created");
 
             switch (childObject.type){
+                case Child.SWITCH:
+                    convertView = inflater.inflate(R.layout.rule_switch, null);
+                    Switch switchObject = (Switch)convertView.findViewById(R.id.rule_switch);
+                    switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            Log.i(tag,groupName);
+                            Log.i(tag,childObject.name + "changed to "+ isChecked);
+                            childObject.checked =  isChecked;
+                        }
+                    });
+                    text = (TextView) convertView.findViewById(R.id.rule_text);
+                    text.setText(children);
+                    break;
+                case Child.CHECKBOX:
+                    convertView = inflater.inflate(R.layout.rule_checkbox, null);
+                    final CheckBox checkObject = (CheckBox)convertView.findViewById(R.id.rule_checkbox);
+                    checkObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            Log.i(tag,groupName);
+                            Log.i(tag,childObject.name + "changed to "+ isChecked);
+                            childObject.checked =  isChecked;
+                        }
+                    });
+                    text = (TextView) convertView.findViewById(R.id.rule_text);
+                    text.setText(children);
+                    break;
+                case Child.RADIOBUTTONS:
+                    convertView = inflater.inflate(R.layout.rule_radio, null);
+                    RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.rule_radiogroup);
+                    for (int i = 0; i<childObject.options.size(); i++){
+                        RadioButton radioButton = new RadioButton(activity);
+                        radioGroup.addView(radioButton);
+                        radioButton.setText(childObject.options.get(i));
+                    }
+                    radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+                            Log.i(tag,groupName);
+                            Log.i(tag,childObject.name + "selected  to "+ childObject.options.get(checkedId));
+                            childObject.selectedOption = childObject.options.get(checkedId);
+                        }
+                    });
+                    text = (TextView) convertView.findViewById(R.id.rule_text);
+                    text.setText(children);
+                    break;
+                default:
+                    //convertView = inflater.inflate(R.layout.listrow_details, null);
+                    //text = (TextView) convertView.findViewById(R.id.rule_text);
+                    //text.setText(children);
+                    break;
+            }
+
+
+
+            //LinearLayout rowContainer = (LinearLayout) convertView.findViewById(R.id.RowContainer);
+
+            /*switch (childObject.type){
                 case Child.CHECKBOX:
 
                     CheckBox checkbox = new CheckBox(activity);
@@ -77,9 +139,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
                     break;
                 default: break;
-            }
+            }*/
         }
-
+        Log.i(tag,"type "+childObject.type);
+        Log.i(tag,"id" + convertView.getId());
+        Log.i(tag, "################");
 
 
 
@@ -111,11 +175,13 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onGroupCollapsed(int groupPosition) {
+        Log.i(tag,"group collapsed" + groupPosition);
         super.onGroupCollapsed(groupPosition);
     }
 
     @Override
     public void onGroupExpanded(int groupPosition) {
+        Log.i(tag,"group expanded" + groupPosition);
         super.onGroupExpanded(groupPosition);
     }
 
@@ -150,7 +216,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         return convertView; */
 
 
-        CheckedTextView text = (CheckedTextView)convertView.findViewById(R.id.textView1);
+        CheckedTextView text = (CheckedTextView)convertView.findViewById(R.id.rule_text);
 
         text.setText(group.string);
         text.setChecked(isExpanded);
@@ -159,10 +225,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                 ExpandableListView list = (ExpandableListView) activity.findViewById(R.id.expandableListView);
+                list.destroyDrawingCache();
                 if (list.isGroupExpanded(groupPosition)) {
                     list.collapseGroup(groupPosition);
                 } else {
-                    list.expandGroup(groupPosition);
+                    list.expandGroup(groupPosition,true);
                 }
             }
         });
@@ -172,11 +239,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return true;
+        return false;
     }
 }
