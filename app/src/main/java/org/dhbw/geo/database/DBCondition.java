@@ -5,7 +5,7 @@ import org.dhbw.geo.database.DBObject;
 /**
  * Created by Matthias on 12.05.2015.
  */
-public class DBCondition extends DBObject {
+public abstract class DBCondition extends DBObject {
     private DBRule rule;
 
 

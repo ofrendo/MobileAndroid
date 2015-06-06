@@ -23,4 +23,7 @@ public abstract class DBObject {
     public String getTableName() {
         return this.tableName;
     }
+
+    public abstract void writeToDB();
+    public abstract void deleteFromDB();
 }

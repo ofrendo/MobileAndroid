@@ -11,7 +11,7 @@ import android.util.Log;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 5;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";
@@ -22,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TABLE_CONDITION_FENCE = "ConditionFence";
     public static final String TABLE_FENCE = "Fence";
     public static final String TABLE_CONDITION_TIME = "ConditionTime";
-    public static final String TABLE_DAY_STATUS = "ActionSimple";
+    public static final String TABLE_DAY_STATUS = "DayStatus";
     public static final String TABLE_RULE = "Rule";
     public static final String TABLE_RULE_CONDITION = "RuleCondition";
     // the database instance
@@ -80,31 +80,53 @@ public class DBHelper extends SQLiteOpenHelper {
                 "Name VARCHAR NOT NULL, " +
                 "Status BOOLEAN NOT NULL )";
         String createTableActionSimple = "CREATE TABLE " + TABLE_ACTION_SIMPLE + " ( " +
-                "ActionID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ActionSimpleID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Type VARCHAR NOT NULL, " +
                 "Status BOOLEAN NOT NULL, " +
-                "RuleID REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
+                "RuleID INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
         String createTableActionSound = "CREATE TABLE " + TABLE_ACTION_SOUND + " ( " +
-                "ActionID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ActionSoundID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Type VARCHAR NOT NULL, " +
                 "Status VARCHAR NOT NULL, " +
                 "Volume INTEGER, " +
-                "RuleID REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
+                "RuleID INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
         String createTableActionBrightness = "CREATE TABLE " + TABLE_ACTION_BRIGTHNESS + " ( " +
-                "ActionID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ActionBrightnessID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Automatic BOOLEAN NOT NULL," +
                 "Value INTEGER, " +
-                "RuleID REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
+                "RuleID INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
         String createTableActionNotification = "CREATE TABLE " + TABLE_ACTION_NOTIFICATION + " ( " +
-                "ActionID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ActionNotificationID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Message TEXT NOT NULL, " +
-                "RuleID REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
+                "RuleID INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
         String createTableActionMessage = "CREATE TABLE " + TABLE_ACTION_MESSAGE + " ( " +
-                "ActionID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ActionMessageID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Number VARCHAR NOT NULL, " +
                 "Message TEXT NOT NULL, " +
-                "RuleID REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
-
+                "RuleID INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL )";
+        String createTableConditionFence = "CREATE TABLE " + TABLE_CONDITION_FENCE + " ( " +
+                "ConditionFenceID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Name VARCHAR, " +
+                "Type VARCHAR NOT NULL )";
+        String createTableFence = "CREATE TABLE " + TABLE_FENCE + " ( " +
+                "FenceID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ConditionFenceID INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) NOT NULL," +
+                "Latitude NUMERIC NOT NULL, " +
+                "Longitude NUMERIC NOT NULL," +
+                "Radius NUMERIC NOT NULL )";
+        String createTableConditionTime = "CREATE TABLE " + TABLE_CONDITION_TIME + " ( " +
+                "ConditionTimeID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Name VARCHAR, " +
+                "Start DATETIME NOT NULL," +
+                "End DATETIME )";
+        String createTableDayStatus = "CREATE TABLE " + TABLE_DAY_STATUS + " ( " +
+                "ConditionTimeID INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID)," +
+                "Day VARCHAR NOT NULL," +
+                "Status BOOLEAN NOT NULL )";
+        String createTableRuleCondition = "CREATE TABLE " + TABLE_RULE_CONDITION + " ( " +
+                "RuleID INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL, " +
+                "ConditionFenceID INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID), " +
+                "ConditionTimeID INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) )";
 
         db.execSQL(createTableRule);
         db.execSQL(createTableActionSimple);
@@ -112,6 +134,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createTableActionBrightness);
         db.execSQL(createTableActionNotification);
         db.execSQL(createTableActionMessage);
+        db.execSQL(createTableConditionFence);
+        db.execSQL(createTableFence);
+        db.execSQL(createTableConditionTime);
+        db.execSQL(createTableDayStatus);
+        db.execSQL(createTableRuleCondition);
         Log.d("DBHelper", "onCreate");
     }
 
