@@ -11,7 +11,8 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import org.dhbw.geo.DBHelper;
+
+import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.ui.Rule;

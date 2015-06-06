@@ -81,4 +81,3 @@ public class Rule extends TabActivity implements TabHost.OnTabChangeListener{
     }
 
 }
-
