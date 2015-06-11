@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 
 
+import org.dhbw.geo.database.DBActionSimple;
 import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBRule;
@@ -30,17 +31,39 @@ public class MainActivity extends ActionBarActivity {
 
         // DB Stuff
         DBHelper db = new DBHelper(this);
+        // test rule
         DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
-        testRule.writeToDB();                               // INSERT
+        testRule.writeToDB();                                               // INSERT
         testRule.setName("Test Rule");
-        testRule.writeToDB();                               // UPDATE
+        testRule.writeToDB();                                               // UPDATE
         db.logDB();
         if(testRule.getId() > 1){
             DBRule testRule2 = DBRule.selectFromDB(testRule.getId() - 1);   // SELECT
             if(testRule2 != null){
-                testRule2.deleteFromDB();                   // DELETE
+                testRule2.deleteFromDB();                                   // DELETE
+            }
+        }
+        // test action simple
+        DBActionSimple actionSimple = new DBActionSimple();
+        actionSimple.setType(DBActionSimple.TYPE_WIFI);
+        actionSimple.setStatus(true);
+        testRule.addAction(actionSimple);
+        actionSimple.writeToDB();                                           // CREATE
+        if(actionSimple.getId() > 1){
+            DBActionSimple actionSimple1 = DBActionSimple.selectFromDB(actionSimple.getId() - 1);   // SELECT
+            if(actionSimple1 != null){
+                actionSimple1.setRule(testRule);
+                actionSimple1.setType(DBActionSimple.TYPE_BLUETOOTH);
+                actionSimple1.setStatus(false);
+                actionSimple1.writeToDB();                                  // UPDATE
+            }
+            if(actionSimple.getId() > 2){
+                DBActionSimple actionSimple2 = DBActionSimple.selectFromDB(actionSimple.getId() - 2);
+                if(actionSimple2 != null){
+                    actionSimple2.deleteFromDB();                           // DELETE
+                }
             }
         }
 

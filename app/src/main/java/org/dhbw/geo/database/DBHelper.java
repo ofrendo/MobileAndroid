@@ -31,6 +31,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_RULE_ID = "RuleID";
     public static final String COLUMN_NAME = "Name";
     public static final String COLUMN_ACTIVE = "Active";
+    public static final String COLUMN_ACTION_SIMPLE_ID = "ActionSimpleID";
+    public static final String COLUMN_TYPE = "Type";
+    public static final String COLUMN_STATUS = "Status";
     // the database instance
     private SQLiteDatabase db;
 
@@ -92,9 +95,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_NAME + " VARCHAR NOT NULL, " +
                 COLUMN_ACTIVE + " BOOLEAN NOT NULL )";
         String createTableActionSimple = "CREATE TABLE " + TABLE_ACTION_SIMPLE + " ( " +
-                "ActionSimpleID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "Type VARCHAR NOT NULL, " +
-                "Status BOOLEAN NOT NULL, " +
+                COLUMN_ACTION_SIMPLE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_TYPE + " VARCHAR NOT NULL, " +
+                COLUMN_STATUS + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionSound = "CREATE TABLE " + TABLE_ACTION_SOUND + " ( " +
                 "ActionSoundID INTEGER PRIMARY KEY AUTOINCREMENT, " +

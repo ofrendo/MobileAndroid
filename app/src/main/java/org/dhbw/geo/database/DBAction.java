@@ -6,7 +6,19 @@ package org.dhbw.geo.database;
 public abstract class DBAction extends DBObject {
     private DBRule rule;
 
+    public DBAction(){
+
+    }
+
+    public DBAction(long id){
+        super(id);
+    }
+
     public void setRule(DBRule rule) {
         this.rule = rule;
+    }
+
+    public DBRule getRule() {
+        return rule;
     }
 }
