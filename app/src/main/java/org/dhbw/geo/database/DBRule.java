@@ -1,6 +1,7 @@
 package org.dhbw.geo.database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class DBRule extends DBObject {
 
     }
 
-    public DBRule(int id, String name, boolean active){
+    public DBRule(long id, String name, boolean active){
         super(id);
         this.name = name;
         this.active = active;
@@ -45,12 +46,36 @@ public class DBRule extends DBObject {
 
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
-
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_NAME, name);
+        values.put(DBHelper.COLUMN_ACTIVE, active);
+        String where = DBHelper.COLUMN_RULE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(getId())};
+        db.update(DBHelper.TABLE_RULE, values, where, whereArgs);
     }
 
     @Override
     public void deleteFromDB() {
+        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        String where = DBHelper.COLUMN_RULE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(getId())};
+        db.delete(DBHelper.TABLE_RULE, where, whereArgs);
+    }
 
+    public static DBRule selectFromDB(long id) {
+        // read from database
+        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        String[] columns = {
+                DBHelper.COLUMN_RULE_ID,
+                DBHelper.COLUMN_NAME,
+                DBHelper.COLUMN_ACTIVE
+        };
+        Cursor cursor = db.query(DBHelper.TABLE_RULE, columns, null, null, null, null, null);
+        // read result
+        cursor.moveToFirst();
+        if(cursor.isAfterLast()) return null;
+        DBRule rule = new DBRule(cursor.getLong(0), cursor.getString(1), cursor.getInt(2)!=0);
+        return rule;
     }
 
     public String getName() {

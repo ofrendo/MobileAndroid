@@ -33,8 +33,16 @@ public class MainActivity extends ActionBarActivity {
         DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
-        testRule.writeToDB();
+        testRule.writeToDB();                               // INSERT
+        testRule.setName("Test Rule");
+        testRule.writeToDB();                               // UPDATE
         db.logDB();
+        if(testRule.getId() > 1){
+            DBRule testRule2 = DBRule.selectFromDB(testRule.getId() - 1);   // SELECT
+            if(testRule2 != null){
+                testRule2.deleteFromDB();                   // DELETE
+            }
+        }
 
         // Set correct radio button for wifi status
         HardwareController.getInstance().setContext(this);

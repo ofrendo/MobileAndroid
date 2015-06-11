@@ -22,7 +22,7 @@ public abstract class DBObject {
         SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
         if(!existsOnDB){
             long id = insertIntoDB(db);
-            setId(id);
+            setId(id);  // just to be sure
         } else {
             updateOnDB(db);
         }
