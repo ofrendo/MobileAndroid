@@ -38,7 +38,6 @@ public class MainActivity extends ActionBarActivity {
         testRule.writeToDB();                                               // INSERT
         testRule.setName("Test Rule");
         testRule.writeToDB();                                               // UPDATE
-        db.logDB();
         if(testRule.getId() > 1){
             DBRule testRule2 = DBRule.selectFromDB(testRule.getId() - 1);   // SELECT
             if(testRule2 != null){
@@ -66,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
                 }
             }
         }
+        db.logDB();
 
         // Set correct radio button for wifi status
         HardwareController.getInstance().setContext(this);
@@ -78,7 +78,6 @@ public class MainActivity extends ActionBarActivity {
         Log.i(TAG, "Start wifi status is: " + wifiStatus);
 
         //
-
 
 
     }

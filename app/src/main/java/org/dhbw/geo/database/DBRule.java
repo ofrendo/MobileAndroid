@@ -71,7 +71,9 @@ public class DBRule extends DBObject {
                 DBHelper.COLUMN_NAME,
                 DBHelper.COLUMN_ACTIVE
         };
-        Cursor cursor = db.query(DBHelper.TABLE_RULE, columns, null, null, null, null, null);
+        String where = DBHelper.COLUMN_RULE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(id)};
+        Cursor cursor = db.query(DBHelper.TABLE_RULE, columns, where, whereArgs, null, null, null);
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;

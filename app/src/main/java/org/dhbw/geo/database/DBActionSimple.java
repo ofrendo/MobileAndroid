@@ -24,7 +24,9 @@ public class DBActionSimple extends DBAction {
                 DBHelper.COLUMN_STATUS,
                 DBHelper.COLUMN_RULE_ID
         };
-        Cursor cursor = db.query(DBHelper.TABLE_ACTION_SIMPLE, columns, null, null, null, null, null);
+        String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(id)};
+        Cursor cursor = db.query(DBHelper.TABLE_ACTION_SIMPLE, columns, where, whereArgs, null, null, null);
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
