@@ -14,6 +14,7 @@ import android.widget.Spinner;
 
 import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
+import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.ui.Rule;
 
@@ -29,6 +30,10 @@ public class MainActivity extends ActionBarActivity {
 
         // DB Stuff
         DBHelper db = new DBHelper(this);
+        DBRule testRule = new DBRule();
+        testRule.setName("Test Rule 123");
+        testRule.setActive(true);
+        testRule.writeToDB();
         db.logDB();
 
         // Set correct radio button for wifi status

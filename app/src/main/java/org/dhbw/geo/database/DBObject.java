@@ -1,29 +1,44 @@
 package org.dhbw.geo.database;
 
+import android.database.sqlite.SQLiteDatabase;
+
 /**
  * Created by Matthias on 02.06.2015.
  */
 public abstract class DBObject {
-    protected int id;
-    private String tableName;
 
-    public DBObject(){
+    private long id;
+    private boolean existsOnDB = false;
+
+    public DBObject() {
 
     }
 
-    public DBObject(String tableName){
-        this.tableName = tableName;
+    public DBObject(long id){
+        setId(id);
     }
 
-    public DBObject(String tableName, int id) {
-        this.tableName = tableName;
+    public void writeToDB(){
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        if(!existsOnDB){
+            long id = insertIntoDB(db);
+            setId(id);
+        } else {
+            updateOnDB(db);
+        }
+        db.close();
+    }
+
+    public void setId(long id){
         this.id = id;
+        existsOnDB = true;
     }
 
-    public String getTableName() {
-        return this.tableName;
+    public long getId(){
+        return id;
     }
 
-    public abstract void writeToDB();
+    protected abstract long insertIntoDB(SQLiteDatabase db);
+    protected abstract void updateOnDB(SQLiteDatabase db);
     public abstract void deleteFromDB();
 }
