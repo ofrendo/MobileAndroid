@@ -39,16 +39,27 @@ public class RuleAction extends Activity {
         }*/
 
         Group group = new Group ("Wlan");
-        group.add(new Child("Active", true));
-        group.add(new Child("Status",true));
+        group.add(new Child("Active", true,true));
+        group.add(new Child("Status",true,false));
+        group.add(new Child("Status1",true,false));
+        group.add(new Child("Status2",true,false));
 
         Group group2 = new Group("Sound");
-        group2.add(new Child("Active",true));
-
+        group2.add(new Child("Active",true,true));
+        String [] options = {"hallo","hallo2"};
+        //group2.add(new Child("group",options));
         groups.add(group);
         groups.add(group2);
 
+        Group group3 = new Group("whatever");
+        group3.add(new Child("active", true,true));
+        group3.add(new Child("status", true,false));
 
+        Group group4 = new Group("whatever2");
+        group4.add(new Child("active", true,true));
+        group4.add(new Child("status", true,false));
+        groups.add(group3);
+        groups.add(group4);
     }
 
 

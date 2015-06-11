@@ -77,28 +77,7 @@ public class Rule extends TabActivity implements TabHost.OnTabChangeListener{
     public void onTabChanged(String tabId) {
         /************ Called when tab changed *************/
 
-        //********* Check current selected tab and change according images *******/
-/*
-        for(int i=0;i<tabHost.getTabWidget().getChildCount();i++)
-        {
-            if(i==0)
-                tabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.tab1);
-            else if(i==1)
-                tabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.tab2);
-            else if(i==2)
-                tabHost.getTabWidget().getChildAt(i).setBackgroundResource(R.drawable.tab3);
-        }
 
-
-
-
-        if(tabHost.getCurrentTab()==0)
-            tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).setBackgroundResource(R.drawable.tab1_over);
-        else if(tabHost.getCurrentTab()==1)
-            tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).setBackgroundResource(R.drawable.tab2_over);
-        else if(tabHost.getCurrentTab()==2)
-            tabHost.getTabWidget().getChildAt(tabHost.getCurrentTab()).setBackgroundResource(R.drawable.tab3_over);
-*/
     }
 
 }

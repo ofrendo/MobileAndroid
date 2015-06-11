@@ -14,20 +14,26 @@ public class Child {
     public static final int CHECKBOX = 0;
     public static final int RADIOBUTTONS = 1;
     public static final int SLIDER = 2;
+    public static final int SWITCH = 3;
     public static final int TEXTINPUT = 4;
     public static final int NUMBERINPUT = 5;
 
-    //checkbox / ActivateCheckbox
+    //checkbox / switch
     public boolean checked;
 
-    public Child(String name, boolean checked){
+    //checkbox
+    public Child(String name, boolean checked, boolean checkBox){
+        if (checkBox)
         type = CHECKBOX;
+        else
+        type = SWITCH;
         this.name = name;
         this.checked = checked;
     }
 
-    //Dropdown
+    //Radiobuttons
     public ArrayList<String> options;
+    public String selectedOption;
     public Child (String name, ArrayList<String> options){
         type = RADIOBUTTONS;
         this.name = name;
@@ -38,6 +44,7 @@ public class Child {
         this.name = name;
         this.options = new ArrayList<String>(Arrays.asList(options));
     }
+
 
     //Slider
     public int value;
