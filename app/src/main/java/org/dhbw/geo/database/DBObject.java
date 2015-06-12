@@ -38,6 +38,10 @@ public abstract class DBObject {
         return id;
     }
 
+    public boolean existsOnDB(){
+        return existsOnDB;
+    }
+
     protected abstract long insertIntoDB(SQLiteDatabase db);
     protected abstract void updateOnDB(SQLiteDatabase db);
     public abstract void deleteFromDB();

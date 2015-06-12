@@ -13,6 +13,7 @@ import android.widget.Spinner;
 
 
 import org.dhbw.geo.database.DBActionSimple;
+import org.dhbw.geo.database.DBActionSound;
 import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBRule;
@@ -35,8 +36,19 @@ public class MainActivity extends ActionBarActivity {
         DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
-        testRule.writeToDB();                                               // INSERT
-        testRule.setName("Test Rule");
+        testRule.writeToDB();
+        DBActionSimple actionWiFi = new DBActionSimple();
+        actionWiFi.setType(DBActionSimple.TYPE_WIFI);
+        actionWiFi.setStatus(true);
+        testRule.addAction(actionWiFi);
+        actionWiFi.writeToDB();
+        DBActionSound actionSound = new DBActionSound();
+        actionSound.setType(DBActionSound.TYPE_PHONE);
+        actionSound.setStatus(DBActionSound.STATUS_SOUND);
+        actionSound.setVolume(20);
+        testRule.addAction(actionSound);
+        actionSound.writeToDB();
+        /*testRule.setName("Test Rule");
         testRule.writeToDB();                                               // UPDATE
         if(testRule.getId() > 1){
             DBRule testRule2 = DBRule.selectFromDB(testRule.getId() - 1);   // SELECT
@@ -64,7 +76,7 @@ public class MainActivity extends ActionBarActivity {
                     actionSimple2.deleteFromDB();                           // DELETE
                 }
             }
-        }
+        }*/
         db.logDB();
 
         // Set correct radio button for wifi status

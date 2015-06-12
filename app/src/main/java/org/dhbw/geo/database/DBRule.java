@@ -81,6 +81,16 @@ public class DBRule extends DBObject {
         return rule;
     }
 
+    public void loadAllActions() {
+        if (actions.size() == 0) {
+            return; // don't load actions if they already exist!
+        }
+        actions.addAll(DBAction.selectAllFromDB(getId()));
+        // set rule for the actions!
+        for(int i = 0; i < actions.size(); i++){
+            actions.get(i).setRule(this);
+        }
+    }
     public String getName() {
         return name;
     }

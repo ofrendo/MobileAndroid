@@ -13,7 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // reference to the helper instance
     private static DBHelper helper;
 
-    private static final int DB_VERSION = 8;
+    private static final int DB_VERSION = 10;
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";
@@ -34,6 +34,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ACTION_SIMPLE_ID = "ActionSimpleID";
     public static final String COLUMN_TYPE = "Type";
     public static final String COLUMN_STATUS = "Status";
+    public static final String COLUMN_ACTION_SOUND_ID = "ActionSoundID";
+    public static final String COLUMN_VOLUME = "Volume";
     // the database instance
     private SQLiteDatabase db;
 
@@ -100,10 +102,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_STATUS + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionSound = "CREATE TABLE " + TABLE_ACTION_SOUND + " ( " +
-                "ActionSoundID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "Type VARCHAR NOT NULL, " +
-                "Status VARCHAR NOT NULL, " +
-                "Volume INTEGER, " +
+                COLUMN_ACTION_SOUND_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_TYPE + " VARCHAR NOT NULL, " +
+                COLUMN_STATUS + " VARCHAR NOT NULL, " +
+                COLUMN_VOLUME + " INTEGER, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionBrightness = "CREATE TABLE " + TABLE_ACTION_BRIGTHNESS + " ( " +
                 "ActionBrightnessID INTEGER PRIMARY KEY AUTOINCREMENT, " +

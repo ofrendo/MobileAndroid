@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
 /**
  * Created by Matthias on 11.06.2015.
  */
@@ -15,14 +17,36 @@ public class DBActionSimple extends DBAction {
     private String type;
     private boolean status;
 
+    public static ArrayList<DBAction> selectAllFromDB(long ruleId){
+        ArrayList<DBAction> actions = new ArrayList<DBAction>();
+        // read from database
+        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        String[] columns = {
+                DBHelper.COLUMN_ACTION_SIMPLE_ID,
+                DBHelper.COLUMN_TYPE,
+                DBHelper.COLUMN_STATUS
+        };
+        String where = DBHelper.COLUMN_RULE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(ruleId)};
+        Cursor cursor = db.query(DBHelper.TABLE_ACTION_SIMPLE, columns, where, whereArgs, null, null, null);
+        // read result
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            DBActionSimple action = new DBActionSimple(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0);
+            actions.add(action);
+            cursor.moveToNext();
+        }
+        return actions;
+    }
+
     public static DBActionSimple selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_SIMPLE_ID,
                 DBHelper.COLUMN_TYPE,
-                DBHelper.COLUMN_STATUS,
-                DBHelper.COLUMN_RULE_ID
+                DBHelper.COLUMN_STATUS
+                //,DBHelper.COLUMN_RULE_ID
         };
         String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
