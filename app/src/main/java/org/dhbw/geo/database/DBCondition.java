@@ -6,7 +6,19 @@ package org.dhbw.geo.database;
 public abstract class DBCondition extends DBObject {
     private DBRule rule;
 
+    public DBCondition(){
+
+    }
+
+    public DBCondition(long id){
+        super(id);
+    }
+
     public void setRule(DBRule rule) {
         this.rule = rule;
+    }
+
+    public DBRule getRule() {
+        return rule;
     }
 }

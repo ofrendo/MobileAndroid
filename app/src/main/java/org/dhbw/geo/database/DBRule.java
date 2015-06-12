@@ -91,6 +91,7 @@ public class DBRule extends DBObject {
             actions.get(i).setRule(this);
         }
     }
+
     public String getName() {
         return name;
     }

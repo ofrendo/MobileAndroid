@@ -13,7 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // reference to the helper instance
     private static DBHelper helper;
 
-    private static final int DB_VERSION = 12;
+    private static final int DB_VERSION = 13;
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";
@@ -43,6 +43,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_MESSAGE = "Message";
     public static final String COLUMN_NUMBER = "Number";
     public static final String COLUMN_ACTION_MESSAGE_ID = "ActionMessageID";
+    public static final String COLUMN_CONDITION_FENCE_ID = "ConditionFenceID";
+    public static final String COLUMN_FENCE_ID = "FenceID";
+    public static final String COLUMN_LATITUDE = "Latitude";
+    public static final String COLUMN_LONGITUDE = "Longitude";
+    public static final String COLUMN_RADIUS = "Radius";
+    public static final String COLUMN_CONDITION_TIME_ID = "ConditionTimeID";
     // the database instance
     private SQLiteDatabase db;
 
@@ -130,15 +136,15 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_MESSAGE + " TEXT NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableConditionFence = "CREATE TABLE " + TABLE_CONDITION_FENCE + " ( " +
-                "ConditionFenceID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "Name VARCHAR, " +
-                "Type VARCHAR NOT NULL )";
+                COLUMN_CONDITION_FENCE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME + " VARCHAR, " +
+                COLUMN_TYPE + " VARCHAR NOT NULL )";
         String createTableFence = "CREATE TABLE " + TABLE_FENCE + " ( " +
-                "FenceID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "ConditionFenceID INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL," +
-                "Latitude NUMERIC NOT NULL, " +
-                "Longitude NUMERIC NOT NULL," +
-                "Radius NUMERIC NOT NULL )";
+                COLUMN_FENCE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_CONDITION_FENCE_ID + " INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL," +
+                COLUMN_LATITUDE + " NUMERIC NOT NULL, " +
+                COLUMN_LONGITUDE + " NUMERIC NOT NULL," +
+                COLUMN_RADIUS + " NUMERIC NOT NULL )";
         String createTableConditionTime = "CREATE TABLE " + TABLE_CONDITION_TIME + " ( " +
                 "ConditionTimeID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Name VARCHAR, " +
@@ -150,8 +156,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 "Status BOOLEAN NOT NULL )";
         String createTableRuleCondition = "CREATE TABLE " + TABLE_RULE_CONDITION + " ( " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL, " +
-                "ConditionFenceID INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) ON UPDATE CASCADE ON DELETE CASCADE, " +
-                "ConditionTimeID INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE )";
+                COLUMN_CONDITION_FENCE_ID + " INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) ON UPDATE CASCADE ON DELETE CASCADE, " +
+                COLUMN_CONDITION_TIME_ID + " INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE )";
 
         db.execSQL(createTableRule);
         db.execSQL(createTableActionSimple);
