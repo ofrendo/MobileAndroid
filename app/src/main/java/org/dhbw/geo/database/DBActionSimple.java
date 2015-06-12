@@ -90,7 +90,7 @@ public class DBActionSimple extends DBAction {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
         String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_ACTION_SIMPLE, where, whereArgs);

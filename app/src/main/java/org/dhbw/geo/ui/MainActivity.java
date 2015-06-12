@@ -32,12 +32,24 @@ public class MainActivity extends ActionBarActivity {
 
         // DB Stuff
         DBHelper db = new DBHelper(this);
-        // test rule
+        // test DBRule
+        db.logDB();
         DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
-        testRule.writeToDB();
-        DBActionSimple actionWiFi = new DBActionSimple();
+        testRule.writeToDB();                               // DBRule Create
+        db.logTable(DBHelper.TABLE_RULE);
+        testRule.setName("Test");
+        testRule.setActive(false);
+        testRule.writeToDB();                               // DBRule Update
+        db.logTable(DBHelper.TABLE_RULE);
+        DBRule sameRule = DBRule.selectFromDB(testRule.getId());    // DBRule Read
+        if(sameRule.getId() == testRule.getId() && sameRule.getName() == sameRule.getName()) Log.d("DBRule Read", "Erfolgreich!");
+        testRule.deleteFromDB();                            // DBRule Delete
+        testRule = DBRule.selectFromDB(testRule.getId());
+        if(testRule == null) Log.d("DBRule Delete", "Erfolgreich!");
+
+        /*DBActionSimple actionWiFi = new DBActionSimple();
         actionWiFi.setType(DBActionSimple.TYPE_WIFI);
         actionWiFi.setStatus(true);
         testRule.addAction(actionWiFi);
@@ -48,36 +60,8 @@ public class MainActivity extends ActionBarActivity {
         actionSound.setVolume(20);
         testRule.addAction(actionSound);
         actionSound.writeToDB();
-        /*testRule.setName("Test Rule");
-        testRule.writeToDB();                                               // UPDATE
-        if(testRule.getId() > 1){
-            DBRule testRule2 = DBRule.selectFromDB(testRule.getId() - 1);   // SELECT
-            if(testRule2 != null){
-                testRule2.deleteFromDB();                                   // DELETE
-            }
-        }
-        // test action simple
-        DBActionSimple actionSimple = new DBActionSimple();
-        actionSimple.setType(DBActionSimple.TYPE_WIFI);
-        actionSimple.setStatus(true);
-        testRule.addAction(actionSimple);
-        actionSimple.writeToDB();                                           // CREATE
-        if(actionSimple.getId() > 1){
-            DBActionSimple actionSimple1 = DBActionSimple.selectFromDB(actionSimple.getId() - 1);   // SELECT
-            if(actionSimple1 != null){
-                actionSimple1.setRule(testRule);
-                actionSimple1.setType(DBActionSimple.TYPE_BLUETOOTH);
-                actionSimple1.setStatus(false);
-                actionSimple1.writeToDB();                                  // UPDATE
-            }
-            if(actionSimple.getId() > 2){
-                DBActionSimple actionSimple2 = DBActionSimple.selectFromDB(actionSimple.getId() - 2);
-                if(actionSimple2 != null){
-                    actionSimple2.deleteFromDB();                           // DELETE
-                }
-            }
-        }*/
-        db.logDB();
+        testRule.setName("Test Rule");
+        testRule.writeToDB();                                               // UPDATE*/
 
         // Set correct radio button for wifi status
         HardwareController.getInstance().setContext(this);

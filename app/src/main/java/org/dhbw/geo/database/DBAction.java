@@ -17,6 +17,9 @@ public abstract class DBAction extends DBObject {
         // get through all action classes
         actions.addAll(DBActionSimple.selectAllFromDB(ruleId));
         actions.addAll(DBActionSound.selectAllFromDB(ruleId));
+        actions.addAll(DBActionBrightness.selectAllFromDB(ruleId));
+        actions.addAll(DBActionNotification.selectAllFromDB(ruleId));
+        actions.addAll(DBActionMessage.selectAllFromDB(ruleId));
         return actions;
     }
 

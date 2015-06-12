@@ -56,7 +56,7 @@ public class DBRule extends DBObject {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys = ON;");
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
