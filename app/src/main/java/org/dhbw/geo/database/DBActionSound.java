@@ -35,6 +35,11 @@ public class DBActionSound extends DBAction {
 
     }
 
+    @Override
+    public void performAction() {
+
+    }
+
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database

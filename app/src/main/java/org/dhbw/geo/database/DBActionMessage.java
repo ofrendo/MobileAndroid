@@ -58,6 +58,11 @@ public class DBActionMessage extends DBAction {
 
     }
 
+    @Override
+    public void performAction() {
+
+    }
+
     public DBActionMessage(long id, String number, String message){
         super(id);
         this.number = number;

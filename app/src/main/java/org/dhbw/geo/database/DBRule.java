@@ -36,6 +36,12 @@ public class DBRule extends DBObject {
         action.setRule(this);
     }
 
+    public void performAllActions(){
+        for(int i = 0; i < actions.size(); i++){
+            actions.get(i).performAction();
+        }
+    }
+
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();

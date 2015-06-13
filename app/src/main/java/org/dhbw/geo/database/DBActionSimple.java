@@ -62,6 +62,11 @@ public class DBActionSimple extends DBAction {
 
     }
 
+    @Override
+    public void performAction() {
+
+    }
+
     public DBActionSimple(long id, String type, boolean status){
         super(id);
         this.type = type;

@@ -27,6 +27,8 @@ public abstract class DBAction extends DBObject {
 
     }
 
+    public abstract void performAction();
+
     public DBAction(long id){
         super(id);
     }

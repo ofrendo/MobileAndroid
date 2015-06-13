@@ -58,6 +58,11 @@ public class DBActionBrightness extends DBAction {
 
     }
 
+    @Override
+    public void performAction() {
+
+    }
+
     public DBActionBrightness(long id, boolean automatic, int value){
         super(id);
         this.automatic = automatic;

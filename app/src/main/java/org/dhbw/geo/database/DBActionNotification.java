@@ -55,6 +55,11 @@ public class DBActionNotification extends DBAction {
 
     }
 
+    @Override
+    public void performAction() {
+
+    }
+
     public DBActionNotification(long id, String message){
         super(id);
         this.message = message;
