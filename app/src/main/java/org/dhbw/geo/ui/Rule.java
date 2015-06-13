@@ -12,6 +12,7 @@ import org.dhbw.geo.R;
 
 public class Rule extends TabActivity implements TabHost.OnTabChangeListener{
     TabHost tabHost;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +55,7 @@ public class Rule extends TabActivity implements TabHost.OnTabChangeListener{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_rule, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
