@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import org.dhbw.geo.ListView.Child;
@@ -80,6 +82,28 @@ public class RuleAction extends Fragment {
         MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(),
                 groups);
         listView.setAdapter(adapter);
+
+        Button btn = (Button)getActivity().findViewById(R.id.testbutton);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listActions();
+            }
+        });
+    }
+
+    private void listActions() {
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i=0;i<groups.size();i++){
+            Group gp = groups.get(i);
+            if (gp.getActions()!=null)
+            list.addAll(gp.getActions());
+        }
+        for (int i=0;i<list.size();i++){
+            Log.i("Action",list.get(i));
+        }
+
+
     }
 
     @Override
@@ -106,6 +130,7 @@ public class RuleAction extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
 
     @Override
     public void onDetach() {
@@ -142,11 +167,14 @@ public class RuleAction extends Fragment {
         group.add(new Child("Status",true,false));
         group.add(new Child("Status1",true,false));
         group.add(new Child("Status2",true,false));
+        group.add(new Child("Slider",20,120,50));
+        group.add(new Child("Text","Hallo"));
+        group.add(new Child("Number","0156545254632",true));
 
         Group group2 = new Group("Sound");
         group2.add(new Child("Active",true,true));
         String [] options = {"hallo","hallo2"};
-        //group2.add(new Child("group",options));
+        group2.add(new Child("group",options));
         groups.add(group);
         groups.add(group2);
 

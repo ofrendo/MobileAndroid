@@ -21,7 +21,7 @@ public class Child {
     //checkbox / switch
     public boolean checked;
 
-    //checkbox
+    //checkbox/switch
     public Child(String name, boolean checked, boolean checkBox){
         if (checkBox)
         type = CHECKBOX;
@@ -34,6 +34,7 @@ public class Child {
     //Radiobuttons
     public ArrayList<String> options;
     public String selectedOption;
+
     public Child (String name, ArrayList<String> options){
         type = RADIOBUTTONS;
         this.name = name;
@@ -50,6 +51,65 @@ public class Child {
     public int value;
     public int min;
     public int max;
+    public int range;
+    public Child(String name, int min , int max , int value){
+        type = SLIDER;
+        this.name=name;
+        this.min = min;
+        this.max = max;
+        this.value = value;
+        this.range = max-min;
+    }
+    public Child(String name, int min , int max){
+        type = SLIDER;
+        this.name=name;
+        this.min = min;
+        this.max = max;
+        this.value = ((max-min)/2)+min;
+        this.range = max-min;
+    }
+
+    public String getAction(){
+        switch (type){
+            case SLIDER:
+                return name + " : "+value;
+            case CHECKBOX:
+                return name + " : "+checked;
+            case SWITCH:
+                return name + " : "+checked;
+            case RADIOBUTTONS:
+                return name + " : "+selectedOption;
+            case TEXTINPUT:
+                return name + " : "+text;
+            case NUMBERINPUT:
+                return name + " : "+numberText;
+            default:
+                return "";
+        }
+    }
+
+    String text;
+    public Child(String name, String inputText){
+        type = TEXTINPUT;
+        this.text = inputText;
+        this.name = name;
+
+    }
+
+    String numberText;
+    public Child(String name, String input, boolean number){
+        this.name = name;
+        if (number){
+            type = NUMBERINPUT;
+            this.numberText = input;
+        }
+        else{
+            type = TEXTINPUT;
+            this.text = input;
+        }
+
+    }
+
 
 
 }

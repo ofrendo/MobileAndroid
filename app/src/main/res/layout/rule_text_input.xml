@@ -15,22 +15,33 @@
         android:id="@+id/RowContainer">
 
         <TextView
+            android:id="@+id/textinput_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Medium Text"
-            android:id="@+id/radio_text" />
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rule_radiogroup"
-            android:layout_below="@+id/radio_text"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/hello_world"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
+        </TextView>
 
-        </RadioGroup>
+
     </RelativeLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rule_textInput"
+        android:enabled="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:editable="false"
+        android:clickable="true"
+        android:inputType="textNoSuggestions|textLongMessage|textMultiLine" />
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dp"

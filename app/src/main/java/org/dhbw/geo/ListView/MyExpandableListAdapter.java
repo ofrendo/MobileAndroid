@@ -4,7 +4,10 @@ package org.dhbw.geo.ListView;
  * Created by Joern on 05.06.2015.
  */
 import android.app.Activity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,15 +16,19 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.ui.MainActivity;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -48,27 +55,24 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     }
     final String tag = "getChild";
     @Override
-    public View getChildView(int groupPosition, int childPosition,
+    public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         final Child childObject = (Child) getChild(groupPosition,childPosition);
         //final String children = (String) getChild(groupPosition, childPosition);
 
         final String groupName = ((Group)getGroup(groupPosition)).string;
 
-        Log.i(tag, "group"+groupPosition);
-        Log.i(tag, "child" + childPosition);
 
-
-
-        final String children = childObject.name;
+        final String childName = childObject.name;
         TextView text = null;
         if (convertView == convertView) {
-        Log.i(tag, groupPosition + " "+childPosition+ "created");
+        //Log.i(tag, groupPosition + " "+childPosition+ "created");
 
             switch (childObject.type){
                 case Child.SWITCH:
                     convertView = inflater.inflate(R.layout.rule_switch, null);
                     Switch switchObject = (Switch)convertView.findViewById(R.id.rule_switch);
+                    switchObject.setChecked(childObject.checked);
                     switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -77,12 +81,13 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                             childObject.checked =  isChecked;
                         }
                     });
-                    text = (TextView) convertView.findViewById(R.id.rule_text);
-                    text.setText(children);
+                    text = (TextView) convertView.findViewById(R.id.switch_text);
+                    text.setText(childName);
                     break;
                 case Child.CHECKBOX:
                     convertView = inflater.inflate(R.layout.rule_checkbox, null);
                     final CheckBox checkObject = (CheckBox)convertView.findViewById(R.id.rule_checkbox);
+                    checkObject.setChecked(childObject.checked);
                     checkObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -91,28 +96,117 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                             childObject.checked =  isChecked;
                         }
                     });
-                    text = (TextView) convertView.findViewById(R.id.rule_text);
-                    text.setText(children);
+                    text = (TextView) convertView.findViewById(R.id.checkbox_text);
+                    text.setText(childName);
                     break;
                 case Child.RADIOBUTTONS:
                     convertView = inflater.inflate(R.layout.rule_radio, null);
                     RadioGroup radioGroup = (RadioGroup) convertView.findViewById(R.id.rule_radiogroup);
+                    //add new buttons
                     for (int i = 0; i<childObject.options.size(); i++){
                         RadioButton radioButton = new RadioButton(activity);
                         radioGroup.addView(radioButton);
                         radioButton.setText(childObject.options.get(i));
+
+                        if (childObject.selectedOption == childObject.options.get(i)){
+                            radioButton.setChecked(true);
+                        }
                     }
+
                     radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            Log.i(tag,groupName);
-                            Log.i(tag,childObject.name + "selected  to "+ childObject.options.get(checkedId));
-                            childObject.selectedOption = childObject.options.get(checkedId);
+                            int checkedIndex = (checkedId-1) % childObject.options.size();
+                            Log.i(tag,childObject.name + "selected  to "+ childObject.options.get(checkedIndex));
+                            childObject.selectedOption = childObject.options.get(checkedIndex);
                         }
                     });
-                    text = (TextView) convertView.findViewById(R.id.rule_text);
-                    text.setText(children);
+                    text = (TextView) convertView.findViewById(R.id.radio_text);
+                    text.setText(childName);
                     break;
+                case Child.SLIDER:
+                    convertView = inflater.inflate(R.layout.rule_slider, null);
+                    SeekBar slider = (SeekBar) convertView.findViewById(R.id.rule_slider);
+                    slider.setMax(childObject.range);
+                    slider.setProgress(childObject.value);
+
+                    final TextView actual = (TextView) convertView.findViewById(R.id.slider_count);
+                    actual.setText(""+childObject.value);
+                    slider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            actual.setText("" + (progress + childObject.min));
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                            childObject.value = seekBar.getProgress() + childObject.min;
+                            Log.i(tag, childObject.name + " changed to " + childObject.value);
+
+                        }
+                    });
+
+                    text = (TextView) convertView.findViewById(R.id.slider_text);
+                    text.setText(childName);
+
+                    break;
+                case Child.TEXTINPUT:
+                    convertView = inflater.inflate(R.layout.rule_text_input, null);
+                    final EditText input = (EditText) convertView.findViewById(R.id.rule_textInput);
+                    input.setText(childObject.text);
+
+                    input.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            childObject.text = ""+input.getText();
+
+                        }
+                    });
+
+                    text = (TextView) convertView.findViewById(R.id.textinput_text);
+                    text.setText(childName);
+                    break;
+                case Child.NUMBERINPUT:
+                    convertView = inflater.inflate(R.layout.rule_number_input, null);
+                    final EditText numInput = (EditText) convertView.findViewById(R.id.rule_numberInput);
+                    numInput.setText(childObject.numberText);
+
+                    numInput.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                            childObject.numberText = "" + numInput.getText();
+                        }
+                    });
+
+
+
+                    text = (TextView) convertView.findViewById(R.id.numberInput_text);
+                    text.setText(childName);
                 default:
                     //convertView = inflater.inflate(R.layout.listrow_details, null);
                     //text = (TextView) convertView.findViewById(R.id.rule_text);
@@ -141,9 +235,9 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                 default: break;
             }*/
         }
-        Log.i(tag,"type "+childObject.type);
-        Log.i(tag,"id" + convertView.getId());
-        Log.i(tag, "################");
+        //Log.i(tag,"type "+childObject.type);
+        //Log.i(tag,"id" + convertView.getId());
+        //Log.i(tag, "################");
 
 
 
@@ -175,13 +269,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public void onGroupCollapsed(int groupPosition) {
-        Log.i(tag,"group collapsed" + groupPosition);
         super.onGroupCollapsed(groupPosition);
     }
 
     @Override
     public void onGroupExpanded(int groupPosition) {
-        Log.i(tag,"group expanded" + groupPosition);
         super.onGroupExpanded(groupPosition);
     }
 
@@ -196,20 +288,21 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         //get Group element
         final Group group = (Group) getGroup(groupPosition);
 
-        if (convertView == null) {
-            //inflate/create View
-            convertView = inflater.inflate(R.layout.listrow_group, null);
-            RelativeLayout header = (RelativeLayout)convertView.findViewById(R.id.HeaderRow);
-            Switch switchObject = (Switch)convertView.findViewById(R.id.switch1);
 
-            switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    group.setActive(isChecked);
-                }
-            });
+        //inflate/create View
+        convertView = inflater.inflate(R.layout.listrow_group, null);
+        RelativeLayout header = (RelativeLayout)convertView.findViewById(R.id.HeaderRow);
+        Switch switchObject = (Switch)convertView.findViewById(R.id.switch1);
+        switchObject.setChecked(group.active);
 
-        }
+        switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                group.setActive(isChecked);
+            }
+        });
+
+
        /* Group group = (Group) getGroup(groupPosition);
         ((CheckedTextView) convertView).setText(group.string);
         ((CheckedTextView) convertView).setChecked(isExpanded);
