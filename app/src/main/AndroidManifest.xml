@@ -5,10 +5,12 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="true" >
     </uses-feature>
+
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
@@ -27,20 +29,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.Rule"
-            android:label="@string/title_activity_rule" >
-        </activity>
-        <activity
-            android:name=".ui.RuleGeneral"
-            android:label="@string/title_activity_rule_general" >
-        </activity>
-        <activity
-            android:name=".ui.RuleCondition"
-            android:label="@string/title_activity_rule_condition" >
-        </activity>
-        <activity
-            android:name=".ui.RuleAction"
-            android:label="@string/title_activity_rule_action" >
+            android:name=".ui.RuleFragments.RuleContainer"
+            android:label="@string/title_activity_rule_container" >
         </activity>
     </application>
 
