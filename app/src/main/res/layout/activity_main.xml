@@ -103,6 +103,34 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Test notification"
+            android:id="@+id/buttonTestNotification"
+            android:onClick="onNotificationClick" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test ongoing notification"
+            android:id="@+id/buttonTestOngoingNotification"
+            android:onClick="onOngoingNotificationClick" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:ems="10"
+            android:id="@+id/editTextTestSMS" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test SMS (DONT USE UNLESS FLATRATE)"
+            android:id="@+id/buttonTestSMS"
+            android:onClick="onTestSMSSend" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Next Page"
             android:id="@+id/button"
             android:onClick="onRuleClick" />
