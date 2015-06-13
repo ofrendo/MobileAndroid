@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
@@ -18,6 +19,8 @@ import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.HardwareController;
+import org.dhbw.geo.hardware.NotificationFactory;
+import org.dhbw.geo.hardware.SMSFactory;
 import org.dhbw.geo.ui.Rule;
 
 
@@ -123,6 +126,23 @@ public class MainActivity extends ActionBarActivity {
                 (RadioButton) this.findViewById(R.id.radioButtonSoundOn) :
                 (RadioButton) this.findViewById(R.id.radioButtonSoundMute);
         currentStatusButton.setChecked(true);
+    }
+
+    public void onNotificationClick(View view) {
+        //Sends a test notification
+        NotificationFactory.createNotification(this, "Test", "Hello world!");
+    }
+
+    public void onOngoingNotificationClick(View view) {
+        //Sends a test permanent notification
+        NotificationFactory.createOngoingNotification(this, "Test perm", "Hello world! Perm");
+    }
+
+    public void onTestSMSSend(View view) {
+        //Sends a test SMS
+        EditText inputNumber = (EditText) this.findViewById(R.id.editTextTestSMS);
+        String number = inputNumber.getText().toString();
+        SMSFactory.createSMS(number, "Hallo! Dies ist eine automatisch generierte test SMS von der App die wir gerade programmieren.");
     }
 
     public void onRuleClick (View view ){

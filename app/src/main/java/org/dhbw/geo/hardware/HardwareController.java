@@ -49,6 +49,11 @@ public class HardwareController {
         return audioManager.getStreamVolume(stream) != 0;
     }
 
+    /**
+     * Sets the status for a certain audio stream.
+     * @param stream Stream ID: AudioManager.STREAM_MUSIC, AudioManager.STREAM_RING, AudioManager.STREAM_ALARM
+     * @param status true for sound on, false for mute
+     */
     public void setStatus(int stream, boolean status) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         audioManager.setStreamMute(stream, status); //Set mute or unmute
