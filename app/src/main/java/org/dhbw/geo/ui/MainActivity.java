@@ -10,18 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Spinner;
 
 
-import org.dhbw.geo.database.DBActionSimple;
-import org.dhbw.geo.database.DBActionSound;
-import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
-import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
-import org.dhbw.geo.ui.Rule;
+import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -33,6 +28,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //ERROR In Emulator !?
+
+        /*
         // DB Stuff
         DBHelper db = new DBHelper(this);
         // test DBRule
@@ -65,6 +63,8 @@ public class MainActivity extends ActionBarActivity {
         actionSound.writeToDB();
         testRule.setName("Test Rule");
         testRule.writeToDB();                                               // UPDATE*/
+
+
 
         // Set correct radio button for wifi status
         HardwareController.getInstance().setContext(this);
@@ -147,7 +147,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void onRuleClick (View view ){
         //Neues Intent anlegen
-        Intent nextScreen = new Intent(getApplicationContext(), Rule.class);
+        Intent nextScreen = new Intent(getApplicationContext(), RuleContainer.class);
 
         //Intent mit den Daten fuellen
        // nextScreen.putExtra("Vorname", inputVorname.getText().toString());
