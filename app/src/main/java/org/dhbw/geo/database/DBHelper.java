@@ -13,7 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // reference to the helper instance
     private static DBHelper helper;
 
-    private static final int DB_VERSION = 15;
+    private static final int DB_VERSION = 16;
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";

@@ -1,6 +1,7 @@
 package org.dhbw.geo.ui;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -35,17 +36,30 @@ public class MainActivity extends ActionBarActivity {
 
 
         // DB Stuff
-        DBHelper db = new DBHelper(this);
+        DBHelper dbHelper = new DBHelper(this);
+        // delete old data
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SIMPLE);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SOUND);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_BRIGHTNESS);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_NOTIFICATION);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_MESSAGE);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_CONDITION_FENCE);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_FENCE);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_CONDITION_TIME);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_DAY_STATUS);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE_CONDITION);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
         // test DBRule
         DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
         testRule.writeToDB();                               // DBRule Create
-        db.logTable(DBHelper.TABLE_RULE);
+        dbHelper.logTable(DBHelper.TABLE_RULE);
         testRule.setName("Test");
         testRule.setActive(false);
         testRule.writeToDB();                               // DBRule Update
-        db.logTable(DBHelper.TABLE_RULE);
+        dbHelper.logTable(DBHelper.TABLE_RULE);
         DBRule sameRule = DBRule.selectFromDB(testRule.getId());    // DBRule Read
         if(sameRule.getId() == testRule.getId() && sameRule.getName() == sameRule.getName()) Log.d("DBRule Read", "Erfolgreich!");
         testRule.deleteFromDB();                            // DBRule Delete
@@ -70,7 +84,26 @@ public class MainActivity extends ActionBarActivity {
         time = DBConditionTime.selectFromDB(time.getId());
         if(time.getStart().get(Calendar.MINUTE) == 30 && time.getStart().get(Calendar.HOUR_OF_DAY) == 8 && time.getEnd().get(Calendar.MINUTE) == 30 && time.getEnd().get(Calendar.HOUR_OF_DAY) == 17) Log.d("DBConditionTime Read 1", "Erfolgreich!");
         else Log.d("DBConditionTime Read 1", "Nicht erfolgreich! Start: " + time.getStart().get(Calendar.HOUR_OF_DAY) + ":" + time.getStart().get(Calendar.MINUTE) + ", Ende: " + time.getEnd().get(Calendar.HOUR_OF_DAY) + ":" + time.getEnd().get(Calendar.MINUTE));
-        db.logDB();
+
+        // test rule condition
+        testRule = new DBRule();
+        testRule.setName("Test Rule 1");
+        testRule.setActive(true);
+        testRule.writeToDB();
+        testRule.addCondition(time);
+        time.writeRuleToDB();
+        DBRule rule2 = new DBRule();
+        rule2.setName("Test Rule 2");
+        rule2.writeToDB();
+        rule2.addCondition(time);
+        time.writeRuleToDB();
+        DBConditionFence conditionFence = new DBConditionFence();
+        conditionFence.setName("Test Condition Fence");
+        conditionFence.setType(DBConditionFence.TYPE_ENTER);
+        conditionFence.writeToDB();
+        rule2.addCondition(conditionFence);
+        conditionFence.writeRuleToDB();
+        dbHelper.logDB();
 
 
 

@@ -17,6 +17,27 @@ public class DBConditionTime extends DBCondition {
 
     private ArrayList<Integer> days = new ArrayList<Integer>();
 
+    public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
+        ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
+        // read from database
+        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        String query = "SELECT " +
+                DBHelper.COLUMN_CONDITION_TIME_ID + ", " +
+                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME +
+                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_START + " AS " + DBHelper.COLUMN_START +
+                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_END + " AS " + DBHelper.COLUMN_END +
+                " FROM " + DBHelper.TABLE_CONDITION_TIME + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_RULE_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(ruleId)});
+        // read result
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            DBConditionTime time = new DBConditionTime(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3));
+            conditions.add(time);
+            cursor.moveToNext();
+        }
+        return conditions;
+    }
+
     public static DBConditionTime selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
@@ -91,6 +112,24 @@ public class DBConditionTime extends DBCondition {
         String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_CONDITION_TIME, where, whereArgs);
+    }
+
+    @Override
+    public void removeRuleFromDB() {
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
+        db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
+    }
+
+    @Override
+    public void writeRuleToDB() {
+        removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_CONDITION_TIME_ID, getId());
+        db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
     }
 
     private void insertDayStatusIntoDB(SQLiteDatabase db){

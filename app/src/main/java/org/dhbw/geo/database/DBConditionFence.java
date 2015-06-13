@@ -10,31 +10,31 @@ import java.util.ArrayList;
  * Created by Matthias on 12.06.2015.
  */
 public class DBConditionFence extends DBCondition {
-    private static final String TYPE_ENTER = "Enter";   // The condition is triggered when you enter one of the geofences
-    private static final String TYPE_LEAVE = "Leave";   // The condition is triggered when you leave one of the geofences
+    public static final String TYPE_ENTER = "Enter";   // The condition is triggered when you enter one of the geofences
+    public static final String TYPE_LEAVE = "Leave";   // The condition is triggered when you leave one of the geofences
 
     private String type;
     private ArrayList<DBFence> fences = new ArrayList<DBFence>();
 
-    /*public static ArrayList<DBConditionFence> selectAllFromDB(long ruleId){
-        ArrayList<DBConditionFence> conditionFences = new ArrayList<DBConditionFence>();
+    public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
+        ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
         // read from database
         SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
         String query = "SELECT " +
                 DBHelper.COLUMN_CONDITION_FENCE_ID + ", " +
-                DBHelper.COLUMN_CONDITION_TIME_ID + ", " +
                 DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE +
                 " FROM " + DBHelper.TABLE_CONDITION_FENCE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_RULE_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(ruleId)});
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBFence fence = new DBFence(cursor.getLong(0), cursor.getFloat(1), cursor.getFloat(2), cursor.getInt(3));
-            fences.add(fence);
+            DBConditionFence fence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+            conditions.add(fence);
             cursor.moveToNext();
         }
-        return fences;
-    }*/
+        return conditions;
+    }
 
     public static DBConditionFence selectFromDB(long id) {
         // read from database
@@ -109,6 +109,24 @@ public class DBConditionFence extends DBCondition {
         String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_CONDITION_FENCE, where, whereArgs);
+    }
+
+    @Override
+    public void removeRuleFromDB() {
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
+        String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
+        db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
+    }
+
+    @Override
+    public void writeRuleToDB() {
+        removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
+        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_CONDITION_FENCE_ID, getId());
+        db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
     }
 
     public String getType() {

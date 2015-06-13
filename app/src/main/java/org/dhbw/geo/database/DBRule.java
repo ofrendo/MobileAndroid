@@ -88,7 +88,7 @@ public class DBRule extends DBObject {
     }
 
     public void loadAllActions() {
-        if (actions.size() == 0) {
+        if (actions.size() != 0) {
             return; // don't load actions if they already exist!
         }
         actions.addAll(DBAction.selectAllFromDB(getId()));
@@ -96,6 +96,14 @@ public class DBRule extends DBObject {
         for(int i = 0; i < actions.size(); i++){
             actions.get(i).setRule(this);
         }
+    }
+
+    public void loadAllConditions() {
+        if(conditions.size() != 0){
+            return; // don't load conditions if they already exist!
+        }
+        conditions.addAll(DBCondition.selectAllFromDB(getId()));
+        // add rule for the conditions
     }
 
     public String getName() {
