@@ -5,13 +5,15 @@ package org.dhbw.geo.database;
  */
 public abstract class DBCondition extends DBObject {
     private DBRule rule;
+    private String name;
 
     public DBCondition(){
 
     }
 
-    public DBCondition(long id){
+    public DBCondition(long id, String name){
         super(id);
+        this.name = name;
     }
 
     public void setRule(DBRule rule) {
@@ -20,5 +22,13 @@ public abstract class DBCondition extends DBObject {
 
     public DBRule getRule() {
         return rule;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

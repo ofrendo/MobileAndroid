@@ -25,7 +25,7 @@ public class DBActionBrightness extends DBAction {
         };
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(ruleId)};
-        Cursor cursor = db.query(DBHelper.TABLE_ACTION_BRIGTHNESS, columns, where, whereArgs, null, null, null);
+        Cursor cursor = db.query(DBHelper.TABLE_ACTION_BRIGHTNESS, columns, where, whereArgs, null, null, null);
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
@@ -46,7 +46,7 @@ public class DBActionBrightness extends DBAction {
         };
         String where = DBHelper.COLUMN_ACTION_BRIGHTNESS_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
-        Cursor cursor = db.query(DBHelper.TABLE_ACTION_BRIGTHNESS, columns, where, whereArgs, null, null, null);
+        Cursor cursor = db.query(DBHelper.TABLE_ACTION_BRIGHTNESS, columns, where, whereArgs, null, null, null);
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
@@ -70,7 +70,7 @@ public class DBActionBrightness extends DBAction {
         values.put(DBHelper.COLUMN_AUTOMATIC, automatic);
         values.put(DBHelper.COLUMN_VALUE, value);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
-        return db.insert(DBHelper.TABLE_ACTION_BRIGTHNESS, null, values);
+        return db.insert(DBHelper.TABLE_ACTION_BRIGHTNESS, null, values);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class DBActionBrightness extends DBAction {
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
         String where = DBHelper.COLUMN_ACTION_BRIGHTNESS_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
-        db.update(DBHelper.TABLE_ACTION_BRIGTHNESS, values, where, whereArgs);
+        db.update(DBHelper.TABLE_ACTION_BRIGHTNESS, values, where, whereArgs);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DBActionBrightness extends DBAction {
         SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
         String where = DBHelper.COLUMN_ACTION_BRIGHTNESS_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_ACTION_BRIGTHNESS, where, whereArgs);
+        db.delete(DBHelper.TABLE_ACTION_BRIGHTNESS, where, whereArgs);
     }
 
     public int getValue() {

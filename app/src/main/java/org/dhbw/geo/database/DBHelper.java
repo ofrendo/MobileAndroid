@@ -13,12 +13,12 @@ public class DBHelper extends SQLiteOpenHelper {
     // reference to the helper instance
     private static DBHelper helper;
 
-    private static final int DB_VERSION = 13;
+    private static final int DB_VERSION = 15;
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";
     public static final String TABLE_ACTION_SOUND = "ActionSound";
-    public static final String TABLE_ACTION_BRIGTHNESS = "ActionBrightness";
+    public static final String TABLE_ACTION_BRIGHTNESS = "ActionBrightness";
     public static final String TABLE_ACTION_NOTIFICATION = "ActionNotification";
     public static final String TABLE_ACTION_MESSAGE = "ActionMessage";
     public static final String TABLE_CONDITION_FENCE = "ConditionFence";
@@ -49,6 +49,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LONGITUDE = "Longitude";
     public static final String COLUMN_RADIUS = "Radius";
     public static final String COLUMN_CONDITION_TIME_ID = "ConditionTimeID";
+    public static final String COLUMN_DAY = "Day";
+    public static final String COLUMN_START = "Start";
+    public static final String COLUMN_END = "End";
     // the database instance
     private SQLiteDatabase db;
 
@@ -121,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_STATUS + " VARCHAR NOT NULL, " +
                 COLUMN_VOLUME + " INTEGER, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
-        String createTableActionBrightness = "CREATE TABLE " + TABLE_ACTION_BRIGTHNESS + " ( " +
+        String createTableActionBrightness = "CREATE TABLE " + TABLE_ACTION_BRIGHTNESS + " ( " +
                 COLUMN_ACTION_BRIGHTNESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_AUTOMATIC + " BOOLEAN NOT NULL," +
                 COLUMN_VALUE + " INTEGER, " +
@@ -146,14 +149,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_LONGITUDE + " NUMERIC NOT NULL," +
                 COLUMN_RADIUS + " NUMERIC NOT NULL )";
         String createTableConditionTime = "CREATE TABLE " + TABLE_CONDITION_TIME + " ( " +
-                "ConditionTimeID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "Name VARCHAR, " +
-                "Start DATETIME NOT NULL," +
-                "End DATETIME )";
+                COLUMN_CONDITION_TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_NAME + " VARCHAR, " +
+                COLUMN_START + " INTEGER NOT NULL," +
+                COLUMN_END + " INTEGER )";
         String createTableDayStatus = "CREATE TABLE " + TABLE_DAY_STATUS + " ( " +
-                "ConditionTimeID INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE," +
-                "Day VARCHAR NOT NULL," +
-                "Status BOOLEAN NOT NULL )";
+                COLUMN_CONDITION_TIME_ID + " INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE," +
+                COLUMN_DAY + " INTEGER NOT NULL )";
         String createTableRuleCondition = "CREATE TABLE " + TABLE_RULE_CONDITION + " ( " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL, " +
                 COLUMN_CONDITION_FENCE_ID + " INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) ON UPDATE CASCADE ON DELETE CASCADE, " +
@@ -178,7 +180,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // drop old tables; take care of correct order!
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTION_SIMPLE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTION_SOUND);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTION_BRIGTHNESS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTION_BRIGHTNESS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTION_NOTIFICATION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTION_MESSAGE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONDITION_FENCE);

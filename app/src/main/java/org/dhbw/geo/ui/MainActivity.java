@@ -13,10 +13,13 @@ import android.widget.RadioButton;
 
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
+
+import java.util.Calendar;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -30,11 +33,10 @@ public class MainActivity extends ActionBarActivity {
 
         //ERROR In Emulator !?
 
-        /*
+
         // DB Stuff
         DBHelper db = new DBHelper(this);
         // test DBRule
-        db.logDB();
         DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
@@ -50,19 +52,25 @@ public class MainActivity extends ActionBarActivity {
         testRule = DBRule.selectFromDB(testRule.getId());
         if(testRule == null) Log.d("DBRule Delete", "Erfolgreich!");
 
-        /*DBActionSimple actionWiFi = new DBActionSimple();
-        actionWiFi.setType(DBActionSimple.TYPE_WIFI);
-        actionWiFi.setStatus(true);
-        testRule.addAction(actionWiFi);
-        actionWiFi.writeToDB();
-        DBActionSound actionSound = new DBActionSound();
-        actionSound.setType(DBActionSound.TYPE_PHONE);
-        actionSound.setStatus(DBActionSound.STATUS_SOUND);
-        actionSound.setVolume(20);
-        testRule.addAction(actionSound);
-        actionSound.writeToDB();
-        testRule.setName("Test Rule");
-        testRule.writeToDB();                                               // UPDATE*/
+        // test conditiontime
+        DBConditionTime time = new DBConditionTime();
+        time.setStart(8, 30);
+        time.setEnd(17, 30);
+        time.setName("Working");
+        time.addDay(Calendar.MONDAY);
+        time.addDay(Calendar.TUESDAY);
+        time.addDay(Calendar.THURSDAY);
+        time.addDay(Calendar.WEDNESDAY);
+        time.addDay(Calendar.FRIDAY);
+        time.addDay(Calendar.SATURDAY);
+        time.writeToDB(); // Insert
+        time.removeDay(Calendar.SATURDAY); // Who wants to work on saturday anyway!?
+        time.setName("Hard(ly) Working");
+        time.writeToDB(); // update
+        time = DBConditionTime.selectFromDB(time.getId());
+        if(time.getStart().get(Calendar.MINUTE) == 30 && time.getStart().get(Calendar.HOUR_OF_DAY) == 8 && time.getEnd().get(Calendar.MINUTE) == 30 && time.getEnd().get(Calendar.HOUR_OF_DAY) == 17) Log.d("DBConditionTime Read 1", "Erfolgreich!");
+        else Log.d("DBConditionTime Read 1", "Nicht erfolgreich! Start: " + time.getStart().get(Calendar.HOUR_OF_DAY) + ":" + time.getStart().get(Calendar.MINUTE) + ", Ende: " + time.getEnd().get(Calendar.HOUR_OF_DAY) + ":" + time.getEnd().get(Calendar.MINUTE));
+        db.logDB();
 
 
 

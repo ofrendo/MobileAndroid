@@ -13,7 +13,6 @@ public class DBConditionFence extends DBCondition {
     private static final String TYPE_ENTER = "Enter";   // The condition is triggered when you enter one of the geofences
     private static final String TYPE_LEAVE = "Leave";   // The condition is triggered when you leave one of the geofences
 
-    private String name;
     private String type;
     private ArrayList<DBFence> fences = new ArrayList<DBFence>();
 
@@ -60,8 +59,7 @@ public class DBConditionFence extends DBCondition {
     }
 
     public DBConditionFence(long id, String name, String type){
-        super(id);
-        this.name = name;
+        super(id, name);
         this.type = type;
     }
 
@@ -89,7 +87,7 @@ public class DBConditionFence extends DBCondition {
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_NAME, name);
+        values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
         return db.insert(DBHelper.TABLE_CONDITION_FENCE, null, values);
     }
@@ -97,7 +95,7 @@ public class DBConditionFence extends DBCondition {
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_NAME, name);
+        values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
         String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
@@ -111,14 +109,6 @@ public class DBConditionFence extends DBCondition {
         String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_CONDITION_FENCE, where, whereArgs);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getType() {
