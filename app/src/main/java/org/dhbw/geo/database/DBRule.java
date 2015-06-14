@@ -36,6 +36,12 @@ public class DBRule extends DBObject {
         action.setRule(this);
     }
 
+    public void performAllActions(){
+        for(int i = 0; i < actions.size(); i++){
+            actions.get(i).performAction();
+        }
+    }
+
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -56,7 +62,7 @@ public class DBRule extends DBObject {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys = ON;");
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
@@ -65,7 +71,7 @@ public class DBRule extends DBObject {
 
     public static DBRule selectFromDB(long id) {
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_RULE_ID,
                 DBHelper.COLUMN_NAME,
@@ -79,6 +85,25 @@ public class DBRule extends DBObject {
         if(cursor.isAfterLast()) return null;
         DBRule rule = new DBRule(cursor.getLong(0), cursor.getString(1), cursor.getInt(2)!=0);
         return rule;
+    }
+
+    public void loadAllActions() {
+        if (actions.size() != 0) {
+            return; // don't load actions if they already exist!
+        }
+        actions.addAll(DBAction.selectAllFromDB(getId()));
+        // set rule for the actions!
+        for(int i = 0; i < actions.size(); i++){
+            actions.get(i).setRule(this);
+        }
+    }
+
+    public void loadAllConditions() {
+        if(conditions.size() != 0){
+            return; // don't load conditions if they already exist!
+        }
+        conditions.addAll(DBCondition.selectAllFromDB(getId()));
+        // add rule for the conditions
     }
 
     public String getName() {

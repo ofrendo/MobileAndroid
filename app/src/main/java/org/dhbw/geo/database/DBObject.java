@@ -19,7 +19,7 @@ public abstract class DBObject {
     }
 
     public void writeToDB(){
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         if(!existsOnDB){
             long id = insertIntoDB(db);
             setId(id);  // just to be sure
@@ -36,6 +36,10 @@ public abstract class DBObject {
 
     public long getId(){
         return id;
+    }
+
+    public boolean existsOnDB(){
+        return existsOnDB;
     }
 
     protected abstract long insertIntoDB(SQLiteDatabase db);

@@ -14,7 +14,7 @@ public class Group {
 
     public String string;
     public final List<Child> children = new ArrayList<Child>();
-    public boolean active;
+    public boolean active = false;
 
 
     public Group(String string) {
@@ -28,7 +28,17 @@ public class Group {
     }
 
 
-
+    public ArrayList<String> getActions(){
+        if (active){
+            ArrayList<String> list = new ArrayList<String>();
+            for (int i = 0; i<children.size();i++){
+                list.add(string+" : "+children.get(i).getAction());
+            }
+            return list;
+        }
+        else
+            return null;
+    }
 
 
 }

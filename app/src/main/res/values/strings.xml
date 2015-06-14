@@ -18,8 +18,10 @@
     <string name="RuleGeneralName">Name</string>
     <string name="RuleGeneralDelete">Delete</string>
     <string name="RuleGeneralActive">Active</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyCMoQZYGCB4SYlQmYFIC8WlvLAhuGc0JAA</string>
+    <string name="title_activity_rule_container">RuleContainer</string>
 
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
 
 </resources>

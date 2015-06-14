@@ -15,22 +15,37 @@
         android:id="@+id/RowContainer">
 
         <TextView
+            android:id="@+id/slider_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            android:text="@string/hello_world"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+        </TextView>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Medium Text"
-            android:id="@+id/radio_text" />
+            android:id="@+id/slider_count"
+            android:layout_alignBottom="@+id/slider_text"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rule_radiogroup"
-            android:layout_below="@+id/radio_text"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
 
-        </RadioGroup>
     </RelativeLayout>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rule_slider" />
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dp"
