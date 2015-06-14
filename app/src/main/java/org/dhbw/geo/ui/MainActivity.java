@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 
 
+import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.database.DBActionSimple;
 import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.R;
@@ -142,5 +143,12 @@ public class MainActivity extends ActionBarActivity {
 
         // Intent starten und zur zweiten Activity wechseln
         startActivity(nextScreen);
+    }
+
+    public void onOpenMapClick (View view){
+        //Neues Intent anlegen
+        Intent mapScreen = new Intent(getApplicationContext(), Maps.class);
+        // Intent starten
+        startActivity(mapScreen);
     }
 }
