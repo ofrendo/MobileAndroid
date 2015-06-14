@@ -60,7 +60,7 @@ public class DBActionNotification extends DBAction {
 
     @Override
     public void performAction() {
-        NotificationFactory.createNotification(MainActivity.getContext(), getRule().getName(), message);
+        NotificationFactory.createNotification(MainActivity.getContext(), getRule().getName(), message, false);
     }
 
     public DBActionNotification(long id, String message){

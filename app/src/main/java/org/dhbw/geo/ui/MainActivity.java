@@ -191,12 +191,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void onNotificationClick(View view) {
         //Sends a test notification
-        NotificationFactory.createNotification(this, "Test", "Hello world!");
+        NotificationFactory.createNotification(this, "Test", "Hello world!", false);
     }
 
     public void onOngoingNotificationClick(View view) {
         //Sends a test permanent notification
-        NotificationFactory.createOngoingNotification(this, "Test perm", "Hello world! Perm");
+        NotificationFactory.createNotification(this, "Test perm", "Hello world! Perm", true);
     }
 
     public void onTestSMSSend(View view) {
