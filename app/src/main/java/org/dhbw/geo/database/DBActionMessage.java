@@ -68,7 +68,7 @@ public class DBActionMessage extends DBAction {
         // This has to be changed for the final result!
 
         /* // // SMSFactory.createSMS(number, message);*/
-        NotificationFactory.createNotification(MainActivity.getContext(), "SMS would've been sent to: " + number, message);
+        NotificationFactory.createNotification(MainActivity.getContext(), "SMS would've been sent to: " + number, message, false);
     }
 
     public DBActionMessage(long id, String number, String message){
