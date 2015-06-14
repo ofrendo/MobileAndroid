@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 
+import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
@@ -216,6 +217,13 @@ public class MainActivity extends ActionBarActivity {
         // Log schreiben fuer Logausgabe
         //Log.e("n", inputVorname.getText()+"."+ inputNachname.getText());
 
+        // Intent starten und zur zweiten Activity wechseln
+        startActivity(nextScreen);
+    }
+
+    public void onOpenMapClick(View view){
+        //Neues Intent anlegen
+        Intent nextScreen = new Intent(getApplicationContext(), Maps.class);
         // Intent starten und zur zweiten Activity wechseln
         startActivity(nextScreen);
     }
