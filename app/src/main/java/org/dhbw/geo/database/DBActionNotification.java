@@ -4,6 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.dhbw.geo.hardware.NotificationFactory;
+import org.dhbw.geo.ui.MainActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -16,7 +19,7 @@ public class DBActionNotification extends DBAction {
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_NOTIFICATION_ID,
                 DBHelper.COLUMN_MESSAGE
@@ -36,7 +39,7 @@ public class DBActionNotification extends DBAction {
 
     public static DBActionNotification selectFromDB(long id) {
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_NOTIFICATION_ID,
                 DBHelper.COLUMN_MESSAGE
@@ -57,7 +60,7 @@ public class DBActionNotification extends DBAction {
 
     @Override
     public void performAction() {
-
+        NotificationFactory.createNotification(MainActivity.getContext(), getRule().getName(), message);
     }
 
     public DBActionNotification(long id, String message){
@@ -85,7 +88,7 @@ public class DBActionNotification extends DBAction {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         String where = DBHelper.COLUMN_ACTION_NOTIFICATION_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_ACTION_NOTIFICATION, where, whereArgs);

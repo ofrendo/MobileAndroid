@@ -4,6 +4,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.dhbw.geo.hardware.NotificationFactory;
+import org.dhbw.geo.hardware.SMSFactory;
+import org.dhbw.geo.ui.MainActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -17,7 +21,7 @@ public class DBActionMessage extends DBAction {
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_MESSAGE_ID,
                 DBHelper.COLUMN_NUMBER,
@@ -38,7 +42,7 @@ public class DBActionMessage extends DBAction {
 
     public static DBActionMessage selectFromDB(long id) {
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_MESSAGE_ID,
                 DBHelper.COLUMN_NUMBER,
@@ -60,7 +64,11 @@ public class DBActionMessage extends DBAction {
 
     @Override
     public void performAction() {
+        // to avoid costs for anybody without a flatrate don't send any SMS!
+        // This has to be changed for the final result!
 
+        /* // // SMSFactory.createSMS(number, message);*/
+        NotificationFactory.createNotification(MainActivity.getContext(), "SMS would've been sent to: " + number, message);
     }
 
     public DBActionMessage(long id, String number, String message){
@@ -91,7 +99,7 @@ public class DBActionMessage extends DBAction {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         String where = DBHelper.COLUMN_ACTION_MESSAGE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_ACTION_MESSAGE, where, whereArgs);

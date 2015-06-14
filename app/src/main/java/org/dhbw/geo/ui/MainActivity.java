@@ -1,5 +1,6 @@
 package org.dhbw.geo.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -26,18 +27,22 @@ import java.util.Calendar;
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
+    private static Context context; // the context for the app; needed for various things
+
+    public static Context getContext(){
+        return context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         //ERROR In Emulator !?
 
-
-        // DB Stuff
-        DBHelper dbHelper = new DBHelper(this);
         // delete old data
+        DBHelper dbHelper = DBHelper.getInstance();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SIMPLE);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SOUND);
@@ -105,6 +110,20 @@ public class MainActivity extends ActionBarActivity {
         conditionFence.writeRuleToDB();
         dbHelper.logDB();
 
+        // test notification
+        DBRule rule = new DBRule();
+        rule.setName("Notification Rule");
+        rule.writeToDB();
+        DBActionNotification notification = new DBActionNotification();
+        notification.setMessage("Test Notification");
+        rule.addAction(notification);
+        notification.writeToDB();
+        DBActionMessage msg = new DBActionMessage();
+        msg.setNumber("01732541521");
+        msg.setMessage("Hallo Matthias!");
+        rule.addAction(msg);
+        msg.writeToDB();
+        rule.performAllActions();
 
 
         // Set correct radio button for wifi status

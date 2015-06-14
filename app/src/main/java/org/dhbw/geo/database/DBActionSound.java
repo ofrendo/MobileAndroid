@@ -43,7 +43,7 @@ public class DBActionSound extends DBAction {
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_SOUND_ID,
                 DBHelper.COLUMN_TYPE,
@@ -65,7 +65,7 @@ public class DBActionSound extends DBAction {
 
     public static DBActionSound selectFromDB(long id){
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_SOUND_ID,
                 DBHelper.COLUMN_TYPE,
@@ -107,7 +107,7 @@ public class DBActionSound extends DBAction {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         String where = DBHelper.COLUMN_ACTION_SOUND_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_ACTION_SOUND, where, whereArgs);

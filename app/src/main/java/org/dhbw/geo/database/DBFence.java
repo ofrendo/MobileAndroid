@@ -19,7 +19,7 @@ public class DBFence extends DBObject {
     public static ArrayList<DBFence> selectAllFromDB(long conditionFenceId){
         ArrayList<DBFence> fences = new ArrayList<DBFence>();
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_FENCE_ID,
                 DBHelper.COLUMN_LATITUDE,
@@ -41,7 +41,7 @@ public class DBFence extends DBObject {
 
     public static DBFence selectFromDB(long id) {
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_FENCE_ID,
                 DBHelper.COLUMN_LATITUDE,
@@ -93,7 +93,7 @@ public class DBFence extends DBObject {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         String where = DBHelper.COLUMN_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.delete(DBHelper.TABLE_FENCE, where, whereArgs);

@@ -20,7 +20,7 @@ public class DBConditionTime extends DBCondition {
     public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
         ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String query = "SELECT " +
                 DBHelper.COLUMN_CONDITION_TIME_ID + ", " +
                 DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME +
@@ -40,7 +40,7 @@ public class DBConditionTime extends DBCondition {
 
     public static DBConditionTime selectFromDB(long id) {
         // read from database
-        SQLiteDatabase db = DBHelper.getHelper().getReadableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_CONDITION_TIME_ID,
                 DBHelper.COLUMN_NAME,
@@ -105,7 +105,7 @@ public class DBConditionTime extends DBCondition {
 
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         // delete DayStatus entries
         deleteDayStatusFromDB(db);
         // delete ConditionTime entry
@@ -116,7 +116,7 @@ public class DBConditionTime extends DBCondition {
 
     @Override
     public void removeRuleFromDB() {
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
         db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
@@ -125,7 +125,7 @@ public class DBConditionTime extends DBCondition {
     @Override
     public void writeRuleToDB() {
         removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
-        SQLiteDatabase db = DBHelper.getHelper().getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
         values.put(DBHelper.COLUMN_CONDITION_TIME_ID, getId());
