@@ -1,10 +1,17 @@
 package org.dhbw.geo.Map;
 
+import android.content.SyncStatusObserver;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -13,18 +20,22 @@ import org.dhbw.geo.R;
 public class Maps extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private static final TestLocation[] test = new TestLocation[] {
+            new TestLocation(new LatLng(49.474225, 8.534489), new String("DHBW Mannheim, BW")),
+            new TestLocation( new LatLng(49.540980, 8.660827), new String("Weinheim, BW"))
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        setUpMapIfNeeded();
+        getUpMap();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        getUpMap();
     }
 
     /**
@@ -42,7 +53,7 @@ public class Maps extends FragmentActivity {
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    private void setUpMapIfNeeded() {
+    private void getUpMap() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
@@ -62,6 +73,11 @@ public class Maps extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(49.540980, 8.660827), 10));
+        Drawable iconDrawable = getResources().getDrawable(R.drawable.ic_play_light);
+        Bitmap iconBitmap = ((BitmapDrawable) iconDrawable).getBitmap();
+        mMap.addMarker(new MarkerOptions().position(test[0].getLocation()).title(test[0].getName()));
+        mMap.addMarker(new MarkerOptions().position(test[1].getLocation()).title(test[1].getName()));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 }
