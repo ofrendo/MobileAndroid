@@ -41,6 +41,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".ui.RuleFragments.RuleContainer"
             android:label="@string/title_activity_rule_container" >
         </activity>

@@ -25,9 +25,7 @@
             android:textStyle="bold"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:editable="false"
-            android:clickable="false">
+            android:layout_alignParentStart="true">
         </TextView>
 
 
@@ -37,12 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rule_textInput"
-        android:inputType="textShortMessage|textLongMessage|textAutoComplete|textAutoCorrect|text|textMultiLine"
-        android:editable="true"
-        android:clickable="true"
-        android:focusable="true"
-        android:enabled="true"
-        android:focusableInTouchMode="true" />
+        android:textIsSelectable="false"
+        android:inputType="text" />
 
     <View
         android:layout_width="fill_parent"
