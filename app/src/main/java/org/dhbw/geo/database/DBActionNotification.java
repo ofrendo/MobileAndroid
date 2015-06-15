@@ -61,7 +61,7 @@ public class DBActionNotification extends DBAction {
     }
 
     @Override
-    public void doAction() {
+    protected void doAction() {
         NotificationFactory.createNotification(MainActivity.getContext(), getRule().getName(), message, false);
     }
 

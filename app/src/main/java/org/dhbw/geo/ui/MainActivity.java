@@ -160,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE_CONDITION);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
         // test DBRule
-        DBRule testRule = new DBRule();
+        /*DBRule testRule = new DBRule();
         testRule.setName("Test Rule 123");
         testRule.setActive(true);
         testRule.writeToDB();                               // DBRule Create
@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarActivity {
         else Log.d("DBConditionTime Read 1", "Nicht erfolgreich! Start: " + time.getStart().get(Calendar.HOUR_OF_DAY) + ":" + time.getStart().get(Calendar.MINUTE) + ", Ende: " + time.getEnd().get(Calendar.HOUR_OF_DAY) + ":" + time.getEnd().get(Calendar.MINUTE));
 
         // test rule condition
-        testRule = new DBRule();
+        /*testRule = new DBRule();
         testRule.setName("Test Rule 1");
         testRule.setActive(true);
         testRule.writeToDB();
@@ -212,14 +212,14 @@ public class MainActivity extends ActionBarActivity {
         conditionFence.writeToDB();
         rule2.addCondition(conditionFence);
         conditionFence.writeRuleToDB();
-        dbHelper.logDB();
+        dbHelper.logDB();*/
 
         // test notification
         DBRule rule = new DBRule();
         rule.setName("Notification Rule");
         rule.setActive(true);
         rule.writeToDB();
-        DBActionNotification notification = new DBActionNotification();
+        /*DBActionNotification notification = new DBActionNotification();
         notification.setMessage("Test Notification");
         rule.addAction(notification);
         notification.writeToDB();
@@ -228,12 +228,18 @@ public class MainActivity extends ActionBarActivity {
         msg.setMessage("Hallo Matthias!");
         rule.addAction(msg);
         msg.writeToDB();
-        DBActionSimple wifi = new DBActionSimple();
-        wifi.setType(DBActionSimple.TYPE_WIFI);
-        wifi.setStatus(true);
-        wifi.setActive(true);
-        rule.addAction(wifi);
-        wifi.writeToDB();
+        /*DBActionSimple bt = new DBActionSimple();
+        bt.setType(DBActionSimple.TYPE_BLUETOOTH);
+        bt.setStatus(true);
+        bt.setActive(true);
+        rule.addAction(bt);
+        bt.writeToDB();*/
+        DBActionSound sound = new DBActionSound();
+        sound.setActive(true);
+        sound.setType(AudioManager.STREAM_MUSIC);
+        sound.setStatus(DBActionSound.STATUS_SOUND);
+        rule.addAction(sound);
+        sound.writeToDB();
         rule.performAllActions();
     }
 }

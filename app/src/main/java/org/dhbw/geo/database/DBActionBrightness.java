@@ -61,7 +61,7 @@ public class DBActionBrightness extends DBAction {
     }
 
     @Override
-    public void doAction() {
+    protected void doAction() {
 
     }
 

@@ -65,7 +65,7 @@ public class DBActionMessage extends DBAction {
     }
 
     @Override
-    public void doAction() {
+    protected void doAction() {
         // to avoid costs for anybody without a flatrate don't send any SMS!
         // This has to be changed for the final result!
 

@@ -4,27 +4,26 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.dhbw.geo.hardware.HardwareController;
+
 import java.util.ArrayList;
 
 /**
  * Created by Matthias on 12.06.2015.
  */
 public class DBActionSound extends DBAction {
-    // the sound types
-    public static final String TYPE_PHONE = "Phone";
-    public static final String TYPE_MEDIA = "Media";
-    public static final String TYPE_NOTIFICATION = "Notification";
-    public static final String TYPE_SYSTEM = "System";
-    // the sound stati
+    // the sound types are now used from class AudioManager
+
+    // the sound statuses
     public static final String STATUS_SOUND = "Sound";
-    public static final String STATUS_VIBRATE = "Vibrate";
+    //public static final String STATUS_VIBRATE = "Vibrate";
     public static final String STATUS_MUTE = "Mute";
 
-    private String type;
+    private int type;
     private String status;
     private int volume;
 
-    public DBActionSound(long id, String type, String status, int volume, boolean active) {
+    public DBActionSound(long id, int type, String status, int volume, boolean active) {
         super(id, active);
         this.type = type;
         this.status = status;
@@ -36,7 +35,17 @@ public class DBActionSound extends DBAction {
     }
 
     @Override
-    public void doAction() {
+    protected void doAction() {
+        // set audio status
+        switch (status){
+            case STATUS_MUTE:
+                HardwareController.getInstance().setAudioStatus(type, false);
+                break;
+            case STATUS_SOUND:
+                HardwareController.getInstance().setAudioStatus(type, true);
+                break;
+        }
+        // set volume
 
     }
 
@@ -57,7 +66,7 @@ public class DBActionSound extends DBAction {
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4) != 0);
+            DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getInt(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4) != 0);
             actions.add(action);
             cursor.moveToNext();
         }
@@ -80,7 +89,7 @@ public class DBActionSound extends DBAction {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4) != 0);
+        DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getInt(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4) != 0);
         return action;
     }
 
@@ -116,11 +125,11 @@ public class DBActionSound extends DBAction {
         db.delete(DBHelper.TABLE_ACTION_SOUND, where, whereArgs);
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

@@ -67,10 +67,13 @@ public class DBActionSimple extends DBAction {
     }
 
     @Override
-    public void doAction() {
+    protected void doAction() {
         switch(type){
             case TYPE_WIFI:
                 HardwareController.getInstance().setWifi(status);
+                break;
+            case TYPE_BLUETOOTH:
+                HardwareController.getInstance().setBluetoothStatus(status);
                 break;
             default:
                 Log.d("DBActionSimple", "Invalid type!");

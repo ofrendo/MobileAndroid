@@ -28,7 +28,7 @@ public abstract class DBAction extends DBObject {
 
     }
 
-    public abstract void doAction();
+    protected abstract void doAction();
 
     public void performAction(){
         if(active){

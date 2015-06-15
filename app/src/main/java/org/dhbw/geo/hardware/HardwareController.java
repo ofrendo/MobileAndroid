@@ -16,7 +16,7 @@ public class HardwareController {
     private Context context;
 
     private HardwareController() {
-        context = MainActivity.getContext();
+       context = MainActivity.getContext();
     }
 
     public static HardwareController getInstance() {
