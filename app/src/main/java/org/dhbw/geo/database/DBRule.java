@@ -37,8 +37,10 @@ public class DBRule extends DBObject {
     }
 
     public void performAllActions(){
-        for(int i = 0; i < actions.size(); i++){
-            actions.get(i).performAction();
+        if(active) {
+            for (int i = 0; i < actions.size(); i++) {
+                actions.get(i).performAction();
+            }
         }
     }
 

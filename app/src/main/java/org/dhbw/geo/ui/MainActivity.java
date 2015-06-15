@@ -42,8 +42,6 @@ public class MainActivity extends ActionBarActivity {
 
         //ERROR In Emulator !?
 
-        testDatabaseStuff();
-
 
         // Set correct radio button for wifi status
         HardwareController.getInstance().setContext(this);
@@ -146,7 +144,7 @@ public class MainActivity extends ActionBarActivity {
         startActivity(nextScreen);
     }
 
-    public void testDatabaseStuff(){
+    public void testDatabaseStuff(View view){
         // delete old data
         DBHelper dbHelper = DBHelper.getInstance();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -219,6 +217,7 @@ public class MainActivity extends ActionBarActivity {
         // test notification
         DBRule rule = new DBRule();
         rule.setName("Notification Rule");
+        rule.setActive(true);
         rule.writeToDB();
         DBActionNotification notification = new DBActionNotification();
         notification.setMessage("Test Notification");
@@ -232,6 +231,7 @@ public class MainActivity extends ActionBarActivity {
         DBActionSimple wifi = new DBActionSimple();
         wifi.setType(DBActionSimple.TYPE_WIFI);
         wifi.setStatus(true);
+        wifi.setActive(true);
         rule.addAction(wifi);
         wifi.writeToDB();
         rule.performAllActions();

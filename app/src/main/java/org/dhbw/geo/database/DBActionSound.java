@@ -24,8 +24,8 @@ public class DBActionSound extends DBAction {
     private String status;
     private int volume;
 
-    public DBActionSound(long id, String type, String status, int volume) {
-        super(id);
+    public DBActionSound(long id, String type, String status, int volume, boolean active) {
+        super(id, active);
         this.type = type;
         this.status = status;
         this.volume = volume;
@@ -36,7 +36,7 @@ public class DBActionSound extends DBAction {
     }
 
     @Override
-    public void performAction() {
+    public void doAction() {
 
     }
 
@@ -48,7 +48,8 @@ public class DBActionSound extends DBAction {
                 DBHelper.COLUMN_ACTION_SOUND_ID,
                 DBHelper.COLUMN_TYPE,
                 DBHelper.COLUMN_STATUS,
-                DBHelper.COLUMN_VOLUME
+                DBHelper.COLUMN_VOLUME,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(ruleId)};
@@ -56,7 +57,7 @@ public class DBActionSound extends DBAction {
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
+            DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4) != 0);
             actions.add(action);
             cursor.moveToNext();
         }
@@ -70,8 +71,8 @@ public class DBActionSound extends DBAction {
                 DBHelper.COLUMN_ACTION_SOUND_ID,
                 DBHelper.COLUMN_TYPE,
                 DBHelper.COLUMN_STATUS,
-                DBHelper.COLUMN_VOLUME
-                //,DBHelper.COLUMN_RULE_ID
+                DBHelper.COLUMN_VOLUME,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_ACTION_SOUND_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
@@ -79,7 +80,7 @@ public class DBActionSound extends DBAction {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
+        DBActionSound action = new DBActionSound(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4) != 0);
         return action;
     }
 
@@ -90,6 +91,7 @@ public class DBActionSound extends DBAction {
         values.put(DBHelper.COLUMN_STATUS, status);
         values.put(DBHelper.COLUMN_VOLUME, volume);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         return db.insert(DBHelper.TABLE_ACTION_SOUND, null, values);
     }
 
@@ -100,6 +102,7 @@ public class DBActionSound extends DBAction {
         values.put(DBHelper.COLUMN_STATUS, status);
         values.put(DBHelper.COLUMN_VOLUME, volume);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_SOUND_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_ACTION_SOUND, values, where, whereArgs);

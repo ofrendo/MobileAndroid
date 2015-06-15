@@ -22,7 +22,8 @@ public class DBActionNotification extends DBAction {
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_NOTIFICATION_ID,
-                DBHelper.COLUMN_MESSAGE
+                DBHelper.COLUMN_MESSAGE,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(ruleId)};
@@ -30,7 +31,7 @@ public class DBActionNotification extends DBAction {
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBActionNotification action = new DBActionNotification(cursor.getLong(0), cursor.getString(1));
+            DBActionNotification action = new DBActionNotification(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0);
             actions.add(action);
             cursor.moveToNext();
         }
@@ -42,7 +43,8 @@ public class DBActionNotification extends DBAction {
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String[] columns = {
                 DBHelper.COLUMN_ACTION_NOTIFICATION_ID,
-                DBHelper.COLUMN_MESSAGE
+                DBHelper.COLUMN_MESSAGE,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_ACTION_NOTIFICATION_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
@@ -50,7 +52,7 @@ public class DBActionNotification extends DBAction {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBActionNotification action = new DBActionNotification(cursor.getLong(0), cursor.getString(1));
+        DBActionNotification action = new DBActionNotification(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0);
         return action;
     }
 
@@ -59,12 +61,12 @@ public class DBActionNotification extends DBAction {
     }
 
     @Override
-    public void performAction() {
+    public void doAction() {
         NotificationFactory.createNotification(MainActivity.getContext(), getRule().getName(), message, false);
     }
 
-    public DBActionNotification(long id, String message){
-        super(id);
+    public DBActionNotification(long id, String message, boolean active){
+        super(id, active);
         this.message = message;
     }
 
@@ -72,6 +74,7 @@ public class DBActionNotification extends DBAction {
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_MESSAGE, message);
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
         return db.insert(DBHelper.TABLE_ACTION_NOTIFICATION, null, values);
     }
@@ -80,6 +83,7 @@ public class DBActionNotification extends DBAction {
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_MESSAGE, message);
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
         String where = DBHelper.COLUMN_ACTION_NOTIFICATION_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};

@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 public abstract class DBAction extends DBObject {
     private DBRule rule;
+    private boolean active;
 
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
@@ -27,10 +28,17 @@ public abstract class DBAction extends DBObject {
 
     }
 
-    public abstract void performAction();
+    public abstract void doAction();
 
-    public DBAction(long id){
+    public void performAction(){
+        if(active){
+            doAction();
+        }
+    }
+
+    public DBAction(long id, boolean active){
         super(id);
+        this.active = active;
     }
 
     public void setRule(DBRule rule) {
@@ -39,5 +47,13 @@ public abstract class DBAction extends DBObject {
 
     public DBRule getRule() {
         return rule;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
