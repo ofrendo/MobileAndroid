@@ -25,5 +25,6 @@
     <string name="title_section3">Section 3</string>
 
     <string name="title_activity_maps">Map</string>
-    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyCMoQZYGCB4SYlQmYFIC8WlvLAhuGc0JAA</string>
+    <!-- <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyCMoQZYGCB4SYlQmYFIC8WlvLAhuGc0JAA</string> -->
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyB5yE4r6Y8VCaBqn6fCAGmCx7wamcYjLbY</string>
 </resources>
