@@ -26,9 +26,9 @@ public class HardwareController {
         return instance;
     }
 
-    public void setContext(Context context) {
+    /*public void setContext(Context context) {
         this.context = context;
-    }
+    }*/
 
     public boolean isWifiEnabled() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
