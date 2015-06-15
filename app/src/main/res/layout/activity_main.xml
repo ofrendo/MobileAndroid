@@ -147,7 +147,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CrazyButton"
+                android:text="Test DB (Danke Matthias)"
                 android:id="@+id/buttonTestDB"
                 android:layout_gravity="center_horizontal"
                 android:onClick="testDatabaseStuff" />

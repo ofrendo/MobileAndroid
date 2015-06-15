@@ -12,6 +12,10 @@ import org.dhbw.geo.ui.MainActivity;
  */
 public class HardwareController {
 
+    public static final int AUDIO_ON = 2;
+    public static final int AUDIO_VIBRATE = 1;
+    public static final int AUDIO_MUTE = 0;
+
     private static HardwareController instance;
     private Context context;
 
@@ -50,6 +54,11 @@ public class HardwareController {
     public boolean getAudioStatus(int stream) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         return audioManager.getStreamVolume(stream) != 0;
+        /*int currentVolume = audioManager.getStreamVolume(stream);
+        if (currentVolume > 0) {
+            return AUDIO_ON;
+        }
+        if (audioManager.setR)*/
     }
 
     /**
@@ -60,6 +69,9 @@ public class HardwareController {
     public void setAudioStatus(int stream, boolean status) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         audioManager.setStreamMute(stream, status); //Set mute or unmute
+
+        //COULD SET IT TO VIBRATE LIKE THIS
+        //audioManager.setStreamVolume(stream, someVolumeNumber, AudioManager.FLAG_VIBRATE);
     }
 
     public boolean getBluetoothStatus() {
