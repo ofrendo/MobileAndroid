@@ -190,7 +190,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
 
 
-                text = (TextView) convertView.findViewById(R.id.textinput_text);
+                text = (TextView) convertView.findViewById(R.id.textInput_text);
                 text.setText(childName);
                 break;
             case Child.NUMBERINPUT:
@@ -211,6 +211,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
                     @Override
                     public void afterTextChanged(Editable s) {
+
                         childObject.numberText = "" + numInput.getText();
                     }
                 });
