@@ -229,6 +229,11 @@ public class MainActivity extends ActionBarActivity {
         msg.setMessage("Hallo Matthias!");
         rule.addAction(msg);
         msg.writeToDB();
+        DBActionSimple wifi = new DBActionSimple();
+        wifi.setType(DBActionSimple.TYPE_WIFI);
+        wifi.setStatus(true);
+        rule.addAction(wifi);
+        wifi.writeToDB();
         rule.performAllActions();
     }
 }
