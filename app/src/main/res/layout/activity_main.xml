@@ -103,6 +103,12 @@
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Vibrate"
+                    android:id="@+id/radioButtonSoundVibrate" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Mute"
                     android:id="@+id/radioButtonSoundMute"
                     android:checked="false" />
