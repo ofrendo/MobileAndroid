@@ -8,10 +8,12 @@ import com.google.android.gms.maps.model.LatLng;
 public class TestLocation {
     private LatLng location;
     private String name;
+    private int radius;
 
-    public TestLocation(LatLng postion, String name) {
+    public TestLocation(LatLng postion, String name, int radius) {
         this.location = postion;
         this.name = name;
+        this.radius = radius;
     }
 
     public LatLng getLocation(){
@@ -20,5 +22,9 @@ public class TestLocation {
 
     public String getName(){
         return name;
+    }
+
+    public int getRadius(){
+        return radius;
     }
 }

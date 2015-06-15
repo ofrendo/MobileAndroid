@@ -1,5 +1,6 @@
 package org.dhbw.geo.ui;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 
+import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.*;
@@ -236,4 +238,5 @@ public class MainActivity extends ActionBarActivity {
         wifi.writeToDB();
         rule.performAllActions();
     }
+
 }
