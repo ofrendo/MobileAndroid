@@ -92,7 +92,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void onSoundStreamMusic(View view) {
         // Set sound status radio group to correct music setting
-        boolean currentStatus = HardwareController.getInstance().getStatus(AudioManager.STREAM_MUSIC);
+        boolean currentStatus = HardwareController.getInstance().getAudioStatus(AudioManager.STREAM_MUSIC);
         RadioButton currentStatusButton = (currentStatus == true) ?
                 (RadioButton) this.findViewById(R.id.radioButtonSoundOn) :
                 (RadioButton) this.findViewById(R.id.radioButtonSoundMute);
@@ -100,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
     }
     public void onSoundStreamRing(View view) {
         // Set sound status radio group to correct music setting
-        boolean currentStatus = HardwareController.getInstance().getStatus(AudioManager.STREAM_RING);
+        boolean currentStatus = HardwareController.getInstance().getAudioStatus(AudioManager.STREAM_RING);
         RadioButton currentStatusButton = (currentStatus == true) ?
                 (RadioButton) this.findViewById(R.id.radioButtonSoundOn) :
                 (RadioButton) this.findViewById(R.id.radioButtonSoundMute);
