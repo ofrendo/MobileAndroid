@@ -171,7 +171,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     @Override
     public void onResult(Status status) {
-        Log.e("Maps/geofancing/Log", "Test-Callback-Log-Scheiﬂ");
+        Log.e("Maps/geofancing/Log", "Test-Callback-Log-Scheiss");
     }
 
     @Override
