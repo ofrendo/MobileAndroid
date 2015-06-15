@@ -27,7 +27,8 @@ public class DBActionSimple extends DBAction {
         String[] columns = {
                 DBHelper.COLUMN_ACTION_SIMPLE_ID,
                 DBHelper.COLUMN_TYPE,
-                DBHelper.COLUMN_STATUS
+                DBHelper.COLUMN_STATUS,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(ruleId)};
@@ -35,7 +36,7 @@ public class DBActionSimple extends DBAction {
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBActionSimple action = new DBActionSimple(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0);
+            DBActionSimple action = new DBActionSimple(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0, cursor.getInt(3) != 0);
             actions.add(action);
             cursor.moveToNext();
         }
@@ -48,8 +49,8 @@ public class DBActionSimple extends DBAction {
         String[] columns = {
                 DBHelper.COLUMN_ACTION_SIMPLE_ID,
                 DBHelper.COLUMN_TYPE,
-                DBHelper.COLUMN_STATUS
-                //,DBHelper.COLUMN_RULE_ID
+                DBHelper.COLUMN_STATUS,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
@@ -57,7 +58,7 @@ public class DBActionSimple extends DBAction {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBActionSimple action = new DBActionSimple(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0);
+        DBActionSimple action = new DBActionSimple(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0, cursor.getInt(3) != 0);
         return action;
     }
 
@@ -66,18 +67,21 @@ public class DBActionSimple extends DBAction {
     }
 
     @Override
-    public void performAction() {
+    protected void doAction() {
         switch(type){
             case TYPE_WIFI:
                 HardwareController.getInstance().setWifi(status);
+                break;
+            case TYPE_BLUETOOTH:
+                HardwareController.getInstance().setBluetoothStatus(status);
                 break;
             default:
                 Log.d("DBActionSimple", "Invalid type!");
         }
     }
 
-    public DBActionSimple(long id, String type, boolean status){
-        super(id);
+    public DBActionSimple(long id, String type, boolean status, boolean active){
+        super(id, active);
         this.type = type;
         this.status = status;
     }
@@ -88,6 +92,7 @@ public class DBActionSimple extends DBAction {
         values.put(DBHelper.COLUMN_TYPE, type);
         values.put(DBHelper.COLUMN_STATUS, status);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         return db.insert(DBHelper.TABLE_ACTION_SIMPLE, null, values);
     }
 
@@ -97,6 +102,7 @@ public class DBActionSimple extends DBAction {
         values.put(DBHelper.COLUMN_TYPE, type);
         values.put(DBHelper.COLUMN_STATUS, status);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_ACTION_SIMPLE, values, where, whereArgs);

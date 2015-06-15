@@ -25,7 +25,8 @@ public class DBActionMessage extends DBAction {
         String[] columns = {
                 DBHelper.COLUMN_ACTION_MESSAGE_ID,
                 DBHelper.COLUMN_NUMBER,
-                DBHelper.COLUMN_MESSAGE
+                DBHelper.COLUMN_MESSAGE,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(ruleId)};
@@ -33,7 +34,7 @@ public class DBActionMessage extends DBAction {
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBActionMessage action = new DBActionMessage(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+            DBActionMessage action = new DBActionMessage(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3) != 0);
             actions.add(action);
             cursor.moveToNext();
         }
@@ -46,7 +47,8 @@ public class DBActionMessage extends DBAction {
         String[] columns = {
                 DBHelper.COLUMN_ACTION_MESSAGE_ID,
                 DBHelper.COLUMN_NUMBER,
-                DBHelper.COLUMN_MESSAGE
+                DBHelper.COLUMN_MESSAGE,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_ACTION_MESSAGE_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
@@ -54,7 +56,7 @@ public class DBActionMessage extends DBAction {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBActionMessage action = new DBActionMessage(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+        DBActionMessage action = new DBActionMessage(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3) != 0);
         return action;
     }
 
@@ -63,7 +65,7 @@ public class DBActionMessage extends DBAction {
     }
 
     @Override
-    public void performAction() {
+    protected void doAction() {
         // to avoid costs for anybody without a flatrate don't send any SMS!
         // This has to be changed for the final result!
 
@@ -71,8 +73,8 @@ public class DBActionMessage extends DBAction {
         NotificationFactory.createNotification(MainActivity.getContext(), "SMS would've been sent to: " + number, message, false);
     }
 
-    public DBActionMessage(long id, String number, String message){
-        super(id);
+    public DBActionMessage(long id, String number, String message, boolean active){
+        super(id, active);
         this.number = number;
         this.message = message;
     }
@@ -83,6 +85,7 @@ public class DBActionMessage extends DBAction {
         values.put(DBHelper.COLUMN_NUMBER, number);
         values.put(DBHelper.COLUMN_MESSAGE, message);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         return db.insert(DBHelper.TABLE_ACTION_MESSAGE, null, values);
     }
 
@@ -92,6 +95,7 @@ public class DBActionMessage extends DBAction {
         values.put(DBHelper.COLUMN_NUMBER, number);
         values.put(DBHelper.COLUMN_MESSAGE, message);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_MESSAGE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_ACTION_MESSAGE, values, where, whereArgs);

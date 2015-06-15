@@ -21,7 +21,8 @@ public class DBActionBrightness extends DBAction {
         String[] columns = {
                 DBHelper.COLUMN_ACTION_BRIGHTNESS_ID,
                 DBHelper.COLUMN_AUTOMATIC,
-                DBHelper.COLUMN_VALUE
+                DBHelper.COLUMN_VALUE,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_RULE_ID + " = ?";
         String[] whereArgs = {String.valueOf(ruleId)};
@@ -29,7 +30,7 @@ public class DBActionBrightness extends DBAction {
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBActionBrightness action = new DBActionBrightness(cursor.getLong(0), cursor.getInt(1) != 0, cursor.getInt(2));
+            DBActionBrightness action = new DBActionBrightness(cursor.getLong(0), cursor.getInt(1) != 0, cursor.getInt(2), cursor.getInt(3) != 0);
             actions.add(action);
             cursor.moveToNext();
         }
@@ -42,7 +43,8 @@ public class DBActionBrightness extends DBAction {
         String[] columns = {
                 DBHelper.COLUMN_ACTION_SIMPLE_ID,
                 DBHelper.COLUMN_AUTOMATIC,
-                DBHelper.COLUMN_VALUE
+                DBHelper.COLUMN_VALUE,
+                DBHelper.COLUMN_ACTIVE
         };
         String where = DBHelper.COLUMN_ACTION_BRIGHTNESS_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
@@ -50,7 +52,7 @@ public class DBActionBrightness extends DBAction {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBActionBrightness action = new DBActionBrightness(cursor.getLong(0), cursor.getInt(1) != 0, cursor.getInt(2));
+        DBActionBrightness action = new DBActionBrightness(cursor.getLong(0), cursor.getInt(1) != 0, cursor.getInt(2), cursor.getInt(3) != 0);
         return action;
     }
 
@@ -59,12 +61,12 @@ public class DBActionBrightness extends DBAction {
     }
 
     @Override
-    public void performAction() {
+    protected void doAction() {
 
     }
 
-    public DBActionBrightness(long id, boolean automatic, int value){
-        super(id);
+    public DBActionBrightness(long id, boolean automatic, int value, boolean active){
+        super(id, active);
         this.automatic = automatic;
         this.value = value;
     }
@@ -75,6 +77,7 @@ public class DBActionBrightness extends DBAction {
         values.put(DBHelper.COLUMN_AUTOMATIC, automatic);
         values.put(DBHelper.COLUMN_VALUE, value);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         return db.insert(DBHelper.TABLE_ACTION_BRIGHTNESS, null, values);
     }
 
@@ -84,6 +87,7 @@ public class DBActionBrightness extends DBAction {
         values.put(DBHelper.COLUMN_AUTOMATIC, automatic);
         values.put(DBHelper.COLUMN_VALUE, value);
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_BRIGHTNESS_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_ACTION_BRIGHTNESS, values, where, whereArgs);

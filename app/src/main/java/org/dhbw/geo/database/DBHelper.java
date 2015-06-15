@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     // reference to the helper instance
     private static DBHelper helper;
 
-    private static final int DB_VERSION = 16;
+    private static final int DB_VERSION = 17;
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";
@@ -122,26 +122,31 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_ACTION_SIMPLE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_TYPE + " VARCHAR NOT NULL, " +
                 COLUMN_STATUS + " BOOLEAN NOT NULL, " +
+                COLUMN_ACTIVE + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionSound = "CREATE TABLE " + TABLE_ACTION_SOUND + " ( " +
                 COLUMN_ACTION_SOUND_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_TYPE + " VARCHAR NOT NULL, " +
                 COLUMN_STATUS + " VARCHAR NOT NULL, " +
                 COLUMN_VOLUME + " INTEGER, " +
+                COLUMN_ACTIVE + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionBrightness = "CREATE TABLE " + TABLE_ACTION_BRIGHTNESS + " ( " +
                 COLUMN_ACTION_BRIGHTNESS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_AUTOMATIC + " BOOLEAN NOT NULL," +
                 COLUMN_VALUE + " INTEGER, " +
+                COLUMN_ACTIVE + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionNotification = "CREATE TABLE " + TABLE_ACTION_NOTIFICATION + " ( " +
                 COLUMN_ACTION_NOTIFICATION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_MESSAGE + " TEXT NOT NULL, " +
+                COLUMN_ACTIVE + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableActionMessage = "CREATE TABLE " + TABLE_ACTION_MESSAGE + " ( " +
                 COLUMN_ACTION_MESSAGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NUMBER + " VARCHAR NOT NULL, " +
                 COLUMN_MESSAGE + " TEXT NOT NULL, " +
+                COLUMN_ACTIVE + " BOOLEAN NOT NULL, " +
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableConditionFence = "CREATE TABLE " + TABLE_CONDITION_FENCE + " ( " +
                 COLUMN_CONDITION_FENCE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

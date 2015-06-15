@@ -1,5 +1,6 @@
 package org.dhbw.geo.hardware;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
@@ -15,7 +16,7 @@ public class HardwareController {
     private Context context;
 
     private HardwareController() {
-        context = MainActivity.getContext();
+       context = MainActivity.getContext();
     }
 
     public static HardwareController getInstance() {
@@ -46,7 +47,7 @@ public class HardwareController {
         wifiManager.setWifiEnabled(newStatus);
     }
 
-    public boolean getStatus(int stream) {
+    public boolean getAudioStatus(int stream) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         return audioManager.getStreamVolume(stream) != 0;
     }
@@ -56,9 +57,24 @@ public class HardwareController {
      * @param stream Stream ID: AudioManager.STREAM_MUSIC, AudioManager.STREAM_RING, AudioManager.STREAM_ALARM
      * @param status true for sound on, false for mute
      */
-    public void setStatus(int stream, boolean status) {
+    public void setAudioStatus(int stream, boolean status) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         audioManager.setStreamMute(stream, status); //Set mute or unmute
     }
+
+    public boolean getBluetoothStatus() {
+        return BluetoothAdapter.getDefaultAdapter().isEnabled();
+    }
+
+    public void setBluetoothStatus(boolean status) {
+        if (status == true && getBluetoothStatus() == false) {
+            BluetoothAdapter.getDefaultAdapter().enable();
+        }
+        else if (status == false && getBluetoothStatus() == true) {
+            BluetoothAdapter.getDefaultAdapter().disable();
+        }
+    }
+
+
 
 }
