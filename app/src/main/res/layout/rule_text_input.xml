@@ -15,7 +15,7 @@
         android:id="@+id/RowContainer">
 
         <TextView
-            android:id="@+id/textinput_text"
+            android:id="@+id/textInput_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="5dp"
@@ -35,12 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rule_textInput"
-        android:enabled="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:editable="false"
-        android:clickable="true"
-        android:inputType="textNoSuggestions|textLongMessage|textMultiLine" />
+        android:inputType="textMultiLine" />
 
     <View
         android:layout_width="fill_parent"
