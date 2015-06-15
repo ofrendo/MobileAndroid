@@ -227,13 +227,13 @@ public class MainActivity extends ActionBarActivity {
         msg.setNumber("01732541521");
         msg.setMessage("Hallo Matthias!");
         rule.addAction(msg);
-        msg.writeToDB();
-        /*DBActionSimple bt = new DBActionSimple();
+        msg.writeToDB();*/
+        DBActionSimple bt = new DBActionSimple();
         bt.setType(DBActionSimple.TYPE_BLUETOOTH);
         bt.setStatus(true);
         bt.setActive(true);
         rule.addAction(bt);
-        bt.writeToDB();*/
+        bt.writeToDB();
         DBActionSound sound = new DBActionSound();
         sound.setActive(true);
         sound.setType(AudioManager.STREAM_MUSIC);
