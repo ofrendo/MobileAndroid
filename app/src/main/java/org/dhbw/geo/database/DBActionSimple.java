@@ -3,6 +3,9 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import org.dhbw.geo.hardware.HardwareController;
 
 import java.util.ArrayList;
 
@@ -64,7 +67,13 @@ public class DBActionSimple extends DBAction {
 
     @Override
     public void performAction() {
-
+        switch(type){
+            case TYPE_WIFI:
+                HardwareController.getInstance().setWifi(status);
+                break;
+            default:
+                Log.d("DBActionSimple", "Invalid type!");
+        }
     }
 
     public DBActionSimple(long id, String type, boolean status){

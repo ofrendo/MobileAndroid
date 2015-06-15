@@ -4,6 +4,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 
+import org.dhbw.geo.ui.MainActivity;
+
 /**
  * Created by Oliver on 23.05.2015.
  */
@@ -13,7 +15,7 @@ public class HardwareController {
     private Context context;
 
     private HardwareController() {
-
+        context = MainActivity.getContext();
     }
 
     public static HardwareController getInstance() {
