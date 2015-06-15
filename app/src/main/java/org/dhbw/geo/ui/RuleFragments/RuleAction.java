@@ -11,10 +11,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 
-import org.dhbw.geo.ListView.Child;
-import org.dhbw.geo.ListView.Group;
-import org.dhbw.geo.ListView.MyExpandableListAdapter;
+import org.dhbw.geo.ui.ListView.Bluetooth;
+import org.dhbw.geo.ui.ListView.Child;
+import org.dhbw.geo.ui.ListView.Group;
+import org.dhbw.geo.ui.ListView.Message;
+import org.dhbw.geo.ui.ListView.MyExpandableListAdapter;
 import org.dhbw.geo.R;
+import org.dhbw.geo.ui.ListView.Notification;
+import org.dhbw.geo.ui.ListView.Sound;
+import org.dhbw.geo.ui.ListView.WLAN;
 
 import java.util.ArrayList;
 
@@ -161,7 +166,16 @@ public class RuleAction extends Fragment {
             }
             groups.append(j, group);
         }*/
+        if (groups.size()!=0){
+            return;
+        }
+        groups.add(new Message());
+        groups.add(new Notification());
+        groups.add(new WLAN());
+        groups.add(new Bluetooth());
+        //groups.add(new Sound());
 
+        /*
         Group group = new Group ("Wlan");
         group.add(new Child("Active", true,true));
         group.add(new Child("Status",true,false));
@@ -186,7 +200,7 @@ public class RuleAction extends Fragment {
         group4.add(new Child("active", true,true));
         group4.add(new Child("status", true,false));
         groups.add(group3);
-        groups.add(group4);
+        groups.add(group4);*/
     }
 
 }

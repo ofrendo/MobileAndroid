@@ -1,24 +1,21 @@
-package org.dhbw.geo.ListView;
+package org.dhbw.geo.ui.ListView;
 
 /**
  * Created by Joern on 05.06.2015.
  */
-import android.graphics.Color;
-
-import org.dhbw.geo.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
 
-    public String string;
+    public String name;
     public final List<Child> children = new ArrayList<Child>();
     public boolean active = false;
 
 
-    public Group(String string) {
-        this.string = string;
+    public Group(String name) {
+        this.name = name;
     }
     public void add(Child child){
         children.add(child);
@@ -27,12 +24,15 @@ public class Group {
         this.active = active;
     }
 
+    public void saveToDB(){
+        return;
+    };
 
     public ArrayList<String> getActions(){
         if (active){
             ArrayList<String> list = new ArrayList<String>();
             for (int i = 0; i<children.size();i++){
-                list.add(string+" : "+children.get(i).getAction());
+                list.add(name+" : "+children.get(i).getAction());
             }
             return list;
         }

@@ -1,6 +1,5 @@
-package org.dhbw.geo.ListView;
+package org.dhbw.geo.ui.ListView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
