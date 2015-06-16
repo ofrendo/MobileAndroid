@@ -43,7 +43,8 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private ArrayList mGeofenceList = new ArrayList();
     private static final TestLocation[] testLocations = new TestLocation[] {
             new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10),
-            new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 10)
+            new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 10),
+            new TestLocation( new LatLng(49.43014, 8.52921), "HomeSweetHome", 10)
     };
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -176,6 +177,13 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 .setCircularRegion(testLocations[1].getLocation().latitude, testLocations[1].getLocation().longitude, 10)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations[2].getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
+                .setCircularRegion(testLocations[2].getLocation().latitude, testLocations[2].getLocation().longitude, 1000)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setLoiteringDelay(5000)
+                .build());
     }
 
 
@@ -187,7 +195,8 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private PendingIntent getGeofencePendingIntent(){
-        if (mGeofencePendingIntent != null){
+        Log.d("Maps", "getGEofencePendingIntent triggered!");
+        if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(this, GeofenceTransistionsIntentService.class);
