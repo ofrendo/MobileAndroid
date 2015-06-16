@@ -6,6 +6,7 @@ package org.dhbw.geo.ui.ListView;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -117,8 +118,8 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                 radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        int checkedIndex = (checkedId-1) % childObject.options.size();
-                        Log.i(tag,childObject.name + "selected  to "+ childObject.options.get(checkedIndex));
+                        int checkedIndex = (checkedId - 1) % childObject.options.size();
+                        Log.i(tag, childObject.name + "selected  to " + childObject.options.get(checkedIndex));
                         childObject.selectedOption = childObject.options.get(checkedIndex);
                     }
                 });
@@ -129,7 +130,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                 convertView = inflater.inflate(R.layout.rule_slider, null);
                 SeekBar slider = (SeekBar) convertView.findViewById(R.id.rule_slider);
                 slider.setMax(childObject.range);
-                slider.setProgress(childObject.value-childObject.min);
+                slider.setProgress(childObject.value - childObject.min);
 
                 final TextView actual = (TextView) convertView.findViewById(R.id.slider_count);
                 actual.setText(""+childObject.value);
@@ -164,10 +165,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
                 final EditText input = (EditText) convertView.findViewById(R.id.rule_textInput);
                 input.setText(childObject.text);
-
-
-
-
 
 
 
