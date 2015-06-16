@@ -2,10 +2,11 @@ package org.dhbw.geo.Map;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SyncStatusObserver;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,33 +18,38 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingApi;
 import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.hardware.NotificationFactory;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //Geofencing
     private PendingIntent mGeofencePendingIntent;
     private ArrayList mGeofenceList = new ArrayList();
     private static final TestLocation[] testLocations = new TestLocation[] {
-            new TestLocation(new LatLng(49.474225, 8.534489), new String("DHBW Mannheim, BW"), 50),
-            new TestLocation( new LatLng(49.540980, 8.660827), new String("Weinheim, BW"), 50)
+            new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10),
+            new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 10)
     };
     private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
+    Circle circle;
+    Circle circlee;
 
 
     @Override
@@ -61,18 +67,28 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
 
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void setUpSeekerBar() {
         SeekBar radius = (SeekBar) findViewById(R.id.map_radius_seekbar);
         radius.setProgress(testLocations[0].getRadius());
+        setTextViewSeekbarText(testLocations[0].getRadius());
         radius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                TextView radiusText = (TextView) findViewById(R.id.map_radius);
-                Log.d("Maps/Seekbar", String.valueOf(progress));
-                radiusText.setText(String.valueOf(progress));
+                setTextViewSeekbarText(progress);
             }
 
             @Override
@@ -87,27 +103,18 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         });
     }
 
+    private void setTextViewSeekbarText(int progress) {
+        TextView radiusText = (TextView) findViewById(R.id.map_radius);
+        Log.d("Maps/Seekbar", String.valueOf(progress));
+        radiusText.setText(String.valueOf(progress));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         getUpMap();
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void getUpMap() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -121,35 +128,54 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(49.540980, 8.660827), 10));
-        Drawable iconDrawable = getResources().getDrawable(R.drawable.ic_play_light);
-        Bitmap iconBitmap = ((BitmapDrawable) iconDrawable).getBitmap();
-        mMap.addMarker(new MarkerOptions().position(testLocations[0].getLocation()).title(testLocations[0].getName()));
-        mMap.addMarker(new MarkerOptions().position(testLocations[1].getLocation()).title(testLocations[1].getName()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(49.474218, 8.534139), 17));
+        mMap.addMarker(new MarkerOptions()
+                .position(testLocations[0].getLocation())
+                .title(testLocations[0].getName())
+                .draggable(true));
+        circle = mMap.addCircle(new CircleOptions()
+                .center(testLocations[0].getLocation())
+                .radius(testLocations[0].getRadius())
+                .strokeColor(Color.RED)
+                );
+        mMap.addMarker(new MarkerOptions()
+                .position(testLocations[1].getLocation())
+                .title(testLocations[1].getName())
+                .draggable(true));
+        circlee = mMap.addCircle(new CircleOptions()
+                .center(testLocations[1].getLocation())
+                .radius(testLocations[1].getRadius())
+                .strokeColor(Color.RED));
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMarkerDragListener(this);
         //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
     private void startGeofencing(){
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations[0].getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .setCircularRegion(testLocations[0].getLocation().latitude, testLocations[0].getLocation().longitude, 50)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-
+        setUpGeofenceList();
         LocationServices.GeofencingApi.addGeofences(
                 mGoogleApiClient,
                 getGeofencingRequest(),
                 getGeofencePendingIntent()
         ).setResultCallback(this);
 
+    }
+
+    private void setUpGeofenceList() {
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations[0].getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations[0].getLocation().latitude, testLocations[0].getLocation().longitude, 10)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build());
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations[1].getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations[1].getLocation().latitude, testLocations[1].getLocation().longitude, 10)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build());
     }
 
 
@@ -165,18 +191,28 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             return mGeofencePendingIntent;
         }
         Intent intent = new Intent(this, GeofenceTransistionsIntentService.class);
+        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return mGeofencePendingIntent;
+    }
 
-        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    private void startLocationUpdates() {
+        createLocationRequest();
+
     }
 
     @Override
     public void onResult(Status status) {
-        Log.e("Maps/geofancing/Log", "Test-Callback-Log-Scheiss");
-    }
+        Log.e("Maps/geofancing/Log", "Status = " + status.getStatus());
+        }
 
     @Override
     public void onConnected(Bundle bundle) {
+        mMap.setMyLocationEnabled(true);
         Log.e("Maps/GoogleAp/conn", "Connection succ");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        Log.e("Maps/googleAp/LaLo", String.valueOf(mLastLocation.getLatitude()) + ", " + String.valueOf(mLastLocation.getLongitude()));
+        startLocationUpdates();
         startGeofencing();
     }
 
@@ -188,5 +224,47 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e("Maps/GoogleApi/connFail", "Connection failed");
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        NotificationFactory.createNotification(this, "Test Map Marker", marker.getId(), false);
+        return false;
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        //create new marker
+        NotificationFactory.createNotification(this, "Test Map Long Click", "Create new Marker", false);
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+      /**  LatLng latLong = marker.getPosition();
+        if (latLong.equals(circle.getCenter())){
+            circle.setCenter(marker.getPosition());
+        }else if (latLong.equals(circlee.getCenter())){
+            circlee.setCenter(marker.getPosition());
+        } **/
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+      /**  LatLng latLong = marker.getPosition();
+        if (latLong.equals(circle.getCenter())){
+            circle.setCenter(marker.getPosition());
+        }else if (latLong.equals(circlee.getCenter())){
+            circlee.setCenter(marker.getPosition());
+        } **/
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+      /**  LatLng latLong = marker.getPosition();
+        if (latLong.equals(circle.getCenter())){
+            circle.setCenter(marker.getPosition());
+        }else if (latLong.equals(circlee.getCenter())){
+            circlee.setCenter(marker.getPosition());
+        } **/
     }
 }
