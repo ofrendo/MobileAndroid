@@ -1,5 +1,6 @@
 package org.dhbw.geo.hardware;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -46,7 +47,12 @@ public class NotificationFactory {
 
         // notificationID allows you to update/remove the notification later on.
         int currentNotificationID = getNextNotificationID();
-        notificationManager.notify(currentNotificationID, mBuilder.build());
+
+        // build the notification and add vibration
+        Notification notification = mBuilder.build();
+        notification.defaults = Notification.DEFAULT_ALL;
+
+        notificationManager.notify(currentNotificationID, notification);
         return currentNotificationID;
     }
 
