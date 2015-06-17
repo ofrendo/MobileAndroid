@@ -12,13 +12,24 @@ import org.dhbw.geo.ui.MainActivity;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias on 12.06.2015.
+ * This action sends a message via the Short Message Service (SMS).
+ * @author Matthias
  */
 public class DBActionMessage extends DBAction {
-
+    /**
+     * the phone number the message shall be sent to
+     */
     private String number;
+    /**
+     * the specific message
+     */
     private String message;
 
+    /**
+     * Selects all message actions from the database which are assigned to a given rule
+     * @param ruleId the id of the rule for which the message actions shall be selected
+     * @return an arraylist of the message actions fetched from the database
+     */
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database
@@ -42,6 +53,11 @@ public class DBActionMessage extends DBAction {
         return actions;
     }
 
+    /**
+     * Selects a specific message action from the database.
+     * @param id the id of the message action
+     * @return the fetched message action
+     */
     public static DBActionMessage selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
@@ -65,6 +81,9 @@ public class DBActionMessage extends DBAction {
 
     }
 
+    /**
+     * Sends the message via SMS.
+     */
     @Override
     protected void doActionStart() {
         // to avoid costs for anybody without a flatrate don't send any SMS!
@@ -74,17 +93,33 @@ public class DBActionMessage extends DBAction {
         NotificationFactory.createNotification(ContextManager.getContext(), "SMS would've been sent to: " + number, message, false);
     }
 
+    /**
+     * Does nothing. There is nothing to be undone when the rule's conditions aren't fulfilled anymore.
+     */
     @Override
     protected void doActionStop() {
-        // nothing to do here as it is a one time action
+
     }
 
+    /**
+     * Creates a new message action.
+     * Use this to create message actions fetched from the database.
+     * @param id the message id
+     * @param number the phone number
+     * @param message the message
+     * @param active the flag whether the action is active
+     */
     public DBActionMessage(long id, String number, String message, boolean active){
         super(id, active);
         this.number = number;
         this.message = message;
     }
 
+    /**
+     * Inserts the message action into the database.
+     * @param db the reference to the sqlite database
+     * @return the id of the inserted message action
+     */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -95,6 +130,10 @@ public class DBActionMessage extends DBAction {
         return db.insert(DBHelper.TABLE_ACTION_MESSAGE, null, values);
     }
 
+    /**
+     * Updates the message action on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -107,6 +146,9 @@ public class DBActionMessage extends DBAction {
         db.update(DBHelper.TABLE_ACTION_MESSAGE, values, where, whereArgs);
     }
 
+    /**
+     * Deletes the message action from the database.
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();

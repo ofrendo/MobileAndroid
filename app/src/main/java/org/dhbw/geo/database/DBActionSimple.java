@@ -10,16 +10,27 @@ import org.dhbw.geo.hardware.HardwareController;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias on 11.06.2015.
+ * This class is used for simple actions which just contain one setting which can only be turned on or off.
+ * At the current point it supports the following settings: WiFi, Bluetooth.
+ * @author Matthias
  */
 public class DBActionSimple extends DBAction {
-
-    public static final String TYPE_WIFI = "wifi";    // turn wifi on / off
+    public static final String TYPE_WIFI = "wifi";              // turn wifi on / off
     public static final String TYPE_BLUETOOTH = "bluetooth";    // turn bluetooth on / off
-
+    /**
+     * the setting which shall be turned on / off
+     */
     private String type;
+    /**
+     * the flag whether to turn the setting on (true) or off (false)
+     */
     private boolean status;
 
+    /**
+     * Selects all simple actions from the database which are assigned to a given rule.
+     * @param ruleId the id of the rule for which the simple actions shall be selected
+     * @return an arraylist of the simple actions fetched from the database
+     */
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database
@@ -43,6 +54,11 @@ public class DBActionSimple extends DBAction {
         return actions;
     }
 
+    /**
+     * Selects a specific simple action from the database.
+     * @param id the id of the simple action
+     * @return the fetched simple action
+     */
     public static DBActionSimple selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
@@ -66,6 +82,9 @@ public class DBActionSimple extends DBAction {
 
     }
 
+    /**
+     * turns on ({@link #status}: true) / off ({@link #status}: false) the setting ({@link #type})
+     */
     @Override
     protected void doActionStart() {
         switch(type){
@@ -80,6 +99,9 @@ public class DBActionSimple extends DBAction {
         }
     }
 
+    /**
+     * turns on ({@link #status}: false) / off ({@link #status}: true) the setting ({@link #type}) when the rule's conditions aren't fulfilled anymore
+     */
     @Override
     protected void doActionStop() {
         switch(type){
@@ -94,12 +116,25 @@ public class DBActionSimple extends DBAction {
         }
     }
 
+    /**
+     * Creates a new simple action.
+     * Use this to create notification actions fetched from the database.
+     * @param id the id of the simple action
+     * @param type the type of the action
+     * @param status the status of the action
+     * @param active the flag whether the action is active
+     */
     public DBActionSimple(long id, String type, boolean status, boolean active){
         super(id, active);
         this.type = type;
         this.status = status;
     }
 
+    /**
+     * Inserts the simple action into the database.
+     * @param db the reference to the sqlite database
+     * @return the id of the inserted simple action
+     */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -110,6 +145,10 @@ public class DBActionSimple extends DBAction {
         return db.insert(DBHelper.TABLE_ACTION_SIMPLE, null, values);
     }
 
+    /**
+     * Updates the simple action on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -122,6 +161,9 @@ public class DBActionSimple extends DBAction {
         db.update(DBHelper.TABLE_ACTION_SIMPLE, values, where, whereArgs);
     }
 
+    /**
+     * Deletes the simple action from the database.
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();

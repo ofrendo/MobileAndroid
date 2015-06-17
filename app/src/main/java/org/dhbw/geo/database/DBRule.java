@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 /**
  * Created by Matthias on 12.05.2015.
+ * TODO: documentation!
  */
 public class DBRule extends DBObject {
 
@@ -172,7 +173,6 @@ public class DBRule extends DBObject {
         // load all conditions in case they aren't loaded
         loadAllConditions();
         // check all conditions
-        // TODO: implement this!
         HashMap<String, Boolean> classes = new HashMap<>();
         for(int i = 0; i < conditions.size(); i++){
             DBCondition condition = conditions.get(i);

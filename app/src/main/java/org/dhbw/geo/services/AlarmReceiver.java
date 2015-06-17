@@ -13,6 +13,7 @@ import java.util.Calendar;
 
 /**
  * Created by Matthias on 17.06.2015.
+ * TODO: documentation!
  */
 public class AlarmReceiver extends WakefulBroadcastReceiver {
 

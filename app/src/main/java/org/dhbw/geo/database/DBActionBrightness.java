@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias on 12.06.2015.
+ * Won't be used anymore.
+ * @deprecated
  */
 public class DBActionBrightness extends DBAction {
 

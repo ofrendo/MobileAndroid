@@ -9,7 +9,8 @@ import org.dhbw.geo.hardware.HardwareController;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias on 12.06.2015.
+ * This action sets the sound setting for a specific audio stream.
+ * @author Matthias
  */
 public class DBActionSound extends DBAction {
     // the sound types are now used from class AudioManager
@@ -19,10 +20,28 @@ public class DBActionSound extends DBAction {
     //public static final String STATUS_VIBRATE = "Vibrate";
     public static final String STATUS_MUTE = "Mute";
 
+    /**
+     * the type of the audio stream. Types are defined in AudioManager (android class).
+     */
     private int type;
+    /**
+     * the type of the sound. Can be Sound or Mute at the current time
+     */
     private String status;
+    /**
+     * the volume setting for the audio stream
+     */
     private int volume;
 
+    /**
+     * Creates a new sound action.
+     * Use this to create sound actions fetched from the database.
+     * @param id the id of the sound action
+     * @param type the type of the sound action
+     * @param status the status of the sound action
+     * @param volume the volume of the sound action
+     * @param active the flag whether the sound action is active
+     */
     public DBActionSound(long id, int type, String status, int volume, boolean active) {
         super(id, active);
         this.type = type;
@@ -34,6 +53,9 @@ public class DBActionSound extends DBAction {
 
     }
 
+    /**
+     * Sets the audio status and the volume.
+     */
     @Override
     protected void doActionStart() {
         // set audio status
@@ -46,14 +68,22 @@ public class DBActionSound extends DBAction {
                 break;
         }
         // set volume
-
+        // TODO: set volume!
     }
 
+    /**
+     * TODO: fill JavaDoc
+     */
     @Override
     protected void doActionStop() {
         // TODO: discuss what to do here!! (dilemma?)
     }
 
+    /**
+     * Selects all sound actions from the database which are assigned to a given rule.
+     * @param ruleId the id of the rule for which the sound actions shall be selected
+     * @return an arraylist of the sound actions fetched from the database
+     */
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){
         ArrayList<DBAction> actions = new ArrayList<DBAction>();
         // read from database
@@ -78,6 +108,11 @@ public class DBActionSound extends DBAction {
         return actions;
     }
 
+    /**
+     * Selects a specific sound action from the database.
+     * @param id the id of the sound action
+     * @return the fetched sound action
+     */
     public static DBActionSound selectFromDB(long id){
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
@@ -98,6 +133,11 @@ public class DBActionSound extends DBAction {
         return action;
     }
 
+    /**
+     * Inserts the sound action into the database.
+     * @param db the reference to the sqlite database
+     * @return the id of the inserted sound action
+     */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -109,6 +149,10 @@ public class DBActionSound extends DBAction {
         return db.insert(DBHelper.TABLE_ACTION_SOUND, null, values);
     }
 
+    /**
+     * Updates the sound action on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -122,6 +166,9 @@ public class DBActionSound extends DBAction {
         db.update(DBHelper.TABLE_ACTION_SOUND, values, where, whereArgs);
     }
 
+    /**
+     * Deletes the sound action from the database.
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();

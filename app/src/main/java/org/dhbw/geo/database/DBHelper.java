@@ -11,6 +11,7 @@ import org.dhbw.geo.ui.MainActivity;
 
 /**
  * Created by Matthias on 08.05.2015.
+ * TODO: documentation!
  */
 public class DBHelper extends SQLiteOpenHelper {
     // reference to the helper instance

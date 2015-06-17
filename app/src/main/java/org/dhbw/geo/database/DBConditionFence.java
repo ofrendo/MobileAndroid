@@ -7,16 +7,27 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias on 12.06.2015.
+ * A geofence condition is a set of geofences which are observed.
+ * @author Matthias
  */
 public class DBConditionFence extends DBCondition {
     public static final String TYPE_ENTER = "Enter";   // The condition is triggered when you enter one of the geofences
     public static final String TYPE_LEAVE = "Leave";   // The condition is triggered when you leave one of the geofences
     public static final String TYPE_STAY = "Stay";     // The condition is triggered when you stay in the geofence
-
+    /**
+     * the type of the geofences. Can be Enter, Leave or Stay
+     */
     private String type;
+    /**
+     * a list of all observed geofences for this condition
+     */
     private ArrayList<DBFence> fences = new ArrayList<DBFence>();
 
+    /**
+     * Selects all geofence conditions from the database which are assigned to a given rule.
+     * @param ruleId the id of the rule for which the geofence conditions shall be selected
+     * @return an arraylist of the geofence conditions fetched from the database
+     */
     public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
         ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
         // read from database
@@ -37,6 +48,11 @@ public class DBConditionFence extends DBCondition {
         return conditions;
     }
 
+    /**
+     * Selects a specific geofence condition from the database.
+     * @param id the id of the geofence condition
+     * @return the geofence condition fetched from the database
+     */
     public static DBConditionFence selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
@@ -60,21 +76,40 @@ public class DBConditionFence extends DBCondition {
         this.type = TYPE_ENTER; // set a default type
     }
 
+    /**
+     * Creates a new geofence condition.
+     * Use this to create geofence conditions fetched from the databse
+     * @param id the id of the geofence
+     * @param name the name of the geofence
+     * @param type the type of the geofence
+     */
     public DBConditionFence(long id, String name, String type){
         super(id, name);
         this.type = type;
     }
 
+    /**
+     * Adds a geofence to the condition
+     * @param fence the geofence to be added
+     */
     public void addFence(DBFence fence){
         fences.add(fence);
         fence.setConditionFence(this);
     }
 
+    /**
+     * removes a geofence from the condition
+     * @param fence the geofence to be removed
+     */
     public void removeFence(DBFence fence){
         fences.remove(fence);
         fence.setConditionFence(null);
     }
 
+    /**
+     * Loads all geofences of the condition from the database.
+     * It only calls the database, if no geofences are loaded to the condition yet.
+     */
     public void loadAllFences() {
         if (fences.size() == 0) {
             return; // don't load fences if they are already loaded!
@@ -86,6 +121,11 @@ public class DBConditionFence extends DBCondition {
         }
     }
 
+    /**
+     * Inserts the geofence condition into the database.
+     * @param db the reference to the sqlite database
+     * @return the id of the inserted geofence condition
+     */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -94,6 +134,10 @@ public class DBConditionFence extends DBCondition {
         return db.insert(DBHelper.TABLE_CONDITION_FENCE, null, values);
     }
 
+    /**
+     * Updates the geofence condition on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -104,6 +148,9 @@ public class DBConditionFence extends DBCondition {
         db.update(DBHelper.TABLE_CONDITION_FENCE, values, where, whereArgs);
     }
 
+    /**
+     * Deletes the geofence condition from the database.
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -113,6 +160,10 @@ public class DBConditionFence extends DBCondition {
         db.delete(DBHelper.TABLE_CONDITION_FENCE, where, whereArgs);
     }
 
+    /**
+     * Removes the conjunction to the rule.
+     * This doesn't delete the rule or the condition either.
+     */
     @Override
     public void removeRuleFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -121,6 +172,9 @@ public class DBConditionFence extends DBCondition {
         db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
     }
 
+    /**
+     * Inserts the conjunction of the condition with the assigned rule
+     */
     @Override
     protected void writeRuleToDB() {
         removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
@@ -131,6 +185,11 @@ public class DBConditionFence extends DBCondition {
         db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
     }
 
+    /**
+     * Checks whether the condition is fulfilled.
+     * It is fulfilled, if the cell phone is in any geofence ({@link #type}: Enter) or in none ({@link #type}: Leave)
+     * @return true if the condition is fulfilled, false otherwise
+     */
     @Override
     public boolean isConditionMet() {
         // TODO: implement this!

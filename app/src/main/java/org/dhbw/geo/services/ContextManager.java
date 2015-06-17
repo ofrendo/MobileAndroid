@@ -5,6 +5,7 @@ import android.util.Log;
 
 /**
  * Created by Matthias on 17.06.2015.
+ * TODO: documentation!
  */
 public class ContextManager {
     private static Context context;

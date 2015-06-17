@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 
 /**
  * Created by Matthias on 17.06.2015.
+ * TODO: documentation!
  */
 public class AutoStart extends BroadcastReceiver {
 
@@ -15,7 +16,8 @@ public class AutoStart extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
-            // stuff to do on autostart
+            // TODO: set geofences for all rules
+            // TODO: set alarms for all rules
         }
     }
 

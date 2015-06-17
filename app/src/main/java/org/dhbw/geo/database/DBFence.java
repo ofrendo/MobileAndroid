@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Matthias on 12.06.2015.
+ * TODO: documentation!
  */
 public class DBFence extends DBObject {
 
