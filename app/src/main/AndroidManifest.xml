@@ -57,6 +57,16 @@
             android:name=".Map.Maps"
             android:label="@string/title_activity_maps" >
         </activity>
+
+        <receiver android:name=".services.AlarmReceiver"></receiver>
+
+        <receiver android:name=".services.AutoStart"
+                  android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <service android:name=".services.CheckConditionService" />
     </application>
 
 </manifest>
