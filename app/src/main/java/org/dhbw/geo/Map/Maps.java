@@ -34,6 +34,7 @@ import org.dhbw.geo.R;
 import org.dhbw.geo.hardware.NotificationFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
 
@@ -43,12 +44,13 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private ArrayList mGeofenceList = new ArrayList();
     private static final TestLocation[] testLocations = new TestLocation[] {
             new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10),
-            new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 10),
+            new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 30),
             new TestLocation( new LatLng(49.43014, 8.52921), "HomeSweetHome", 10)
     };
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
+    private HashMap<String, String> MarkerCircelMap;
     Circle circle;
     Circle circlee;
 
@@ -130,16 +132,23 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void setUpMap() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(49.474218, 8.534139), 17));
-        mMap.addMarker(new MarkerOptions()
+        addMarkerToMap();
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMarkerDragListener(this);
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    private void addMarkerToMap() {
+        Marker m = mMap.addMarker(new MarkerOptions()
                 .position(testLocations[0].getLocation())
                 .title(testLocations[0].getName())
                 .draggable(true));
         circle = mMap.addCircle(new CircleOptions()
-                .center(testLocations[0].getLocation())
-                .radius(testLocations[0].getRadius())
-                .strokeColor(Color.RED)
-                );
+                        .center(testLocations[0].getLocation())
+                        .radius(testLocations[0].getRadius())
+                        .strokeColor(Color.RED)
+        );
         mMap.addMarker(new MarkerOptions()
                 .position(testLocations[1].getLocation())
                 .title(testLocations[1].getName())
@@ -148,10 +157,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 .center(testLocations[1].getLocation())
                 .radius(testLocations[1].getRadius())
                 .strokeColor(Color.RED));
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnMapLongClickListener(this);
-        mMap.setOnMarkerDragListener(this);
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
     private void startGeofencing(){
@@ -174,7 +179,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mGeofenceList.add(new Geofence.Builder()
                 .setRequestId(testLocations[1].getName())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations[1].getLocation().latitude, testLocations[1].getLocation().longitude, 10)
+                .setCircularRegion(testLocations[1].getLocation().latitude, testLocations[1].getLocation().longitude, testLocations[1].getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
         mGeofenceList.add(new Geofence.Builder()
@@ -220,9 +225,14 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         Log.e("Maps/GoogleAp/conn", "Connection succ");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
+        setCameraFocus(mLastLocation);
         Log.e("Maps/googleAp/LaLo", String.valueOf(mLastLocation.getLatitude()) + ", " + String.valueOf(mLastLocation.getLongitude()));
         startLocationUpdates();
         startGeofencing();
+    }
+
+    private void setCameraFocus(Location mLastLocation) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15));
     }
 
     @Override
