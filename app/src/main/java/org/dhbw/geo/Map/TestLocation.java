@@ -27,4 +27,18 @@ public class TestLocation {
     public int getRadius(){
         return radius;
     }
+
+    public void setRadius(int radius){
+        this.radius = radius;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 }
