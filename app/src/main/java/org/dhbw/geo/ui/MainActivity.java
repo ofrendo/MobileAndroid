@@ -251,8 +251,8 @@ public class MainActivity extends ActionBarActivity {
         alarmRule.writeToDB();
         DBConditionTime alarm = new DBConditionTime();
         alarm.addDay(Calendar.TUESDAY);
-        alarm.addDay(Calendar.MONDAY);
-        alarm.setStart(2, 0);
+        alarm.addDay(Calendar.WEDNESDAY);
+        alarm.setStart(16, 48);
         alarmRule.addCondition(alarm);
         alarm.writeToDB();
         DBActionNotification notification = new DBActionNotification();

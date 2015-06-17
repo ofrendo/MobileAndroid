@@ -71,6 +71,27 @@ public class DBConditionTime extends DBCondition {
         this.end.setTimeInMillis(end);
     }
 
+    private int getNextDay(int startDay){
+        int dayNext = -1;
+        int count = 0;
+        while(dayNext == -1 && count < 7){
+            int day = ((startDay + count - 1) % 7) + 1;
+            if(days.contains(day)){
+                dayNext = day;
+            }
+            count++;
+        }
+        return dayNext;
+    }
+
+    private int getDaysDifference(int day1, int day2){
+        int diff = day2 - day1;
+        if(diff < 0){
+            diff += 7;
+        }
+        return diff;
+    }
+
     private void updateAlarm(){
         // if there is no AlarmReceiver object yet, create one
         if(alarm == null){
@@ -81,21 +102,30 @@ public class DBConditionTime extends DBCondition {
             // set the day to the next weekday in the list
             // TODO: auch die uhrzeit mit einberechnen (ist die zeit für "heute" schon abgelaufen oder nicht) & calendar-werte (start + end) updaten!
             Calendar now = Calendar.getInstance();
+            Calendar alarm = Calendar.getInstance();
+            alarm.set(Calendar.HOUR_OF_DAY, getStart().get(Calendar.HOUR_OF_DAY));
+            alarm.set(Calendar.MINUTE, getStart().get(Calendar.MINUTE));
             int dayNow = now.get(Calendar.DAY_OF_WEEK);
-            int dayNext = -1;
-            int count = 0;
-            while(dayNext == -1 && count < 7){
-                int day = ((dayNow + count - 1) % 7) + 1;
-                if(days.contains(day)){
-                    dayNext = day;
+            // get the next workday in list
+            int dayNext = getNextDay(dayNow);
+            // if the next workday is the same day
+            if(dayNext == dayNow){
+                // if it is already later than the alarm time
+                if(now.getTimeInMillis() > alarm.getTimeInMillis()){
+                    // increase the day to look for by one and find the next day corresponding to that new "dayNow" (which is in fact one day in the future)
+                    dayNext = getNextDay(dayNow % 7 + 1);
                 }
-                count++;
+            }
+            if(dayNext != dayNow){
+                // it is another weekday so just set the alarm to that date
+                alarm.add(Calendar.DATE, getDaysDifference(dayNow, dayNext));
+            } else {
+                // there is just this one weekday, so set Alarm one week in the future
+                alarm.add(Calendar.DATE, 7);
             }
             Log.d("DBConditionTime", "Now: " + String.valueOf(now.get(Calendar.DAY_OF_WEEK)) + "; Next: " + String.valueOf(dayNext));
-            for(int i = 0; i < days.size(); i++){
-
-            }
-            alarm.setAlarm(MainActivity.getContext(), this);
+            // set the alarm
+            this.alarm.setAlarm(MainActivity.getContext(), this);
         }
     }
 
