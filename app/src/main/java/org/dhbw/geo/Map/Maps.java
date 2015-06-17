@@ -45,14 +45,12 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private static final TestLocation[] testLocations = new TestLocation[] {
             new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10),
             new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 30),
-            new TestLocation( new LatLng(49.43014, 8.52921), "HomeSweetHome", 10)
+            new TestLocation( new LatLng(49.543011, 8.663211), "HomeSweetHome", 100)
     };
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
-    private HashMap<String, String> MarkerCircelMap;
-    Circle circle;
-    Circle circlee;
+    private HashMap<String, Circle> MarkerCircelMap;
 
 
     @Override
@@ -65,6 +63,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+        MarkerCircelMap = new HashMap<String, Circle>();
         getUpMap();
         setUpSeekerBar();
     }
@@ -132,7 +131,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void setUpMap() {
-        addMarkerToMap();
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerDragListener(this);
@@ -140,23 +138,20 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void addMarkerToMap() {
-        Marker m = mMap.addMarker(new MarkerOptions()
-                .position(testLocations[0].getLocation())
-                .title(testLocations[0].getName())
-                .draggable(true));
-        circle = mMap.addCircle(new CircleOptions()
-                        .center(testLocations[0].getLocation())
-                        .radius(testLocations[0].getRadius())
-                        .strokeColor(Color.RED)
-        );
-        mMap.addMarker(new MarkerOptions()
-                .position(testLocations[1].getLocation())
-                .title(testLocations[1].getName())
-                .draggable(true));
-        circlee = mMap.addCircle(new CircleOptions()
-                .center(testLocations[1].getLocation())
-                .radius(testLocations[1].getRadius())
-                .strokeColor(Color.RED));
+        for (int i = 0 ; i < mGeofenceList.size(); i++){
+            Marker m = mMap.addMarker(new MarkerOptions()
+                    .position(testLocations[i].getLocation())
+                    .title(testLocations[i].getName())
+                    .draggable(true));
+            Circle circle = mMap.addCircle(new CircleOptions()
+                    .center(testLocations[i].getLocation())
+                    .radius(testLocations[i].getRadius())
+                    .strokeColor(Color.RED));
+            String circleId = circle.getId();
+            String markerId = m.getId();
+            Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
+            MarkerCircelMap.put(m.getId(),circle);
+        }
     }
 
     private void startGeofencing(){
@@ -173,7 +168,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mGeofenceList.add(new Geofence.Builder()
                 .setRequestId(testLocations[0].getName())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations[0].getLocation().latitude, testLocations[0].getLocation().longitude, 10)
+                .setCircularRegion(testLocations[0].getLocation().latitude, testLocations[0].getLocation().longitude, testLocations[0].getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
         mGeofenceList.add(new Geofence.Builder()
@@ -185,10 +180,11 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mGeofenceList.add(new Geofence.Builder()
                 .setRequestId(testLocations[2].getName())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
-                .setCircularRegion(testLocations[2].getLocation().latitude, testLocations[2].getLocation().longitude, 1000)
+                .setCircularRegion(testLocations[2].getLocation().latitude, testLocations[2].getLocation().longitude, testLocations[0].getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setLoiteringDelay(5000)
                 .build());
+        addMarkerToMap();
     }
 
 
@@ -259,31 +255,22 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     @Override
     public void onMarkerDragStart(Marker marker) {
-      /**  LatLng latLong = marker.getPosition();
-        if (latLong.equals(circle.getCenter())){
-            circle.setCenter(marker.getPosition());
-        }else if (latLong.equals(circlee.getCenter())){
-            circlee.setCenter(marker.getPosition());
-        } **/
+        LatLng latLong = marker.getPosition();
+        Circle circle = MarkerCircelMap.get(marker.getId());
+        circle.setCenter(latLong);
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-      /**  LatLng latLong = marker.getPosition();
-        if (latLong.equals(circle.getCenter())){
-            circle.setCenter(marker.getPosition());
-        }else if (latLong.equals(circlee.getCenter())){
-            circlee.setCenter(marker.getPosition());
-        } **/
+        LatLng latLong = marker.getPosition();
+        Circle circle = MarkerCircelMap.get(marker.getId());
+        circle.setCenter(latLong);
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-      /**  LatLng latLong = marker.getPosition();
-        if (latLong.equals(circle.getCenter())){
-            circle.setCenter(marker.getPosition());
-        }else if (latLong.equals(circlee.getCenter())){
-            circlee.setCenter(marker.getPosition());
-        } **/
+        LatLng latLong = marker.getPosition();
+        Circle circle = MarkerCircelMap.get(marker.getId());
+        circle.setCenter(latLong);
     }
 }
