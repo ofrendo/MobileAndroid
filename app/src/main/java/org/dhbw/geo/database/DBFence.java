@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 
 /**
@@ -105,6 +107,11 @@ public class DBFence extends DBObject {
 
     public void setConditionFence(DBConditionFence conditionFence) {
         this.conditionFence = conditionFence;
+    }
+
+    public LatLng getLatLng(){
+        LatLng loc = new LatLng(latitude, longitude);
+        return loc;
     }
 
     public float getLatitude() {
