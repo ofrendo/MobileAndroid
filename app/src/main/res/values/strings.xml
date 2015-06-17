@@ -28,5 +28,7 @@
     <!-- <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyCMoQZYGCB4SYlQmYFIC8WlvLAhuGc0JAA</string> -->
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyB5yE4r6Y8VCaBqn6fCAGmCx7wamcYjLbY</string>
     <string name="mapRadius">Radius</string>
-    <string name="map_unit">KM</string>
+    <string name="map_unit">M</string>
+    <string name="map_marker_name">Name</string>
+    <string name="map_marker_edit_name">Edit Name</string>
 </resources>

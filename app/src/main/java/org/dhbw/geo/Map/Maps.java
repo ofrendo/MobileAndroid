@@ -2,14 +2,13 @@ package org.dhbw.geo.Map;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -36,7 +35,7 @@ import org.dhbw.geo.hardware.NotificationFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener {
+public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //Geofencing
@@ -50,7 +49,16 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
-    private HashMap<String, Circle> MarkerCircelMap;
+    private HashMap<String, Circle> markerCircelMapping;
+    private HashMap<String, TestLocation> markerLocationMapping;
+    private Marker activeMarker;
+    // Marker Options --> Seekbar, change name
+    private SeekBar radius;
+    private TextView radiusText;
+    private TextView radiusTextUnit;
+    private TextView radiusTextDescription;
+    private TextView mapMarkerName;
+    private EditText mapMarkerEditName;
 
 
     @Override
@@ -63,9 +71,20 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
-        MarkerCircelMap = new HashMap<String, Circle>();
+        markerCircelMapping = new HashMap<String, Circle>();
+        markerLocationMapping = new HashMap<String, TestLocation>();
+        getUIObjects();
         getUpMap();
         setUpSeekerBar();
+    }
+
+    private void getUIObjects() {
+        radius = (SeekBar) findViewById(R.id.map_radius_seekbar);
+        radiusText = (TextView) findViewById(R.id.map_radius);
+        radiusTextDescription = (TextView) findViewById(R.id.map_radius_description);
+        radiusTextUnit = (TextView) findViewById(R.id.map_radius_unit);
+        mapMarkerName = (TextView) findViewById(R.id.map_marker_name);
+        mapMarkerEditName = (EditText) findViewById(R.id.map_marker_edit_name);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -84,13 +103,17 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void setUpSeekerBar() {
-        SeekBar radius = (SeekBar) findViewById(R.id.map_radius_seekbar);
         radius.setProgress(testLocations[0].getRadius());
         setTextViewSeekbarText(testLocations[0].getRadius());
         radius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 setTextViewSeekbarText(progress);
+                // change radius
+                Circle circle = markerCircelMapping.get(activeMarker.getId());
+                circle.setRadius(progress);
+                //update database
+                markerLocationMapping.get(activeMarker.getId()).setRadius(progress);
             }
 
             @Override
@@ -106,7 +129,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void setTextViewSeekbarText(int progress) {
-        TextView radiusText = (TextView) findViewById(R.id.map_radius);
         Log.d("Maps/Seekbar", String.valueOf(progress));
         radiusText.setText(String.valueOf(progress));
     }
@@ -134,7 +156,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerDragListener(this);
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        mMap.setOnMapClickListener(this);
     }
 
     private void addMarkerToMap() {
@@ -150,7 +172,26 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             String circleId = circle.getId();
             String markerId = m.getId();
             Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
-            MarkerCircelMap.put(m.getId(),circle);
+            markerCircelMapping.put(m.getId(), circle);
+            markerLocationMapping.put(m.getId(), testLocations[i]);
+        }
+    }
+
+    private void setMarkerChangeVisibility(Boolean visibility){
+        if (visibility){
+            radius.setVisibility(View.VISIBLE);
+            radiusTextUnit.setVisibility(View.VISIBLE);
+            radiusText.setVisibility(View.VISIBLE);
+            radiusTextDescription.setVisibility(View.VISIBLE);
+            mapMarkerName.setVisibility(View.VISIBLE);
+            mapMarkerEditName.setVisibility(View.VISIBLE);
+        }else{
+            radius.setVisibility(View.INVISIBLE);
+            radiusTextUnit.setVisibility(View.INVISIBLE);
+            radiusText.setVisibility(View.INVISIBLE);
+            radiusTextDescription.setVisibility(View.INVISIBLE);
+            mapMarkerName.setVisibility(View.INVISIBLE);
+            mapMarkerEditName.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -244,6 +285,10 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     @Override
     public boolean onMarkerClick(Marker marker) {
         NotificationFactory.createNotification(this, "Test Map Marker", marker.getId(), false);
+        // set Name/Radius visible
+        setMarkerChangeVisibility(true);
+        // Save Marker to change radius
+        activeMarker = marker;
         return false;
     }
 
@@ -251,26 +296,35 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     public void onMapLongClick(LatLng latLng) {
         //create new marker
         NotificationFactory.createNotification(this, "Test Map Long Click", "Create new Marker", false);
+        setMarkerChangeVisibility(true);
     }
 
     @Override
     public void onMarkerDragStart(Marker marker) {
         LatLng latLong = marker.getPosition();
-        Circle circle = MarkerCircelMap.get(marker.getId());
+        Circle circle = markerCircelMapping.get(marker.getId());
         circle.setCenter(latLong);
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
         LatLng latLong = marker.getPosition();
-        Circle circle = MarkerCircelMap.get(marker.getId());
+        Circle circle = markerCircelMapping.get(marker.getId());
         circle.setCenter(latLong);
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
         LatLng latLong = marker.getPosition();
-        Circle circle = MarkerCircelMap.get(marker.getId());
+        Circle circle = markerCircelMapping.get(marker.getId());
         circle.setCenter(latLong);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        // unselect active Marker
+        activeMarker = null;
+        // search possibility to hide progressbar
+        setMarkerChangeVisibility(false);
     }
 }
