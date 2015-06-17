@@ -22,7 +22,7 @@ public class DBConditionFence extends DBCondition {
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String query = "SELECT " +
                 DBHelper.COLUMN_CONDITION_FENCE_ID + ", " +
-                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
                 DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE +
                 " FROM " + DBHelper.TABLE_CONDITION_FENCE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_RULE_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(ruleId)});
@@ -127,6 +127,12 @@ public class DBConditionFence extends DBCondition {
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
         values.put(DBHelper.COLUMN_CONDITION_FENCE_ID, getId());
         db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
+    }
+
+    @Override
+    public boolean isConditionMet() {
+        // TODO: implement this!
+        return false;
     }
 
     public String getType() {

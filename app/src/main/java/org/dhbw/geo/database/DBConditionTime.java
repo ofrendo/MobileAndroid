@@ -27,8 +27,8 @@ public class DBConditionTime extends DBCondition {
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
         String query = "SELECT " +
                 DBHelper.COLUMN_CONDITION_TIME_ID + ", " +
-                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME +
-                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_START + " AS " + DBHelper.COLUMN_START +
+                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
+                DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_START + " AS " + DBHelper.COLUMN_START + ", " +
                 DBHelper.TABLE_CONDITION_TIME + "." + DBHelper.COLUMN_END + " AS " + DBHelper.COLUMN_END +
                 " FROM " + DBHelper.TABLE_CONDITION_TIME + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_RULE_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(ruleId)});
@@ -105,6 +105,7 @@ public class DBConditionTime extends DBCondition {
             Calendar alarm = Calendar.getInstance();
             alarm.set(Calendar.HOUR_OF_DAY, getStart().get(Calendar.HOUR_OF_DAY));
             alarm.set(Calendar.MINUTE, getStart().get(Calendar.MINUTE));
+            alarm.set(Calendar.SECOND, 0);
             int dayNow = now.get(Calendar.DAY_OF_WEEK);
             // get the next workday in list
             int dayNext = getNextDay(dayNow);
@@ -199,6 +200,12 @@ public class DBConditionTime extends DBCondition {
         values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
         values.put(DBHelper.COLUMN_CONDITION_TIME_ID, getId());
         db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
+    }
+
+    @Override
+    public boolean isConditionMet() {
+        // TODO: implement this!
+        return false;
     }
 
     private void insertDayStatusIntoDB(SQLiteDatabase db){

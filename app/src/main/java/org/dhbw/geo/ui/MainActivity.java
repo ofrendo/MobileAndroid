@@ -252,12 +252,14 @@ public class MainActivity extends ActionBarActivity {
         DBConditionTime alarm = new DBConditionTime();
         alarm.addDay(Calendar.TUESDAY);
         alarm.addDay(Calendar.WEDNESDAY);
-        alarm.setStart(17, 06);
+        alarm.setName("Alarm 1");
+        alarm.setStart(17, 51);
         alarmRule.addCondition(alarm);
         alarm.writeToDB();
         DBConditionTime alarm2 = new DBConditionTime();
         alarm2.addDay(Calendar.WEDNESDAY);
-        alarm2.setStart(17, 07);
+        alarm2.setName("Alarm 2");
+        alarm2.setStart(17, 50);
         alarmRule.addCondition(alarm2);
         alarm2.writeToDB();
         DBActionNotification notification = new DBActionNotification();
