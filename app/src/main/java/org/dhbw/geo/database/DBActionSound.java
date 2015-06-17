@@ -35,7 +35,7 @@ public class DBActionSound extends DBAction {
     }
 
     @Override
-    protected void doAction() {
+    protected void doActionStart() {
         // set audio status
         switch (status){
             case STATUS_MUTE:
@@ -47,6 +47,11 @@ public class DBActionSound extends DBAction {
         }
         // set volume
 
+    }
+
+    @Override
+    protected void doActionStop() {
+        // TODO: discuss what to do here!! (dilemma?)
     }
 
     public static ArrayList<DBAction> selectAllFromDB(long ruleId){

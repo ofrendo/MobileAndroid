@@ -1,9 +1,5 @@
 package org.dhbw.geo.database;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -28,11 +24,18 @@ public abstract class DBAction extends DBObject {
 
     }
 
-    protected abstract void doAction();
+    protected abstract void doActionStart();
+    protected abstract void doActionStop();
 
-    public void performAction(){
+    public void startAction(){
         if(active){
-            doAction();
+            doActionStart();
+        }
+    }
+
+    public void stopAction(){
+        if(active){
+            doActionStop();
         }
     }
 

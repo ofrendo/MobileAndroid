@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
-import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBRule;
 
@@ -23,7 +22,7 @@ public class CheckConditionService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent fired!");
-        try {
+        //try {
             // register context
             ContextManager.setContext(this);
             // get the corresponding condition
@@ -38,11 +37,11 @@ public class CheckConditionService extends IntentService {
             // loop through the rules and check whether conditions are met
             for(int i = 0; i < rules.size(); i++){
                 if(rules.get(i).allConditionsMet()){ // if all conditions are met
-                    rules.get(i).performAllActions();
+                    rules.get(i).startAllActions();
                 }
             }
-        } catch (Exception e){
+        /*} catch (Exception e){
             Log.e(TAG, "Couldn't handle time condition: " + e.getMessage());
-        }
+        }*/
     }
 }

@@ -61,7 +61,12 @@ public class DBActionBrightness extends DBAction {
     }
 
     @Override
-    protected void doAction() {
+    protected void doActionStart() {
+
+    }
+
+    @Override
+    protected void doActionStop() {
 
     }
 

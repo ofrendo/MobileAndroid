@@ -38,6 +38,8 @@ public class DBConditionTime extends DBCondition {
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
             DBConditionTime time = new DBConditionTime(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3));
+            // read weekdays
+            time.loadAllWeekDays();
             conditions.add(time);
             cursor.moveToNext();
         }
@@ -60,6 +62,7 @@ public class DBConditionTime extends DBCondition {
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
         DBConditionTime conditionTime = new DBConditionTime(cursor.getLong(0), cursor.getString(1), cursor.getLong(2), cursor.getLong(3));
+        conditionTime.loadAllWeekDays();
         return conditionTime;
     }
 
@@ -69,8 +72,30 @@ public class DBConditionTime extends DBCondition {
 
     public DBConditionTime(long id, String name, long start, long end){
         super(id, name);
+        this.start = Calendar.getInstance();
         this.start.setTimeInMillis(start);
-        this.end.setTimeInMillis(end);
+        if(end > 0) {
+            this.end = Calendar.getInstance();
+            this.end.setTimeInMillis(end);
+        }
+    }
+
+    public void loadAllWeekDays(){
+        if(days.size() > 0) return;
+        // read from database
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
+        String[] columns = {
+                DBHelper.COLUMN_DAY
+        };
+        String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
+        String[] whereArgs = {String.valueOf(getId())};
+        Cursor cursor = db.query(DBHelper.TABLE_DAY_STATUS, columns, where, whereArgs, null, null, null);
+        // read result
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            days.add(cursor.getInt(0));
+            cursor.moveToNext();
+        }
     }
 
     private int getNextDay(int startDay){
@@ -107,12 +132,14 @@ public class DBConditionTime extends DBCondition {
             alarm.set(Calendar.HOUR_OF_DAY, getStart().get(Calendar.HOUR_OF_DAY));
             alarm.set(Calendar.MINUTE, getStart().get(Calendar.MINUTE));
             alarm.set(Calendar.SECOND, 0);
+            alarm.set(Calendar.MILLISECOND, 0);
             int dayNow = now.get(Calendar.DAY_OF_WEEK);
             // get the next workday in list
             int dayNext = getNextDay(dayNow);
             // if the next workday is the same day
             if(dayNext == dayNow){
                 // if it is already later than the alarm time
+                Log.d(TAG, "Now - alarm = " + String.valueOf(now.getTimeInMillis() - alarm.getTimeInMillis()));
                 if(now.getTimeInMillis() >= alarm.getTimeInMillis()){
                     // increase the day to look for by one and find the next day corresponding to that new "dayNow" (which is in fact one day in the future)
                     dayNext = getNextDay(dayNow % 7 + 1);
@@ -122,11 +149,14 @@ public class DBConditionTime extends DBCondition {
                 // it is another weekday so just set the alarm to that date
                 alarm.add(Calendar.DATE, getDaysDifference(dayNow, dayNext));
             } else {
-                // there is just this one weekday, so set Alarm one week in the future
-                alarm.add(Calendar.DATE, 7);
+                // there is just this one weekday
+                if(now.getTimeInMillis() >= alarm.getTimeInMillis()) {
+                    alarm.add(Calendar.DATE, 7);
+                }
             }
             Log.d("DBConditionTime", "Now: " + String.valueOf(now.get(Calendar.DAY_OF_WEEK)) + "; Next: " + String.valueOf(dayNext));
             // set the alarm
+            this.start = alarm;
             this.alarm.setAlarm(ContextManager.getContext(), this);
         }
     }
@@ -204,6 +234,7 @@ public class DBConditionTime extends DBCondition {
         Calendar now = Calendar.getInstance();
         // check the weekday
         if(!days.contains(now.get(Calendar.DAY_OF_WEEK))){
+            Log.d(TAG, "weekday invalid");
             return false;
         }
         // check the time
@@ -211,14 +242,17 @@ public class DBConditionTime extends DBCondition {
         startTime.set(Calendar.HOUR_OF_DAY, start.get(Calendar.HOUR_OF_DAY));
         startTime.set(Calendar.MINUTE, start.get(Calendar.MINUTE));
         startTime.set(Calendar.SECOND, start.get(Calendar.SECOND));
+        startTime.set(Calendar.MILLISECOND, start.get(Calendar.MILLISECOND));
         if(end != null && (end.get(Calendar.HOUR_OF_DAY) != start.get(Calendar.HOUR_OF_DAY) || end.get(Calendar.MINUTE) != start.get(Calendar.MINUTE))){    // if it is a time frame
             Calendar endTime = Calendar.getInstance();
             endTime.set(Calendar.HOUR_OF_DAY, end.get(Calendar.HOUR_OF_DAY));
             endTime.set(Calendar.MINUTE, end.get(Calendar.MINUTE));
             endTime.set(Calendar.SECOND, end.get(Calendar.SECOND));
+            endTime.set(Calendar.MILLISECOND, end.get(Calendar.MILLISECOND));
             if(startTime.getTimeInMillis() <= now.getTimeInMillis() && now.getTimeInMillis() <= endTime.getTimeInMillis()){
                 return true;
             } else {
+                Log.d(TAG, "time invalid 1; now - start = " + String.valueOf(now.getTimeInMillis()-startTime.getTimeInMillis()) + "; end - now = " + String.valueOf(endTime.getTimeInMillis() - now.getTimeInMillis()));
                 return false;
             }
         } else {            // if it is a single time
@@ -228,6 +262,7 @@ public class DBConditionTime extends DBCondition {
             if(time1 <= now.getTimeInMillis() && now.getTimeInMillis() <= time2){
                 return true;
             } else {
+                Log.d(TAG, "time invalid 2");
                 return false;
             }
         }
@@ -253,29 +288,26 @@ public class DBConditionTime extends DBCondition {
         if(start == null) start = Calendar.getInstance();
         start.set(Calendar.HOUR_OF_DAY, hour);
         start.set(Calendar.MINUTE, minute);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
     }
 
     public void setEnd(int hour, int minute){
         if(end == null) end = Calendar.getInstance();
         end.set(Calendar.HOUR_OF_DAY, hour);
         end.set(Calendar.MINUTE, minute);
+        end.set(Calendar.SECOND, 0);
+        end.set(Calendar.MILLISECOND, 0);
     }
 
     public Calendar getStart() {
         return start;
     }
 
-    public void setStart(Calendar start) {
-        this.start = start;
-    }
-
     public Calendar getEnd() {
         return end;
     }
 
-    public void setEnd(Calendar end) {
-        this.end = end;
-    }
 
     public ArrayList<Integer> getDays(){
         return days;

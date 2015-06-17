@@ -5,12 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Matthias on 12.05.2015.
@@ -45,13 +42,24 @@ public class DBRule extends DBObject {
         action.setRule(this);
     }
 
-    public void performAllActions(){
+    public void startAllActions(){
         // load all actions if there aren't any actions existent
         loadAllActions();
-        // perform all actions if the rule is active
+        // start all actions if the rule is active
         if(active) {
             for (int i = 0; i < actions.size(); i++) {
-                actions.get(i).performAction();
+                actions.get(i).startAction();
+            }
+        }
+    }
+
+    public void stopAllActions(){
+        // load all actions if there aren't any actions existent
+        loadAllActions();
+        // start all actions if the rule is active
+        if(active) {
+            for (int i = 0; i < actions.size(); i++) {
+                actions.get(i).stopAction();
             }
         }
     }
@@ -84,7 +92,6 @@ public class DBRule extends DBObject {
     }
 
     public static ArrayList<DBRule> selectAllFromDB(){
-        // TODO: implement it!
         ArrayList<DBRule> rules = new ArrayList<DBRule>();
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();

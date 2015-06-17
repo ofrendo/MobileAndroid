@@ -62,8 +62,13 @@ public class DBActionNotification extends DBAction {
     }
 
     @Override
-    protected void doAction() {
+    protected void doActionStart() {
         NotificationFactory.createNotification(ContextManager.getContext(), getRule().getName(), message, false);
+    }
+
+    @Override
+    protected void doActionStop() {
+        // Nothing to do here as it is a one time action
     }
 
     public DBActionNotification(long id, String message, boolean active){
