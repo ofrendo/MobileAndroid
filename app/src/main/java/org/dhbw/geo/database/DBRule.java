@@ -71,6 +71,11 @@ public class DBRule extends DBObject {
         db.delete(DBHelper.TABLE_RULE, where, whereArgs);
     }
 
+    public static DBRule selectAllFromDB(){
+        // TODO: implement it!
+        return new DBRule();
+    }
+
     public static DBRule selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();

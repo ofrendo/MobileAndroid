@@ -217,7 +217,7 @@ public class MainActivity extends ActionBarActivity {
         dbHelper.logDB();*/
 
         // test notification
-        DBRule rule = new DBRule();
+        /*DBRule rule = new DBRule();
         rule.setName("Notification Rule");
         rule.setActive(true);
         rule.writeToDB();
@@ -229,7 +229,7 @@ public class MainActivity extends ActionBarActivity {
         msg.setNumber("01732541521");
         msg.setMessage("Hallo Matthias!");
         rule.addAction(msg);
-        msg.writeToDB();*/
+        msg.writeToDB();
         DBActionSimple bt = new DBActionSimple();
         bt.setType(DBActionSimple.TYPE_BLUETOOTH);
         bt.setStatus(true);
@@ -242,7 +242,25 @@ public class MainActivity extends ActionBarActivity {
         sound.setStatus(DBActionSound.STATUS_SOUND);
         rule.addAction(sound);
         sound.writeToDB();
-        rule.performAllActions();
+        rule.performAllActions();*/
+
+        // test alarm
+        DBRule alarmRule = new DBRule();
+        alarmRule.setName("AlarmRule");
+        alarmRule.setActive(true);
+        alarmRule.writeToDB();
+        DBConditionTime alarm = new DBConditionTime();
+        alarm.addDay(Calendar.TUESDAY);
+        alarm.addDay(Calendar.MONDAY);
+        alarm.setStart(2, 0);
+        alarmRule.addCondition(alarm);
+        alarm.writeToDB();
+        DBActionNotification notification = new DBActionNotification();
+        notification.setMessage("Alarm Alarm Alarm!");
+        notification.setActive(true);
+        alarmRule.addAction(notification);
+        notification.writeToDB();
+        alarm.testAlarm();
     }
 
 }

@@ -67,7 +67,7 @@ public class DBActionMessage extends DBAction {
     @Override
     protected void doAction() {
         // to avoid costs for anybody without a flatrate don't send any SMS!
-        // This has to be changed for the final result!
+        // TODO: Change it back!
 
         /* // // SMSFactory.createSMS(number, message);*/
         NotificationFactory.createNotification(MainActivity.getContext(), "SMS would've been sent to: " + number, message, false);

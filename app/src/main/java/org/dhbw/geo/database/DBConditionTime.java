@@ -3,6 +3,10 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import org.dhbw.geo.services.AlarmReceiver;
+import org.dhbw.geo.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,8 +18,8 @@ public class DBConditionTime extends DBCondition {
 
     private Calendar start = Calendar.getInstance();
     private Calendar end = Calendar.getInstance();
-
     private ArrayList<Integer> days = new ArrayList<Integer>();
+    private AlarmReceiver alarm;
 
     public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
         ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
@@ -67,6 +71,39 @@ public class DBConditionTime extends DBCondition {
         this.end.setTimeInMillis(end);
     }
 
+    private void updateAlarm(){
+        // if there is no AlarmReceiver object yet, create one
+        if(alarm == null){
+            alarm = new AlarmReceiver();
+        }
+        // if a time is specified and at least one weekday is selected
+        if(start != null && days.size() > 0){
+            // set the day to the next weekday in the list
+            // TODO: auch die uhrzeit mit einberechnen (ist die zeit für "heute" schon abgelaufen oder nicht) & calendar-werte (start + end) updaten!
+            Calendar now = Calendar.getInstance();
+            int dayNow = now.get(Calendar.DAY_OF_WEEK);
+            int dayNext = -1;
+            int count = 0;
+            while(dayNext == -1 && count < 7){
+                int day = ((dayNow + count - 1) % 7) + 1;
+                if(days.contains(day)){
+                    dayNext = day;
+                }
+                count++;
+            }
+            Log.d("DBConditionTime", "Now: " + String.valueOf(now.get(Calendar.DAY_OF_WEEK)) + "; Next: " + String.valueOf(dayNext));
+            for(int i = 0; i < days.size(); i++){
+
+            }
+            alarm.setAlarm(MainActivity.getContext(), this);
+        }
+    }
+
+    // TODO: remove this function and replace it with something more useful
+    public void testAlarm(){
+        updateAlarm();
+    }
+
     public void addDay(int day){
         days.add(day);
     }
@@ -85,6 +122,7 @@ public class DBConditionTime extends DBCondition {
         setId(id); // has to be done now because of the foreign keys in the next statement!
         // create DayStatus entries
         insertDayStatusIntoDB(db);
+        writeRuleToDB();
         return id;
     }
 
@@ -101,6 +139,7 @@ public class DBConditionTime extends DBCondition {
         // recreate DayStatus entries
         deleteDayStatusFromDB(db);
         insertDayStatusIntoDB(db);
+        writeRuleToDB();
     }
 
     @Override
