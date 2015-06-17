@@ -16,5 +16,6 @@ public class CheckConditionService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d("CheckConditionService", "onHandleIntent fired!");
+        Log.d("CheckConditionService", "Action: " + intent.getAction());
     }
 }
