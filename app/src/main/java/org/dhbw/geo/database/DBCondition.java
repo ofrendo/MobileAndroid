@@ -34,6 +34,8 @@ public abstract class DBCondition extends DBObject {
 
     public abstract void writeRuleToDB();
 
+    public abstract boolean isConditionMet();
+
     public DBRule getRule() {
         return rule;
     }
