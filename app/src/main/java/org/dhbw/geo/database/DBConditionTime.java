@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.dhbw.geo.services.AlarmReceiver;
+import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.MainActivity;
 
 import java.util.ArrayList;
@@ -100,7 +101,6 @@ public class DBConditionTime extends DBCondition {
         // if a time is specified and at least one weekday is selected
         if(start != null && days.size() > 0){
             // set the day to the next weekday in the list
-            // TODO: auch die uhrzeit mit einberechnen (ist die zeit für "heute" schon abgelaufen oder nicht) & calendar-werte (start + end) updaten!
             Calendar now = Calendar.getInstance();
             Calendar alarm = Calendar.getInstance();
             alarm.set(Calendar.HOUR_OF_DAY, getStart().get(Calendar.HOUR_OF_DAY));
@@ -126,7 +126,7 @@ public class DBConditionTime extends DBCondition {
             }
             Log.d("DBConditionTime", "Now: " + String.valueOf(now.get(Calendar.DAY_OF_WEEK)) + "; Next: " + String.valueOf(dayNext));
             // set the alarm
-            this.alarm.setAlarm(MainActivity.getContext(), this);
+            this.alarm.setAlarm(ContextManager.getContext(), this);
         }
     }
 
@@ -204,8 +204,23 @@ public class DBConditionTime extends DBCondition {
 
     @Override
     public boolean isConditionMet() {
-        // TODO: implement this!
-        return false;
+        Calendar now = Calendar.getInstance();
+        if(end != null){    // if it is a time frame
+            if(start.getTimeInMillis() <= now.getTimeInMillis() && now.getTimeInMillis() <= end.getTimeInMillis()){
+                return true;
+            } else {
+                return false;
+            }
+        } else {            // if it is a single time
+            // make it a 1 minute frame to avoid problems caused by slow devices etc.
+            long time1 = start.getTimeInMillis();
+            long time2 = time1 + 1000 * 60;
+            if(time1 <= now.getTimeInMillis() && now.getTimeInMillis() <= time2){
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     private void insertDayStatusIntoDB(SQLiteDatabase db){

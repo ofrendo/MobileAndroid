@@ -3,13 +3,21 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Matthias on 12.05.2015.
  */
 public class DBRule extends DBObject {
+
+    private static final String TAG = "DBRule";
+
     private String name;
     private boolean active;
 
@@ -141,6 +149,28 @@ public class DBRule extends DBObject {
         loadAllConditions();
         // check all conditions
         // TODO: implement this!
+        HashMap<String, Boolean> classes = new HashMap<>();
+        for(int i = 0; i < conditions.size(); i++){
+            DBCondition condition = conditions.get(i);
+            // create a new entry in the hashmap if it doesn't exist
+            if(!classes.containsKey(condition.getClass().toString())){
+                classes.put(condition.getClass().toString(), false);
+            }
+            // check the condition and reset value if condition is met and value is false
+            if(condition.isConditionMet() && !classes.get(condition.getClass().toString())){
+                classes.remove(condition.getClass().toString());
+                classes.put(condition.getClass().toString(), true);
+            }
+            // check all entries in the hashmap
+            Iterator<Boolean> iterator = classes.values().iterator();
+            while(iterator.hasNext()){
+                if(!iterator.next()){
+                    Log.d(TAG, "allConditionsMet: Not all conditions are met!");
+                    return false;
+                }
+            }
+        }
+        Log.d(TAG, "allConditionsMet: All conditions are met!");
         return true;
     }
 

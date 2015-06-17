@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.dhbw.geo.hardware.NotificationFactory;
+import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.MainActivity;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class DBActionNotification extends DBAction {
 
     @Override
     protected void doAction() {
-        NotificationFactory.createNotification(MainActivity.getContext(), getRule().getName(), message, false);
+        NotificationFactory.createNotification(ContextManager.getContext(), getRule().getName(), message, false);
     }
 
     public DBActionNotification(long id, String message, boolean active){

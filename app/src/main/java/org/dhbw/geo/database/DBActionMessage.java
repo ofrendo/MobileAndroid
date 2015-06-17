@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
+import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.MainActivity;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class DBActionMessage extends DBAction {
         // TODO: Change it back!
 
         /* // // SMSFactory.createSMS(number, message);*/
-        NotificationFactory.createNotification(MainActivity.getContext(), "SMS would've been sent to: " + number, message, false);
+        NotificationFactory.createNotification(ContextManager.getContext(), "SMS would've been sent to: " + number, message, false);
     }
 
     public DBActionMessage(long id, String number, String message, boolean active){

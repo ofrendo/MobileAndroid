@@ -22,6 +22,7 @@ import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
+import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
 import java.util.Calendar;
@@ -30,15 +31,12 @@ import java.util.Calendar;
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
-    private static Context context; // the context for the app; needed for various things
-
-    public static Context getContext(){
-        return context;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        context = this;
+        // register context
+        ContextManager.setContext(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -253,22 +251,27 @@ public class MainActivity extends ActionBarActivity {
         alarm.addDay(Calendar.TUESDAY);
         alarm.addDay(Calendar.WEDNESDAY);
         alarm.setName("Alarm 1");
-        alarm.setStart(17, 51);
+        alarm.setStart(18, 42);
+        alarm.setEnd(21, 00);
         alarmRule.addCondition(alarm);
         alarm.writeToDB();
         DBConditionTime alarm2 = new DBConditionTime();
         alarm2.addDay(Calendar.WEDNESDAY);
         alarm2.setName("Alarm 2");
-        alarm2.setStart(17, 50);
+        alarm2.setStart(18, 50);
         alarmRule.addCondition(alarm2);
         alarm2.writeToDB();
+        DBConditionFence condFence = new DBConditionFence();
+        alarmRule.addCondition(condFence);
+        condFence.writeToDB();
         DBActionNotification notification = new DBActionNotification();
         notification.setMessage("Alarm Alarm Alarm!");
         notification.setActive(true);
         alarmRule.addAction(notification);
         notification.writeToDB();
-        alarm.testAlarm();
-        alarm2.testAlarm();
+        //alarm.testAlarm();
+        //alarm2.testAlarm();
+        alarmRule.allConditionsMet();
     }
 
 }

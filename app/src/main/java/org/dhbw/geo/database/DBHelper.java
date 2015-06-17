@@ -6,6 +6,7 @@ import android.database.sqlite.*;
 import android.content.ContentValues;
 import android.util.Log;
 
+import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.MainActivity;
 
 /**
@@ -57,8 +58,8 @@ public class DBHelper extends SQLiteOpenHelper {
     // the database instance
     private SQLiteDatabase db;
 
-    private DBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+    private DBHelper() {
+        super(ContextManager.getContext(), DB_NAME, null, DB_VERSION);
         Log.d("DBHelper", "Constructor");
         helper = this;
 
@@ -66,7 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static DBHelper getInstance(){
         if(helper == null){
-            helper = new DBHelper(MainActivity.getContext());
+            helper = new DBHelper();
         }
         return helper;
     }

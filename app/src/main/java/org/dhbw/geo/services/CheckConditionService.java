@@ -24,6 +24,8 @@ public class CheckConditionService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent fired!");
         try {
+            // register context
+            ContextManager.setContext(this);
             // get the corresponding condition
             long conditionId = Long.valueOf(intent.getAction());
             DBConditionTime condition = DBConditionTime.selectFromDB(conditionId);

@@ -56,7 +56,8 @@ public class DBConditionFence extends DBCondition {
     }
 
     public DBConditionFence(){
-
+        super();
+        this.type = TYPE_ENTER; // set a default type
     }
 
     public DBConditionFence(long id, String name, String type){
@@ -133,7 +134,7 @@ public class DBConditionFence extends DBCondition {
     @Override
     public boolean isConditionMet() {
         // TODO: implement this!
-        return false;
+        return true;
     }
 
     public String getType() {
