@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -82,9 +83,25 @@ public class DBRule extends DBObject {
         db.delete(DBHelper.TABLE_RULE, where, whereArgs);
     }
 
-    public static DBRule selectAllFromDB(){
+    public static ArrayList<DBRule> selectAllFromDB(){
         // TODO: implement it!
-        return new DBRule();
+        ArrayList<DBRule> rules = new ArrayList<DBRule>();
+        // read from database
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
+        String[] columns = {
+                DBHelper.COLUMN_RULE_ID,
+                DBHelper.COLUMN_NAME,
+                DBHelper.COLUMN_ACTIVE
+        };
+        Cursor cursor = db.query(DBHelper.TABLE_RULE, columns, null, null, null, null, null);
+        // read result
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            DBRule rule = new DBRule(cursor.getLong(0), cursor.getString(1), cursor.getInt(2) != 0);
+            rules.add(rule);
+            cursor.moveToNext();
+        }
+        return rules;
     }
 
     public static DBRule selectFromDB(long id) {

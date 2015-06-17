@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public abstract class DBCondition extends DBObject {
     private DBRule rule;
-    private String name;
+    private String name = "";
 
     public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
         ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
@@ -32,7 +32,7 @@ public abstract class DBCondition extends DBObject {
 
     public abstract void removeRuleFromDB();
 
-    public abstract void writeRuleToDB();
+    protected abstract void writeRuleToDB();
 
     public abstract boolean isConditionMet();
 

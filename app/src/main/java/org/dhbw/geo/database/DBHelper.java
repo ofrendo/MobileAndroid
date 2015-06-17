@@ -162,7 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String createTableConditionTime = "CREATE TABLE " + TABLE_CONDITION_TIME + " ( " +
                 COLUMN_CONDITION_TIME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_NAME + " VARCHAR, " +
-                COLUMN_START + " INTEGER NOT NULL," +
+                COLUMN_START + " INTEGER," +
                 COLUMN_END + " INTEGER )";
         String createTableDayStatus = "CREATE TABLE " + TABLE_DAY_STATUS + " ( " +
                 COLUMN_CONDITION_TIME_ID + " INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE," +

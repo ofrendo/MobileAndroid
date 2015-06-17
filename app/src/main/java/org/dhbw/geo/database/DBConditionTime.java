@@ -17,8 +17,9 @@ import java.util.Calendar;
  */
 public class DBConditionTime extends DBCondition {
 
-    private Calendar start = Calendar.getInstance();
-    private Calendar end = Calendar.getInstance();
+    private static final String TAG = "DBConditionTime";
+    private Calendar start;
+    private Calendar end;
     private ArrayList<Integer> days = new ArrayList<Integer>();
     private AlarmReceiver alarm;
 
@@ -93,7 +94,7 @@ public class DBConditionTime extends DBCondition {
         return diff;
     }
 
-    private void updateAlarm(){
+    public void updateAlarm(){
         // if there is no AlarmReceiver object yet, create one
         if(alarm == null){
             alarm = new AlarmReceiver();
@@ -112,7 +113,7 @@ public class DBConditionTime extends DBCondition {
             // if the next workday is the same day
             if(dayNext == dayNow){
                 // if it is already later than the alarm time
-                if(now.getTimeInMillis() > alarm.getTimeInMillis()){
+                if(now.getTimeInMillis() >= alarm.getTimeInMillis()){
                     // increase the day to look for by one and find the next day corresponding to that new "dayNow" (which is in fact one day in the future)
                     dayNext = getNextDay(dayNow % 7 + 1);
                 }
@@ -130,11 +131,6 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
-    // TODO: remove this function and replace it with something more useful
-    public void testAlarm(){
-        updateAlarm();
-    }
-
     public void addDay(int day){
         days.add(day);
     }
@@ -147,8 +143,8 @@ public class DBConditionTime extends DBCondition {
         // Create ConditionTime entry
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
-        values.put(DBHelper.COLUMN_START, start.getTimeInMillis());
-        values.put(DBHelper.COLUMN_END, end.getTimeInMillis());
+        if(start != null) values.put(DBHelper.COLUMN_START, start.getTimeInMillis());
+        if(end != null) values.put(DBHelper.COLUMN_END, end.getTimeInMillis());
         long id = db.insert(DBHelper.TABLE_CONDITION_TIME, null, values);
         setId(id); // has to be done now because of the foreign keys in the next statement!
         // create DayStatus entries
@@ -162,8 +158,8 @@ public class DBConditionTime extends DBCondition {
         // update ConditionTime entry
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
-        values.put(DBHelper.COLUMN_START, start.getTimeInMillis());
-        values.put(DBHelper.COLUMN_END, end.getTimeInMillis());
+        if(start != null) values.put(DBHelper.COLUMN_START, start.getTimeInMillis());
+        if(end != null) values.put(DBHelper.COLUMN_END, end.getTimeInMillis());
         String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_CONDITION_TIME, values, where, whereArgs);
@@ -193,7 +189,7 @@ public class DBConditionTime extends DBCondition {
     }
 
     @Override
-    public void writeRuleToDB() {
+    protected void writeRuleToDB() {
         removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -204,16 +200,30 @@ public class DBConditionTime extends DBCondition {
 
     @Override
     public boolean isConditionMet() {
+        if(start == null) return true;  // if the condition has no time, it is not a condition
         Calendar now = Calendar.getInstance();
-        if(end != null){    // if it is a time frame
-            if(start.getTimeInMillis() <= now.getTimeInMillis() && now.getTimeInMillis() <= end.getTimeInMillis()){
+        // check the weekday
+        if(!days.contains(now.get(Calendar.DAY_OF_WEEK))){
+            return false;
+        }
+        // check the time
+        Calendar startTime = Calendar.getInstance();
+        startTime.set(Calendar.HOUR_OF_DAY, start.get(Calendar.HOUR_OF_DAY));
+        startTime.set(Calendar.MINUTE, start.get(Calendar.MINUTE));
+        startTime.set(Calendar.SECOND, start.get(Calendar.SECOND));
+        if(end != null && (end.get(Calendar.HOUR_OF_DAY) != start.get(Calendar.HOUR_OF_DAY) || end.get(Calendar.MINUTE) != start.get(Calendar.MINUTE))){    // if it is a time frame
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(Calendar.HOUR_OF_DAY, end.get(Calendar.HOUR_OF_DAY));
+            endTime.set(Calendar.MINUTE, end.get(Calendar.MINUTE));
+            endTime.set(Calendar.SECOND, end.get(Calendar.SECOND));
+            if(startTime.getTimeInMillis() <= now.getTimeInMillis() && now.getTimeInMillis() <= endTime.getTimeInMillis()){
                 return true;
             } else {
                 return false;
             }
         } else {            // if it is a single time
             // make it a 1 minute frame to avoid problems caused by slow devices etc.
-            long time1 = start.getTimeInMillis();
+            long time1 = startTime.getTimeInMillis();
             long time2 = time1 + 1000 * 60;
             if(time1 <= now.getTimeInMillis() && now.getTimeInMillis() <= time2){
                 return true;
@@ -240,11 +250,13 @@ public class DBConditionTime extends DBCondition {
     }
 
     public void setStart(int hour, int minute){
+        if(start == null) start = Calendar.getInstance();
         start.set(Calendar.HOUR_OF_DAY, hour);
         start.set(Calendar.MINUTE, minute);
     }
 
     public void setEnd(int hour, int minute){
+        if(end == null) end = Calendar.getInstance();
         end.set(Calendar.HOUR_OF_DAY, hour);
         end.set(Calendar.MINUTE, minute);
     }

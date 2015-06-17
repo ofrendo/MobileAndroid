@@ -122,7 +122,7 @@ public class DBConditionFence extends DBCondition {
     }
 
     @Override
-    public void writeRuleToDB() {
+    protected void writeRuleToDB() {
         removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
         ContentValues values = new ContentValues();

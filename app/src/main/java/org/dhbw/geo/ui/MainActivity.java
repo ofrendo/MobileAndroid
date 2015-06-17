@@ -269,9 +269,27 @@ public class MainActivity extends ActionBarActivity {
         notification.setActive(true);
         alarmRule.addAction(notification);
         notification.writeToDB();
-        //alarm.testAlarm();
-        //alarm2.testAlarm();
-        alarmRule.allConditionsMet();
+        //alarm.updateAlarm();
+        //alarm2.updateAlarm();
+        //alarmRule.allConditionsMet();
+
+        // tests for isConditionMet
+        DBConditionTime t1 = new DBConditionTime();
+        t1.setStart(20, 00);
+        t1.setEnd(22, 00);
+        t1.addDay(Calendar.THURSDAY);
+        if(t1.isConditionMet()) Log.e(TAG, "Error with t1!");
+        DBConditionTime t2 = new DBConditionTime();
+        t2.setStart(21, 00);
+        t2.setEnd(22, 00);
+        t2.addDay(Calendar.WEDNESDAY);
+        if(t2.isConditionMet()) Log.e(TAG, "Error with t2");
+        DBConditionTime t3 = new DBConditionTime();
+        t3.setStart(20, 20);
+        t3.setEnd(20, 40);
+        t3.addDay(Calendar.WEDNESDAY);
+        if(!t3.isConditionMet()) Log.e(TAG, "Error with t3");
+        Log.d(TAG, "testRun completed");
     }
 
 }

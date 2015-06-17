@@ -30,6 +30,8 @@ public class CheckConditionService extends IntentService {
             long conditionId = Long.valueOf(intent.getAction());
             DBConditionTime condition = DBConditionTime.selectFromDB(conditionId);
             Log.d(TAG, "Condition: " + condition.getName());
+            // reset the alarm
+            condition.updateAlarm();
             // get the corresponding rules
             ArrayList<DBRule> rules = DBRule.selectFromDB(condition);
             Log.d(TAG, "Number of rules to be checked: " + rules.size());
