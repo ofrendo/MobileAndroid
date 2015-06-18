@@ -100,23 +100,6 @@ public class DBActionSimple extends DBAction {
     }
 
     /**
-     * turns on ({@link #status}: false) / off ({@link #status}: true) the setting ({@link #type}) when the rule's conditions aren't fulfilled anymore
-     */
-    @Override
-    protected void doActionStop() {
-        switch(type){
-            case TYPE_WIFI:
-                HardwareController.getInstance().setWifi(!status);
-                break;
-            case TYPE_BLUETOOTH:
-                HardwareController.getInstance().setBluetoothStatus(!status);
-                break;
-            default:
-                Log.d("DBActionSimple", "Invalid type!");
-        }
-    }
-
-    /**
      * Creates a new simple action.
      * Use this to create notification actions fetched from the database.
      * @param id the id of the simple action

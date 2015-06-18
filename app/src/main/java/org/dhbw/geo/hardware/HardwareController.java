@@ -70,9 +70,19 @@ public class HardwareController {
     public void setAudioStatus(int stream, boolean status) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         audioManager.setStreamMute(stream, status); //Set mute or unmute
-
         //COULD SET IT TO VIBRATE LIKE THIS
         //audioManager.setStreamVolume(stream, someVolumeNumber, AudioManager.FLAG_VIBRATE);
+    }
+
+    /**
+     * Sets the volume for a certain audio stream. Will also unmute the stream.
+     * @param stream stream Stream ID: AudioManager.STREAM_MUSIC, AudioManager.STREAM_RING, AudioManager.STREAM_ALARM
+     * @param volume
+     */
+    public void setAudioVolume(int stream, int volume) {
+        AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
+        audioManager.setStreamMute(stream, false);
+        audioManager.setStreamVolume(stream, volume, 0);
     }
 
     public boolean getBluetoothStatus() {

@@ -45,29 +45,12 @@ public abstract class DBAction extends DBObject {
     protected abstract void doActionStart();
 
     /**
-     * Stops the specific action. (optional)
-     * This is only needed, if the start action should be undone after the condition became invalid.
-     * it is used by {@link: #doActionStop()}.
-     */
-    protected abstract void doActionStop();
-
-    /**
      * Starts / Performs the specific action, if the {@link #active} flag is true.
      * @see #doActionStart()
      */
     public void startAction(){
         if(active){
             doActionStart();
-        }
-    }
-
-    /**
-     * Stops the specific action, if the {@link #active} flag is true.
-     * @see #doActionStop()
-     */
-    public void stopAction(){
-        if(active){
-            doActionStop();
         }
     }
 

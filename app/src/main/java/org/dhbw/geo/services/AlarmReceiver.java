@@ -10,16 +10,27 @@ import android.util.Log;
 import org.dhbw.geo.database.DBConditionTime;
 
 /**
- * Created by Matthias on 17.06.2015.
- * TODO: documentation!
+ * This receiver is called if an alarm was triggerd from android.
+ * It also contains methods to set and cancel alarms.
+ * @author Matthias
  */
 public class AlarmReceiver extends WakefulBroadcastReceiver {
 
-    // The app's AlarmManager, which provides access to the system alarm services.
+    /**
+     * the AlarmManager, which provides access to the system alarm services.
+     */
     private AlarmManager alarmMgr;
-    // The pending intent that is triggered when the alarm fires.
+    /**
+     * a pending intent which is triggered when the alarm is fired
+     */
     private PendingIntent alarmIntent;
 
+    /**
+     * Starts the ConditionService.
+     * It is called when an alarm is triggerd.
+     * @param context the context
+     * @param intent the intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("AlarmReceiver", "onReceive fired!");
@@ -32,6 +43,11 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         startWakefulService(context, service);
     }
 
+    /**
+     * Sets an alarm.
+     * @param context the context
+     * @param conditionTime the time condition for which the alarm shall be set
+     */
     public void setAlarm(Context context, DBConditionTime conditionTime){
         // if there has already been an alarm, cancel it
         cancelAlarm();
@@ -48,6 +64,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Log.d("AlarmReceiver", "setAlarm with action: " + intent.getAction() + ": " + conditionTime.getStart().toString());
     }
 
+    /**
+     * Cancels the alarm set by this receiver.
+     */
     public void cancelAlarm(){
         if (alarmMgr!= null) {
             alarmMgr.cancel(alarmIntent);

@@ -58,6 +58,8 @@ public class DBActionSound extends DBAction {
      */
     @Override
     protected void doActionStart() {
+        // set volume
+        HardwareController.getInstance().setAudioVolume(type, volume);
         // set audio status
         switch (status){
             case STATUS_MUTE:
@@ -67,16 +69,6 @@ public class DBActionSound extends DBAction {
                 HardwareController.getInstance().setAudioStatus(type, true);
                 break;
         }
-        // set volume
-        // TODO: set volume!
-    }
-
-    /**
-     * TODO: fill JavaDoc
-     */
-    @Override
-    protected void doActionStop() {
-        // TODO: discuss what to do here!! (dilemma?)
     }
 
     /**
