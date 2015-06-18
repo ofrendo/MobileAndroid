@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 
-import org.dhbw.geo.map.Maps;
+import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.database.*;
@@ -22,8 +22,6 @@ import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
-
-import java.util.Calendar;
 
 
 public class MainActivity extends ActionBarActivity {

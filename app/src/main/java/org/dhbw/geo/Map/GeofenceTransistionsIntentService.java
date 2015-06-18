@@ -1,4 +1,4 @@
-package org.dhbw.geo.map;
+package org.dhbw.geo.Map;
 
 import android.app.IntentService;
 import android.content.Intent;
