@@ -10,39 +10,68 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Created by Matthias on 12.05.2015.
- * TODO: documentation!
+ * A rule contains conditions and actions. The actions are fired, if all conditions are fulfilled.
+ * @author Matthias
  */
 public class DBRule extends DBObject {
 
     private static final String TAG = "DBRule";
-
+    /**
+     * the name for the rule (an arbitrary name chosen by the user)
+     */
     private String name;
+    /**
+     * the flag wheter this rule is active
+     */
     private boolean active;
 
+    /**
+     * the arraylist containing all conditions assigned to this rule
+     */
     private ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
+    /**
+     * the arraylist containing all actions assigned to this rule
+     */
     private ArrayList<DBAction> actions = new ArrayList<DBAction>();
 
     public DBRule(){
 
     }
 
+    /**
+     * Creates a new rule.
+     * Use this to create rules fetched from teh database.
+     * @param id the id of the rule
+     * @param name the name of the rule
+     * @param active the flag whether the rule is active
+     */
     public DBRule(long id, String name, boolean active){
         super(id);
         this.name = name;
         this.active = active;
     }
 
+    /**
+     * Adds a condition to the rule.
+     * @param condition the condition to be added
+     */
     public void addCondition(DBCondition condition){
         conditions.add(condition);
         condition.setRule(this);
     }
 
+    /**
+     * Adds an action to the rule.
+     * @param action the action to be added
+     */
     public void addAction(DBAction action){
         actions.add(action);
         action.setRule(this);
     }
 
+    /**
+     * Performs the startAction for all actions of this rule.
+     */
     public void startAllActions(){
         // load all actions if there aren't any actions existent
         loadAllActions();
@@ -54,6 +83,9 @@ public class DBRule extends DBObject {
         }
     }
 
+    /**
+     * Performs the stopAction for all actions of this rule
+     */
     public void stopAllActions(){
         // load all actions if there aren't any actions existent
         loadAllActions();
@@ -65,6 +97,11 @@ public class DBRule extends DBObject {
         }
     }
 
+    /**
+     * Inserts the rule into the database.
+     * @param db the reference to the sqlite database
+     * @return the id of the inserted rule
+     */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -73,6 +110,10 @@ public class DBRule extends DBObject {
         return db.insert(DBHelper.TABLE_RULE, null, values);
     }
 
+    /**
+     * Updates the rule on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -83,6 +124,9 @@ public class DBRule extends DBObject {
         db.update(DBHelper.TABLE_RULE, values, where, whereArgs);
     }
 
+    /**
+     * Deletes the rule from the database
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -92,6 +136,10 @@ public class DBRule extends DBObject {
         db.delete(DBHelper.TABLE_RULE, where, whereArgs);
     }
 
+    /**
+     * Selects all rules from the database.
+     * @return an arraylist containing all rules
+     */
     public static ArrayList<DBRule> selectAllFromDB(){
         ArrayList<DBRule> rules = new ArrayList<DBRule>();
         // read from database
@@ -112,6 +160,11 @@ public class DBRule extends DBObject {
         return rules;
     }
 
+    /**
+     * Selects a specific rule from the database
+     * @param id the id of the rule to be fetched
+     * @return the rule fetched from the database
+     */
     public static DBRule selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
@@ -130,6 +183,11 @@ public class DBRule extends DBObject {
         return rule;
     }
 
+    /**
+     * Selects all rules which are assigned to a condition
+     * @param condition the condition
+     * @return an arraylist of the rules assigned to the given condition
+     */
     public static ArrayList<DBRule> selectFromDB(DBCondition condition){
         ArrayList<DBRule> rules = new ArrayList<DBRule>();
         // read from database
@@ -150,6 +208,9 @@ public class DBRule extends DBObject {
         return rules;
     }
 
+    /**
+     * Loads all actions assigned to this rule from the database.
+     */
     public void loadAllActions() {
         if (actions.size() != 0) {
             return; // don't load actions if they already exist!
@@ -161,6 +222,9 @@ public class DBRule extends DBObject {
         }
     }
 
+    /**
+     * Loads all conditions assigned to this rule from the database.
+     */
     public void loadAllConditions() {
         if(conditions.size() != 0){
             return; // don't load conditions if they already exist!
@@ -169,6 +233,10 @@ public class DBRule extends DBObject {
         // add rule for the conditions
     }
 
+    /**
+     * Checks wheter all conditions are met.
+     * @return true, if all conditions are met, false otherwise
+     */
     public boolean allConditionsMet(){
         // load all conditions in case they aren't loaded
         loadAllConditions();

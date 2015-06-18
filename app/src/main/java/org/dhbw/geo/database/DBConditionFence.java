@@ -192,7 +192,6 @@ public class DBConditionFence extends DBCondition {
      */
     @Override
     public boolean isConditionMet() {
-        // TODO: implement this!
         boolean condition;
         if(type == TYPE_ENTER){
             condition = false;

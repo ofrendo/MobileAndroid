@@ -10,14 +10,21 @@ import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.MainActivity;
 
 /**
- * Created by Matthias on 08.05.2015.
- * TODO: documentation!
+ * The helper manages the connection to the sqlite database.
+ * @author Matthias
  */
 public class DBHelper extends SQLiteOpenHelper {
-    // reference to the helper instance
+    /**
+     * reference to the helper instance
+     */
     private static DBHelper helper;
-
+    /**
+     * the database version (this has to be increased)
+     */
     private static final int DB_VERSION = 17;
+    /**
+     * the name of the sqlite database (the file it is stored in).
+     */
     private static final String DB_NAME = "GeoDB";
     // definition of table names
     public static final String TABLE_ACTION_SIMPLE = "ActionSimple";
@@ -59,6 +66,9 @@ public class DBHelper extends SQLiteOpenHelper {
     // the database instance
     private SQLiteDatabase db;
 
+    /**
+     * Creates the helper instance (Singleton)
+     */
     private DBHelper() {
         super(ContextManager.getContext(), DB_NAME, null, DB_VERSION);
         Log.d("DBHelper", "Constructor");
@@ -66,6 +76,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Gets the helper instance (Singleton)
+     * @return the helper instance
+     */
     public static DBHelper getInstance(){
         if(helper == null){
             helper = new DBHelper();
@@ -73,6 +87,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return helper;
     }
 
+    /**
+     * writes all database tables and its contents to the log.
+     */
     public void logDB() {
         db = this.getWritableDatabase();
         // get all entries
@@ -87,6 +104,10 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
     }
 
+    /**
+     * Writes a specific database table and its rows to the log.
+     * @param name the table name
+     */
     public void logTable(String name) {
         db = this.getWritableDatabase();
         String query = "SELECT * FROM " + name;
@@ -114,6 +135,11 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
     }
 
+    /**
+     * Creates the database schema.
+     * Automatically called by android.
+     * @param db the sqlite database
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableRule = "CREATE TABLE " + TABLE_RULE + " ( " +
@@ -187,6 +213,13 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("DBHelper", "onCreate");
     }
 
+    /**
+     * Upgrades the database schema.
+     * Called when the version of the db changes
+     * @param db the sqlite database
+     * @param oldVersion the old version number
+     * @param newVersion the new version number
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // drop old tables; take care of correct order!

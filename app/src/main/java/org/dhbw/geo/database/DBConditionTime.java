@@ -349,7 +349,7 @@ public class DBConditionTime extends DBCondition {
     }
 
     /**
-     * Writes all assigned workdays to database.
+     * Inserts all assigned workdays to the database.
      * @param db
      */
     private void insertDayStatusIntoDB(SQLiteDatabase db){
@@ -361,6 +361,10 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Deletes all assigned workdays from the database.
+     * @param db
+     */
     private void deleteDayStatusFromDB(SQLiteDatabase db){
         if(!existsOnDB()) return;   // if the ConditionTime doesn't exist, there shouldn't be any DayStatuses
         String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
