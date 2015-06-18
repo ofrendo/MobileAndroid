@@ -36,4 +36,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="MapsTitleDeleteGeofence">Delete Geofence</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="main_existingRules">Existing Rules</string>
 </resources>
