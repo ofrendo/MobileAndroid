@@ -30,8 +30,8 @@ public class DBRuleAdapter extends ArrayAdapter<DBRule> {
             vi = LayoutInflater.from(getContext());
             v = vi.inflate(android.R.layout.simple_list_item_activated_1, null);
         }
-        TextView tw = (TextView)convertView.findViewById(android.R.id.text1);
-        tw.setText(items.get(position).getName());
+        //TextView tw = (TextView)convertView.findViewById(android.R.id.text1);
+        //tw.setText(items.get(position).getName());
 
         return convertView;
     }

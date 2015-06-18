@@ -44,6 +44,11 @@ public class MainActivity extends ActionBarActivity {
 
 
 
+    @Override
+    public void onBackPressed() {
+        return;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +76,8 @@ public class MainActivity extends ActionBarActivity {
         Log.e(TAG,"items vorhanden: "+listItems.size());
 
         //create adapter for listview
-        adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
-        listView.setAdapter(adapter);
+        //adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
+        //listView.setAdapter(adapter);
 
     }
     public void onTestPage(View view){
