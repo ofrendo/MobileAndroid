@@ -7,7 +7,7 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.dhbw.geo.map.Maps;
+import org.dhbw.geo.Map.Maps;
 
 import java.util.ArrayList;
 

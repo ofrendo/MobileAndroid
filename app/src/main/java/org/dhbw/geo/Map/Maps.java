@@ -1,4 +1,4 @@
-package org.dhbw.geo.map;
+package org.dhbw.geo.Map;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -179,12 +179,12 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void getUpMap() {
-        // Do a null check to confirm that we have not already instantiated the map.
+        // Do a null check to confirm that we have not already instantiated the Map.
         if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
+            // Try to obtain the Map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
-            // Check if we were successful in obtaining the map.
+            // Check if we were successful in obtaining the Map.
             if (mMap != null) {
                 setUpMap();
             }
