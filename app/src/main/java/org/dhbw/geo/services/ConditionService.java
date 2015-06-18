@@ -13,10 +13,10 @@ import java.util.ArrayList;
  * Created by Matthias on 17.06.2015.
  * TODO: documentation!
  */
-public class CheckConditionService extends IntentService {
+public class ConditionService extends IntentService {
     public static final String TAG = "checkConditionService";
 
-    public CheckConditionService() {
+    public ConditionService() {
         super(TAG);
     }
 

@@ -22,6 +22,7 @@ import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
+import org.dhbw.geo.services.AutoStart;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
@@ -166,8 +167,8 @@ public class MainActivity extends ActionBarActivity {
         rule.setName("Test rule");
         rule.writeToDB();
         DBConditionTime conditionTime = new DBConditionTime();
-        conditionTime.addDay(Calendar.WEDNESDAY);
         Calendar now = Calendar.getInstance();
+        conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));
         now.add(Calendar.MINUTE, 1);
         conditionTime.setStart(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         now = Calendar.getInstance();
@@ -188,6 +189,7 @@ public class MainActivity extends ActionBarActivity {
         notification.writeToDB();
         dbHelper.logDB();
         conditionTime.updateAlarm();
+        //AutoStart.registerAutostart(this);
     }
 
 }

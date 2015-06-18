@@ -9,8 +9,6 @@ import android.util.Log;
 
 import org.dhbw.geo.database.DBConditionTime;
 
-import java.util.Calendar;
-
 /**
  * Created by Matthias on 17.06.2015.
  * TODO: documentation!
@@ -27,7 +25,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         Log.d("AlarmReceiver", "onReceive fired!");
         // if an alarm is triggered
         // create a new intent
-        Intent service = new Intent(context, CheckConditionService.class);
+        Intent service = new Intent(context, ConditionService.class);
         // pass the action string
         service.setAction(intent.getAction());
         // Start the service, keeping the device awake while it is launching.

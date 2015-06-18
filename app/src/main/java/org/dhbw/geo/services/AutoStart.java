@@ -5,6 +5,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
+
+import org.dhbw.geo.hardware.NotificationFactory;
 
 /**
  * Created by Matthias on 17.06.2015.
@@ -16,17 +19,10 @@ public class AutoStart extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
+            Log.e("Autostart", "Autostart called!");
+            NotificationFactory.createNotification(context, "Autostart", "Willkommen!", false);
             // TODO: set geofences for all rules
             // TODO: set alarms for all rules
         }
-    }
-
-    public static void registerAutostart(Context context){
-        ComponentName receiver = new ComponentName(context, AutoStart.class);
-        PackageManager pm = context.getPackageManager();
-
-        pm.setComponentEnabledSetting(receiver,
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP);
     }
 }
