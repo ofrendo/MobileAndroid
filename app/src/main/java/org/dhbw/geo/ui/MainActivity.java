@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        return;
+        finishAffinity();
     }
 
 
@@ -58,14 +58,17 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView = (ListView)findViewById(R.id.main_listview);
+        final ListView listView = (ListView)findViewById(R.id.main_listview);
         listView.setTextFilterEnabled(true);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // When clicked, show a toast with the TextView text
+
+
+
                 Intent nextScreen = new Intent(getApplicationContext(), RuleContainer.class);
+                nextScreen.putExtra("RuleID",listItems.get(position).getId());
                 startActivity(nextScreen);
             }
         });
@@ -76,8 +79,8 @@ public class MainActivity extends ActionBarActivity {
         Log.e(TAG,"items vorhanden: "+listItems.size());
 
         //create adapter for listview
-        //adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
-        //listView.setAdapter(adapter);
+        adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
+        listView.setAdapter(adapter);
 
     }
     public void onTestPage(View view){
@@ -107,5 +110,18 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onNewRule (View view ){
+        //Neues Intent anlegen
+        Intent nextScreen = new Intent(getApplicationContext(), RuleContainer.class);
 
+        //Intent mit den Daten fuellen
+        // nextScreen.putExtra("Vorname", inputVorname.getText().toString());
+        // nextScreen.putExtra("Nachname", inputNachname.getText().toString());
+
+        // Log schreiben fuer Logausgabe
+        //Log.e("n", inputVorname.getText()+"."+ inputNachname.getText());
+
+        // Intent starten und zur zweiten Activity wechseln
+        startActivity(nextScreen);
+    }
 }

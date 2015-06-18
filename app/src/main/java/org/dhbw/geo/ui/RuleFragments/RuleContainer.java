@@ -2,6 +2,7 @@ package org.dhbw.geo.ui.RuleFragments;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.database.DBRule;
 
 
 public class RuleContainer extends ActionBarActivity implements ActionBar.TabListener, RuleGeneral.OnFragmentInteractionListener, RuleCondition.OnFragmentInteractionListener,RuleAction.OnFragmentInteractionListener{
@@ -49,7 +51,18 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rule_container);
-        setTitle("GEO");
+
+        Intent i = getIntent();
+        long id = i.getLongExtra("RuleID",-1);
+        DBRule rule;
+        if (id != -1){
+            rule = DBRule.selectFromDB(id);
+            setTitle(rule.getName());
+        }
+        else{
+            setTitle("GEO");
+        }
+
 
 
 
