@@ -37,8 +37,9 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         // if an alarm is triggered
         // create a new intent
         Intent service = new Intent(context, ConditionService.class);
-        // pass the action string
+        // pass the action and the extras
         service.setAction(intent.getAction());
+        service.putExtras(intent);
         // Start the service, keeping the device awake while it is launching.
         startWakefulService(context, service);
     }
@@ -56,7 +57,8 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         // create a new intent for this
         Intent intent = new Intent(context, AlarmReceiver.class);
         // set the intent action to the conditionID to know which rule's timecondition was triggered
-        intent.setAction(String.valueOf(conditionTime.getId()));
+        intent.setAction(ConditionService.CHECKCONDITIONTIME);
+        intent.putExtra("conditionId", conditionTime.getId());
         // set a broadcast id to allow multiple alarms :-)
         alarmIntent = PendingIntent.getBroadcast(context, (int) conditionTime.getId(), intent, PendingIntent.FLAG_ONE_SHOT);
         // set the android alarm (RTC = real time clock)
