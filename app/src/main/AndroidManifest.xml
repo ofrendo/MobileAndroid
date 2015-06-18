@@ -45,7 +45,8 @@
         <activity
             android:windowSoftInputMode="adjustPan"
             android:name=".ui.RuleFragments.RuleContainer"
-            android:label="@string/title_activity_rule_container" >
+            android:label="@string/title_activity_rule_container"
+            android:parentActivityName=".ui.MainActivity">
         </activity>
 
         <meta-data

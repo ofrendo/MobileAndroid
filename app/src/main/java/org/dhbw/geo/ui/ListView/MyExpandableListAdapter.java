@@ -217,6 +217,26 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
                 text = (TextView) convertView.findViewById(R.id.numberInput_text);
                 text.setText(childName);
+                break;
+            case Child.SOUND:
+                convertView = inflater.inflate(R.layout.rule_soundtype, null);
+                TextView type = (TextView) convertView.findViewById(R.id.soundtype_type);
+                type.setText(childObject.name);
+
+                RadioGroup soundRadioGroup = (RadioGroup) convertView.findViewById(R.id.soundtype_radio);
+                //add new buttons
+                for (int i = 0; i<childObject.soundOptions.length; i++){
+                    RadioButton radioButton = new RadioButton(activity);
+                    soundRadioGroup.addView(radioButton);
+                    radioButton.setText(childObject.soundOptions[i]);
+
+                    if (childObject.status == childObject.statusOption[i]){
+                        radioButton.setChecked(true);
+                    }
+                }
+
+
+                break;
             default:
                 //convertView = inflater.inflate(R.layout.listrow_details, null);
                 //text = (TextView) convertView.findViewById(R.id.rule_text);

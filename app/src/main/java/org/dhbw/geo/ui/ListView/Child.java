@@ -1,5 +1,7 @@
 package org.dhbw.geo.ui.ListView;
 
+import org.dhbw.geo.database.DBActionSound;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,7 +10,7 @@ import java.util.Arrays;
  */
 public class Child {
     public String name;
-
+    public Group parent;
     public int type;
     public static final int CHECKBOX = 0;
     public static final int RADIOBUTTONS = 1;
@@ -16,6 +18,7 @@ public class Child {
     public static final int SWITCH = 3;
     public static final int TEXTINPUT = 4;
     public static final int NUMBERINPUT = 5;
+    public static final int SOUND = 6;
 
     //checkbox / switch
     public boolean checked;
@@ -108,6 +111,30 @@ public class Child {
         }
 
     }
+
+    //Sound
+    public static final int MEDIA = 1;
+    public static final int ALARM = 2;
+    String status;
+    int soundActual;
+    int soundtype;
+    String [] statusOption = {DBActionSound.STATUS_SOUND,"Vibrate",DBActionSound.STATUS_MUTE};
+    String [] soundOptions = {"Sound","Vibrate","Mute"};
+
+    public Child(Group parent, int soundtype){
+        this.type = SOUND;
+        this.parent = parent;
+        this.soundActual = 50;
+
+        switch (soundtype){
+            case MEDIA: name = "Media"; break;
+            case ALARM: name = "Alarm"; break;
+            default: break;
+        }
+
+        this.soundtype = soundtype;
+    }
+
 
 
 
