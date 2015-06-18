@@ -1,9 +1,11 @@
 package org.dhbw.geo.Map;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -11,9 +13,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,6 +38,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.hardware.NotificationFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +67,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private TextView radiusTextDescription;
     private TextView mapMarkerName;
     private EditText mapMarkerEditName;
+    private ImageButton deleteMarkerButton;
 
 
     @Override
@@ -85,8 +92,8 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     private void getLocations() {
         testLocations.add(new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10));
-        testLocations.add(new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
-        testLocations.add(new TestLocation( new LatLng(49.543011, 8.663211), "HomeSweetHome", 100));
+        testLocations.add(new TestLocation(new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
+        testLocations.add(new TestLocation(new LatLng(49.543011, 8.663211), "HomeSweetHome", 100));
         // get Locations from Database
     }
 
@@ -97,6 +104,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         radiusTextUnit = (TextView) findViewById(R.id.map_radius_unit);
         mapMarkerName = (TextView) findViewById(R.id.map_marker_name);
         mapMarkerEditName = (EditText) findViewById(R.id.map_marker_edit_name);
+        deleteMarkerButton = (ImageButton) findViewById(R.id.deleteMarkerButton);
         mapMarkerEditName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -222,11 +230,22 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 .strokeColor(Color.RED));
         String circleId = circle.getId();
         String markerId = m.getId();
-        Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
+        Log.e("Maps/BuildMarker", "CircelId: " + circleId + " MarkerId: " + markerId);
         testLocations.add(new TestLocation(loc, name, initialRadius));
         markerCircelMapping.put(m.getId(), circle);
         markerLocationMapping.put(m.getId(), testLocations.get(testLocations.size()-1));
         return m;
+    }
+
+    private void deleteMarker(Marker marker){
+        TestLocation testLocation = markerLocationMapping.get(marker.getId());
+        Circle circle = markerCircelMapping.get(marker.getId());
+        testLocations.remove(testLocation);
+        markerLocationMapping.remove(marker.getId());
+        markerCircelMapping.remove(marker.getId());
+        circle.remove();
+        marker.remove();
+        // remove geofence
     }
 
     private void setMarkerChangeVisibility(Boolean visibility){
@@ -237,6 +256,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             radiusTextDescription.setVisibility(View.VISIBLE);
             mapMarkerName.setVisibility(View.VISIBLE);
             mapMarkerEditName.setVisibility(View.VISIBLE);
+            deleteMarkerButton.setVisibility(View.VISIBLE);
         }else{
             radius.setVisibility(View.INVISIBLE);
             radiusTextUnit.setVisibility(View.INVISIBLE);
@@ -244,7 +264,13 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             radiusTextDescription.setVisibility(View.INVISIBLE);
             mapMarkerName.setVisibility(View.INVISIBLE);
             mapMarkerEditName.setVisibility(View.INVISIBLE);
+            deleteMarkerButton.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private Boolean createAlertDialog(String title, String question, String yes, String no) {
+        //AlertDialog.Builder builder = new AlertDialog(getAc);
+        return false;
     }
 
     private void setCameraFocus(Location mLastLocation) {
@@ -304,6 +330,13 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     private void startLocationUpdates() {
         createLocationRequest();
+    }
+
+    public void onClickDeleteButton(View view){
+        // show dialog --> are you shure to delete this geofence?
+        Boolean delete = createAlertDialog(getString(R.string.MapsTitleDeleteGeofence), getString(R.string.MapsQuestionDeleteGeofence), getString(R.string.yes), getString(R.string.no));
+        deleteMarker(activeMarker);
+        activeMarker = null;
     }
 
     @Override

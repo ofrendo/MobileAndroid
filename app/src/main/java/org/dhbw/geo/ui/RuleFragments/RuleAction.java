@@ -87,14 +87,14 @@ public class RuleAction extends Fragment {
         MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(),
                 groups);
         listView.setAdapter(adapter);
-
+        /*
         Button btn = (Button)getActivity().findViewById(R.id.testbutton);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listActions();
             }
-        });
+        });*/
     }
 
     private void listActions() {
@@ -173,6 +173,7 @@ public class RuleAction extends Fragment {
         groups.add(new Notification());
         groups.add(new WLAN());
         groups.add(new Bluetooth());
+        groups.add(new Sound());
         //groups.add(new Sound());
 
         /*
@@ -184,13 +185,6 @@ public class RuleAction extends Fragment {
         group.add(new Child("Slider",20,120,50));
         group.add(new Child("Text","Hallo"));
         group.add(new Child("Number","0156545254632",true));
-
-        Group group2 = new Group("Sound");
-        group2.add(new Child("Active",true,true));
-        String [] options = {"hallo","hallo2"};
-        group2.add(new Child("group",options));
-        groups.add(group);
-        groups.add(group2);
 
         Group group3 = new Group("whatever");
         group3.add(new Child("active", true,true));
