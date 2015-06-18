@@ -163,6 +163,7 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM " + DBHelper.TABLE_DAY_STATUS);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE_CONDITION);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
+        db.execSQL("DELETE FROM sqlite_sequence");
 
         // test action start and stop
         /*DBRule rule = new DBRule();
@@ -244,6 +245,39 @@ public class TestActivity extends ActionBarActivity {
         homeNot.setMessage("Home Sweet Home!");
         homeNot.setActive(true);
         homeNot.writeToDB();
+
+        // create work time rule
+        DBRule workRule = new DBRule();
+        workRule.setActive(true);
+        workRule.setName("Work Rule");
+        workRule.writeToDB();
+        // create time condition
+        DBConditionTime workTime = new DBConditionTime();
+        workTime.addDay(Calendar.MONDAY);
+        workTime.addDay(Calendar.TUESDAY);
+        workTime.addDay(Calendar.WEDNESDAY);
+        workTime.addDay(Calendar.THURSDAY);
+        workTime.addDay(Calendar.FRIDAY);
+        workTime.setStart(8, 0);
+        workTime.setEnd(16, 30);
+        workRule.addCondition(workTime);
+        workTime.writeToDB();
+        workTime.updateAlarm();
+        // create sound action
+        DBActionSound music = new DBActionSound();
+        music.setActive(true);
+        music.setType(AudioManager.STREAM_MUSIC);
+        music.setStatus(DBActionSound.STATUS_MUTE);
+        workRule.addAction(music);
+        music.writeToDB();
+        DBActionSound phone = new DBActionSound();
+        phone.setStatus(DBActionSound.STATUS_SOUND);
+        phone.setType(AudioManager.STREAM_RING);
+        phone.setVolume(20);
+        phone.setActive(true);
+        workRule.addAction(phone);
+        phone.writeToDB();
+
 
         // log database
         dbHelper.logDB();
