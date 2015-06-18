@@ -55,7 +55,7 @@ public abstract class DBCondition extends DBObject {
     public abstract void removeRuleFromDB();
 
     /**
-     * Inserts the conjunction of the condition with the assigned rule
+     * Inserts the conjunction of the condition with the assigned rule.
      */
     protected abstract void writeRuleToDB();
 

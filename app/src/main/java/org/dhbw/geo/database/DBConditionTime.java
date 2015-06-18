@@ -13,17 +13,34 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by Matthias on 13.06.2015.
- * TODO: documentation!
+ * A time condition is a set of times or timeframes which are observed.
+ * @author Matthias
  */
 public class DBConditionTime extends DBCondition {
 
     private static final String TAG = "DBConditionTime";
+    /**
+     * the start time for the condition
+     */
     private Calendar start;
+    /**
+     * the end time for the condition
+     */
     private Calendar end;
+    /**
+     * the days ow week to which the time / timeframe applies
+     */
     private ArrayList<Integer> days = new ArrayList<Integer>();
+    /**
+     * the alarm object to maintain the android alarm
+     */
     private AlarmReceiver alarm;
 
+    /***
+     * Selects all time conditions from the database which are assigned to a given rule.
+     * @param ruleId the id of the rule
+     * @return an arraylist of the time conditions
+     */
     public static ArrayList<DBCondition> selectAllFromDB(long ruleId){
         ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
         // read from database
@@ -47,6 +64,11 @@ public class DBConditionTime extends DBCondition {
         return conditions;
     }
 
+    /**
+     * Selects a single condition time from the database.
+     * @param id the id of the condition time
+     * @return the condition time fetched from the database
+     */
     public static DBConditionTime selectFromDB(long id) {
         // read from database
         SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
@@ -71,6 +93,14 @@ public class DBConditionTime extends DBCondition {
 
     }
 
+    /**
+     * Creates a new time condition.
+     * Use this to create time conditions fetched from the database.
+     * @param id the id of the time condition
+     * @param name the name of the time condition
+     * @param start the start time of the time condition in milliseconds
+     * @param end the end time of the time condition in milliseconds
+     */
     public DBConditionTime(long id, String name, long start, long end){
         super(id, name);
         this.start = Calendar.getInstance();
@@ -81,6 +111,9 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Loads all week days for this time condition from database.
+     */
     public void loadAllWeekDays(){
         if(days.size() > 0) return;
         // read from database
@@ -99,6 +132,11 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Gets the next week day which is in the days arraylist.
+     * @param startDay
+     * @return
+     */
     private int getNextDay(int startDay){
         int dayNext = -1;
         int count = 0;
@@ -112,6 +150,12 @@ public class DBConditionTime extends DBCondition {
         return dayNext;
     }
 
+    /**
+     * Gets the difference between two weekdays (always positive).
+     * @param day1
+     * @param day2
+     * @return
+     */
     private int getDaysDifference(int day1, int day2){
         int diff = day2 - day1;
         if(diff < 0){
@@ -120,6 +164,9 @@ public class DBConditionTime extends DBCondition {
         return diff;
     }
 
+    /**
+     * Updates the alarm which is sent to the android api
+     */
     public void updateAlarm(){
         // if there is no AlarmReceiver object yet, create one
         if(alarm == null){
@@ -162,13 +209,27 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Adds a weekday to the weekdays the time condition is applied to.
+     * @param day the day to be added
+     */
     public void addDay(int day){
         days.add(day);
     }
+
+    /**
+     * Removes a weekday from the weekdays the time condition is applied to.
+     * @param day the day to be removed
+     */
     public void removeDay(int day){
         days.remove(days.indexOf(day));
     }
 
+    /**
+     * Inserts the time condition into the database.
+     * @param db the reference to the sqlite database
+     * @return the id of the inserted condition time
+     */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
         // Create ConditionTime entry
@@ -184,6 +245,10 @@ public class DBConditionTime extends DBCondition {
         return id;
     }
 
+    /**
+     * Updates the time condition on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         // update ConditionTime entry
@@ -200,6 +265,9 @@ public class DBConditionTime extends DBCondition {
         writeRuleToDB();
     }
 
+    /**
+     * Deletes the time condition from the database.
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -211,6 +279,10 @@ public class DBConditionTime extends DBCondition {
         db.delete(DBHelper.TABLE_CONDITION_TIME, where, whereArgs);
     }
 
+    /**
+     * Removes the conjunction to the rule.
+     * This doesn't delete the rule or the condition either.
+     */
     @Override
     public void removeRuleFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -219,6 +291,9 @@ public class DBConditionTime extends DBCondition {
         db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
     }
 
+    /**
+     * Inserts the conjunction of the condition with the assigned rule.
+     */
     @Override
     protected void writeRuleToDB() {
         removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
@@ -229,6 +304,10 @@ public class DBConditionTime extends DBCondition {
         db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
     }
 
+    /**
+     * Checks whether the time condition is fulfilled.
+     * @return true if we are in the time frame, false otherwise
+     */
     @Override
     public boolean isConditionMet() {
         if(start == null) return true;  // if the condition has no time, it is not a condition
@@ -269,6 +348,10 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Inserts all assigned workdays to the database.
+     * @param db
+     */
     private void insertDayStatusIntoDB(SQLiteDatabase db){
         for(int i = 0; i < days.size(); i++){
             ContentValues values = new ContentValues();
@@ -278,6 +361,10 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Deletes all assigned workdays from the database.
+     * @param db
+     */
     private void deleteDayStatusFromDB(SQLiteDatabase db){
         if(!existsOnDB()) return;   // if the ConditionTime doesn't exist, there shouldn't be any DayStatuses
         String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";

@@ -20,3 +20,9 @@ load all rules:
 ```
 
 ´´´
+
+# Use Google Maps
+Change Google keystore to use Google Maps.
+
+- Open directory User/.android 
+- replace debug.keystore with github debug.keystore file

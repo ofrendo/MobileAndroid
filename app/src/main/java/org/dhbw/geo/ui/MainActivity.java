@@ -1,7 +1,5 @@
 package org.dhbw.geo.ui;
 
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -21,14 +19,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 
-import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
+import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
-import org.dhbw.geo.services.AutoStart;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
@@ -76,8 +73,6 @@ public class MainActivity extends ActionBarActivity {
         //create adapter for listview
         adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
         listView.setAdapter(adapter);
-
-
 
     }
     public void onTestPage(View view){

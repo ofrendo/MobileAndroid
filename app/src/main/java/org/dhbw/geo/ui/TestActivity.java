@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
+import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
@@ -55,7 +56,9 @@ public class TestActivity extends ActionBarActivity {
         Log.i(TAG, "Start wifi status is: " + wifiStatus);
 
         //
-
+        // Test an api call
+        BackendController backendController = new BackendController();
+        backendController.getAllFenceGroups();
 
     }
 
@@ -149,7 +152,7 @@ public class TestActivity extends ActionBarActivity {
         // delete old data
         DBHelper dbHelper = DBHelper.getInstance();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        /*db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SIMPLE);
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SIMPLE);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_SOUND);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_BRIGHTNESS);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_ACTION_NOTIFICATION);
@@ -159,7 +162,7 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM " + DBHelper.TABLE_CONDITION_TIME);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_DAY_STATUS);
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE_CONDITION);
-        db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);*/
+        db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
 
         // test action start and stop
         DBRule rule = new DBRule();
@@ -169,11 +172,13 @@ public class TestActivity extends ActionBarActivity {
         DBConditionTime conditionTime = new DBConditionTime();
         Calendar now = Calendar.getInstance();
         conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));
-        now.add(Calendar.MINUTE, 1);
+        /*now.add(Calendar.MINUTE, 1);
         conditionTime.setStart(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         now = Calendar.getInstance();
         now.add(Calendar.MINUTE, 2);
-        conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
+        conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));*/
+        conditionTime.setStart(19, 0);
+        conditionTime.setEnd(20, 0);
         rule.addCondition(conditionTime);
         conditionTime.writeToDB();
         DBActionSimple wifi = new DBActionSimple();
@@ -189,7 +194,24 @@ public class TestActivity extends ActionBarActivity {
         notification.writeToDB();
         dbHelper.logDB();
         conditionTime.updateAlarm();
-        //AutoStart.registerAutostart(this);
+
+        /*DBRule fenceRule = new DBRule();
+        fenceRule.setActive(true);
+        fenceRule.setName("Test rule");
+        fenceRule.writeToDB();
+        DBConditionFence conditionFence = new DBConditionFence();
+        conditionFence.setType(DBConditionFence.TYPE_ENTER);
+        fenceRule.addCondition(conditionFence);
+        conditionFence.writeToDB();
+        DBFence fence = new DBFence();
+        fence.setLatitude(49.474292);
+        fence.setLongitude(8.534501);
+        fence.setRadius(30);
+        conditionFence.addFence(fence);
+        fence.writeToDB();
+        dbHelper.logDB();
+        if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");*/
+
     }
 
 }

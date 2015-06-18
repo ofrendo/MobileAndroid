@@ -192,8 +192,21 @@ public class DBConditionFence extends DBCondition {
      */
     @Override
     public boolean isConditionMet() {
-        // TODO: implement this!
-        return true;
+        boolean condition;
+        if(type == TYPE_ENTER){
+            condition = false;
+            for(int i = 0; i < fences.size(); i++){
+                if(fences.get(i).isInFence()) condition = true;
+            }
+        } else if(type == TYPE_LEAVE){
+            condition = true;
+            for(int i = 0; i < fences.size(); i++){
+                if(fences.get(i).isInFence()) condition = false;
+            }
+        } else {
+            condition = false;
+        }
+        return condition;
     }
 
     public String getType() {
