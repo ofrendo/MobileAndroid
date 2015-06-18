@@ -23,6 +23,8 @@ import org.dhbw.geo.hardware.SMSFactory;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
+import java.util.Calendar;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -159,20 +161,20 @@ public class MainActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
 
         // test action start and stop
-        /*DBRule rule = new DBRule();
+        DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
         DBConditionTime conditionTime = new DBConditionTime();
         Calendar now = Calendar.getInstance();
-        conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));*/
+        conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));
         /*now.add(Calendar.MINUTE, 1);
         conditionTime.setStart(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         now = Calendar.getInstance();
         now.add(Calendar.MINUTE, 2);
         conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));*/
-        /*conditionTime.setStart(0, 0);
-        conditionTime.setEnd(12, 0);
+        conditionTime.setStart(19, 0);
+        conditionTime.setEnd(20, 0);
         rule.addCondition(conditionTime);
         conditionTime.writeToDB();
         DBActionSimple wifi = new DBActionSimple();
@@ -187,9 +189,9 @@ public class MainActivity extends ActionBarActivity {
         rule.addAction(notification);
         notification.writeToDB();
         dbHelper.logDB();
-        conditionTime.updateAlarm();*/
+        conditionTime.updateAlarm();
 
-        DBRule fenceRule = new DBRule();
+        /*DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
         fenceRule.setName("Test rule");
         fenceRule.writeToDB();
@@ -204,7 +206,7 @@ public class MainActivity extends ActionBarActivity {
         conditionFence.addFence(fence);
         fence.writeToDB();
         dbHelper.logDB();
-        if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");
+        if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");*/
 
     }
 

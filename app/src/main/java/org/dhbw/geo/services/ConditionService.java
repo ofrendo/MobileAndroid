@@ -12,8 +12,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * Created by Matthias on 17.06.2015.
- * TODO: documentation!
+ * Handles conditions and sets conditions on startup.
+ * @author Matthias
  */
 public class ConditionService extends IntentService {
     public static final String TAG = "checkConditionService";
@@ -22,6 +22,10 @@ public class ConditionService extends IntentService {
         super(TAG);
     }
 
+    /**
+     * Checks the conditions and fires the actions if all conditions are met after an alarm was triggered.
+     * @param id the id of the condition
+     */
     private void handleCheckConditionTime(long id){
         // get the corresponding condition
         long conditionId = Long.valueOf(id);
@@ -40,6 +44,9 @@ public class ConditionService extends IntentService {
         }
     }
 
+    /**
+     * Sets all geofences and alarms after a reboot of the phone.
+     */
     private void handleAutoStart(){
         NotificationFactory.createNotification(this, "Autostart", "Willkommen!", false);
         // execute rules for which the conditions are met
@@ -50,10 +57,17 @@ public class ConditionService extends IntentService {
                 rule.startAllActions();
             }
         }
+        // register alarms
+        for(int i = 0; i < rules.size(); i++){
+            rules.get(i).registerAllAlarms();
+        }
         // TODO: set geofences for all rules
-        // TODO: set alarms for all rules
     }
 
+    /**
+     * Handles the intent either fired by an alarm triggered or an autostart.
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent fired!");

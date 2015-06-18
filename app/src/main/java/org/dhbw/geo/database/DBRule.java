@@ -98,6 +98,21 @@ public class DBRule extends DBObject {
     }
 
     /**
+     * Registers alarm for all time conditions assigned to this rule
+     */
+    public void registerAllAlarms(){
+        // load all conditions if there aren't any actions existent
+        loadAllConditions();
+        // loop through conditions and set alarm
+        for(int i = 0; i < conditions.size(); i++){
+            if(conditions.get(i) instanceof DBConditionTime){
+                DBConditionTime condition = (DBConditionTime) conditions.get(i);
+                condition.updateAlarm();
+            }
+        }
+    }
+
+    /**
      * Inserts the rule into the database.
      * @param db the reference to the sqlite database
      * @return the id of the inserted rule
