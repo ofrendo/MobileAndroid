@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class DBFence extends DBObject {
 
     private DBConditionFence conditionFence;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private int radius;
 
     public static ArrayList<DBFence> selectAllFromDB(long conditionFenceId){
@@ -129,19 +129,19 @@ public class DBFence extends DBObject {
         return false;
     }
 
-    public float getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 

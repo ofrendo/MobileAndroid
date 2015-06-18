@@ -161,19 +161,19 @@ public class MainActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
 
         // test action start and stop
-        DBRule rule = new DBRule();
+        /*DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
         DBConditionTime conditionTime = new DBConditionTime();
         Calendar now = Calendar.getInstance();
-        conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));
+        conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));*/
         /*now.add(Calendar.MINUTE, 1);
         conditionTime.setStart(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         now = Calendar.getInstance();
         now.add(Calendar.MINUTE, 2);
         conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));*/
-        conditionTime.setStart(0, 0);
+        /*conditionTime.setStart(0, 0);
         conditionTime.setEnd(12, 0);
         rule.addCondition(conditionTime);
         conditionTime.writeToDB();
@@ -189,7 +189,24 @@ public class MainActivity extends ActionBarActivity {
         rule.addAction(notification);
         notification.writeToDB();
         dbHelper.logDB();
-        conditionTime.updateAlarm();
+        conditionTime.updateAlarm();*/
+
+        DBRule fenceRule = new DBRule();
+        fenceRule.setActive(true);
+        fenceRule.setName("Test rule");
+        fenceRule.writeToDB();
+        DBConditionFence conditionFence = new DBConditionFence();
+        conditionFence.setType(DBConditionFence.TYPE_ENTER);
+        fenceRule.addCondition(conditionFence);
+        conditionFence.writeToDB();
+        DBFence fence = new DBFence();
+        fence.setLatitude(49.474292);
+        fence.setLongitude(8.534501);
+        fence.setRadius(30);
+        conditionFence.addFence(fence);
+        fence.writeToDB();
+        dbHelper.logDB();
+
     }
 
 }
