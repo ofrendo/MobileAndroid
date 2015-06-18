@@ -32,4 +32,8 @@
     <string name="map_marker_name">Name</string>
     <string name="map_marker_edit_name">Edit Name</string>
     <string name="newMarker">New Marker</string>
+    <string name="MapsQuestionDeleteGeofence">You want to remove this geofence?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="MapsTitleDeleteGeofence">Delete Geofence</string>
 </resources>
