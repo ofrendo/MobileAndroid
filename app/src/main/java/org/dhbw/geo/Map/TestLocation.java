@@ -1,4 +1,4 @@
-package org.dhbw.geo.Map;
+package org.dhbw.geo.map;
 
 import com.google.android.gms.maps.model.LatLng;
 

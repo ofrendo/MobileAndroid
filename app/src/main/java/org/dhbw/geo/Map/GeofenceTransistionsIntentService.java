@@ -1,4 +1,4 @@
-package org.dhbw.geo.Map;
+package org.dhbw.geo.map;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -7,11 +7,9 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import org.dhbw.geo.R;
 import org.dhbw.geo.hardware.NotificationFactory;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Max on 15.06.2015.

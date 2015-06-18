@@ -1,7 +1,5 @@
 package org.dhbw.geo.ui;
 
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -15,15 +13,13 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 
-import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
-import org.dhbw.geo.Map.Maps;
+import org.dhbw.geo.map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
-import org.dhbw.geo.services.AutoStart;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
