@@ -57,7 +57,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private TextView radiusTextUnit;
     private TextView radiusTextDescription;
     private TextView mapMarkerName;
-    private EditText mapMarkerEditName;
+    private TextView mapMarkerEditName;
     private ImageButton deleteMarkerButton;
 
     public void Maps(){
@@ -101,7 +101,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         radiusTextDescription = (TextView) findViewById(R.id.map_radius_description);
         radiusTextUnit = (TextView) findViewById(R.id.map_radius_unit);
         mapMarkerName = (TextView) findViewById(R.id.map_marker_name);
-        mapMarkerEditName = (EditText) findViewById(R.id.map_marker_edit_name);
+        mapMarkerEditName = (TextView) findViewById(R.id.map_marker_edit_name);
         deleteMarkerButton = (ImageButton) findViewById(R.id.deleteMarkerButton);
         mapMarkerEditName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -385,6 +385,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     @Override
     public void onMapLongClick(LatLng latLng) {
         //create new marker
+        // get string form DBConditionFence
         activeMarker = addMarkerToMap(latLng, getString(R.string.newMarker));
         //set Edit functions true
         setMarkerChangeVisibility(true);
