@@ -93,7 +93,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private void getLocations() {
         testLocations.add(new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10));
         testLocations.add(new TestLocation(new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
-        testLocations.add(new TestLocation(new LatLng(49.543011, 8.663211), "HomeSweetHome", 100));
+        testLocations.add(new TestLocation(new LatLng(49.430080, 8.529243), "HomeSweetHome", 20));
         // get Locations from Database
     }
 
@@ -301,11 +301,10 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
         mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(1).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
-                .setCircularRegion(testLocations.get(1).getLocation().latitude, testLocations.get(1).getLocation().longitude, testLocations.get(1).getRadius())
+                .setRequestId(testLocations.get(2).getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations.get(2).getLocation().latitude, testLocations.get(2).getLocation().longitude, testLocations.get(2).getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setLoiteringDelay(5000)
                 .build());
         addInitialMarkersToMap();
     }

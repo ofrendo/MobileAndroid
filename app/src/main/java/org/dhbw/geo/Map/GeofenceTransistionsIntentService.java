@@ -22,8 +22,8 @@ public class GeofenceTransistionsIntentService extends IntentService {
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public GeofenceTransistionsIntentService(String name) {
-        super(name);
+    public GeofenceTransistionsIntentService() {
+        super("GeofenceTransitionsIntentService");
     }
 
     @Override
@@ -33,6 +33,8 @@ public class GeofenceTransistionsIntentService extends IntentService {
             Log.d("Maps/Geofencing", String.valueOf(geofencingEvent.getErrorCode()));
             return;
         }
+
+        NotificationFactory.createNotification(this, "GeofenceIntentService", "onHandle", false);
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
