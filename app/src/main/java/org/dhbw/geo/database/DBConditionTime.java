@@ -226,9 +226,9 @@ public class DBConditionTime extends DBCondition {
     }
 
     /**
-     *
+     * Inserts the time condition into the database.
      * @param db the reference to the sqlite database
-     * @return
+     * @return the id of the inserted condition time
      */
     @Override
     protected long insertIntoDB(SQLiteDatabase db) {
@@ -245,6 +245,10 @@ public class DBConditionTime extends DBCondition {
         return id;
     }
 
+    /**
+     * Updates the time condition on the database.
+     * @param db the reference to the sqlite database
+     */
     @Override
     protected void updateOnDB(SQLiteDatabase db) {
         // update ConditionTime entry
@@ -261,6 +265,9 @@ public class DBConditionTime extends DBCondition {
         writeRuleToDB();
     }
 
+    /**
+     * Deletes the time condition from the database.
+     */
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -272,6 +279,10 @@ public class DBConditionTime extends DBCondition {
         db.delete(DBHelper.TABLE_CONDITION_TIME, where, whereArgs);
     }
 
+    /**
+     * Removes the conjunction to the rule.
+     * This doesn't delete the rule or the condition either.
+     */
     @Override
     public void removeRuleFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
@@ -280,6 +291,9 @@ public class DBConditionTime extends DBCondition {
         db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
     }
 
+    /**
+     * Inserts the conjunction of the condition with the assigned rule.
+     */
     @Override
     protected void writeRuleToDB() {
         removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
@@ -290,6 +304,10 @@ public class DBConditionTime extends DBCondition {
         db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
     }
 
+    /**
+     * Checks whether the time condition is fulfilled.
+     * @return true if we are in the time frame, false otherwise
+     */
     @Override
     public boolean isConditionMet() {
         if(start == null) return true;  // if the condition has no time, it is not a condition
@@ -330,6 +348,10 @@ public class DBConditionTime extends DBCondition {
         }
     }
 
+    /**
+     * Writes all assigned workdays to database.
+     * @param db
+     */
     private void insertDayStatusIntoDB(SQLiteDatabase db){
         for(int i = 0; i < days.size(); i++){
             ContentValues values = new ContentValues();

@@ -204,6 +204,7 @@ public class MainActivity extends ActionBarActivity {
         conditionFence.addFence(fence);
         fence.writeToDB();
         dbHelper.logDB();
+        if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");
 
     }
 
