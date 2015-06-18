@@ -15,8 +15,6 @@ import org.dhbw.geo.hardware.NotificationFactory;
  */
 public class AutoStart extends BroadcastReceiver {
 
-    public static final String AUTO_START = "Autostart";
-
     /**
      * Starts the conditionService to set alarms and triggers
      * It is called when the phone has successfully booted.
@@ -30,7 +28,7 @@ public class AutoStart extends BroadcastReceiver {
             Log.d("Autostart", "Autostart called!");
             Intent service = new Intent(context, ConditionService.class);
             // pass the action string
-            service.setAction(AUTO_START);
+            service.setAction(ConditionService.AUTO_START);
             // Start the service, keeping the device awake while it is launching.
             context.startService(service);
         }

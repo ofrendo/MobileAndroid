@@ -75,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
 
         // start GoogleApiClient in Service
         Intent mConditionService = new Intent(this, ConditionService.class);
+        mConditionService.setAction(ConditionService.STARTAPP);
         startService(mConditionService);
 
         //initialize listitems
