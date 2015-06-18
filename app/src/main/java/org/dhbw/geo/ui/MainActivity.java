@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
+import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
@@ -54,7 +55,9 @@ public class MainActivity extends ActionBarActivity {
 
         Log.i(TAG, "Start wifi status is: " + wifiStatus);
 
-        //
+        // Test an api call
+        BackendController backendController = new BackendController();
+        backendController.getAllFenceGroups();
 
 
     }

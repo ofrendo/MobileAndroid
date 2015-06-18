@@ -41,6 +41,11 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
     RuleAdapter mAdapter;
 
     @Override
+    public void onBackPressed() {
+        startActivity(getParentActivityIntent());
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rule_container);

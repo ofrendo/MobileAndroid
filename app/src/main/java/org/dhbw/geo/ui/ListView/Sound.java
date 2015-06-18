@@ -6,5 +6,8 @@ package org.dhbw.geo.ui.ListView;
 public class Sound extends Group {
     public Sound(){
         super("Sound");
+
+        add(new Child(this, Child.ALARM));
+        add(new Child(this, Child.MEDIA));
     }
 }
