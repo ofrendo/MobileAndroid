@@ -118,7 +118,7 @@ public class DBFence extends DBObject {
         return loc;
     }
 
-    public Boolean isConditionMet(){
+    public Boolean isInFence(){
         // get current Location
         Maps maps = new Maps();
         Location currentLocation = maps.getCurrentLocation();
