@@ -165,7 +165,7 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM " + DBHelper.TABLE_RULE);
 
         // test action start and stop
-        DBRule rule = new DBRule();
+        /*DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
@@ -177,7 +177,7 @@ public class TestActivity extends ActionBarActivity {
         now = Calendar.getInstance();
         now.add(Calendar.MINUTE, 2);
         conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));*/
-        conditionTime.setStart(19, 0);
+        /*conditionTime.setStart(19, 0);
         conditionTime.setEnd(20, 0);
         rule.addCondition(conditionTime);
         conditionTime.writeToDB();
@@ -193,7 +193,7 @@ public class TestActivity extends ActionBarActivity {
         rule.addAction(notification);
         notification.writeToDB();
         dbHelper.logDB();
-        conditionTime.updateAlarm();
+        conditionTime.updateAlarm();*/
 
         /*DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
@@ -211,6 +211,43 @@ public class TestActivity extends ActionBarActivity {
         fence.writeToDB();
         dbHelper.logDB();
         if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");*/
+
+        // Create the test database
+        // create home rule
+        DBRule homeRule = new DBRule();
+        homeRule.setActive(true);
+        homeRule.setName("Home Rule");
+        homeRule.writeToDB();
+        // create home fence condition (only 1 fence)
+        DBConditionFence homeCondition = new DBConditionFence();
+        homeCondition.setType(DBConditionFence.TYPE_ENTER);
+        homeCondition.setName("Home Location");
+        homeRule.addCondition(homeCondition);
+        homeCondition.writeToDB();
+        // create the fence
+        DBFence fence = new DBFence();
+        fence.setLatitude(49.474292);
+        fence.setLongitude(8.534501);
+        fence.setRadius(30);
+        homeCondition.addFence(fence);
+        fence.writeToDB();
+        // create a wifi action
+        DBActionSimple wifi = new DBActionSimple();
+        homeRule.addAction(wifi);
+        wifi.setStatus(true); // turn wifi on
+        wifi.setActive(true);
+        wifi.setType(DBActionSimple.TYPE_WIFI);
+        wifi.writeToDB();
+        // create a notification
+        DBActionNotification homeNot = new DBActionNotification();
+        homeRule.addAction(homeNot);
+        homeNot.setMessage("Home Sweet Home!");
+        homeNot.setActive(true);
+        homeNot.writeToDB();
+
+        // log database
+        dbHelper.logDB();
+
 
     }
 

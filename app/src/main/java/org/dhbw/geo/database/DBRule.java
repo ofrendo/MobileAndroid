@@ -84,20 +84,6 @@ public class DBRule extends DBObject {
     }
 
     /**
-     * Performs the stopAction for all actions of this rule
-     */
-    public void stopAllActions(){
-        // load all actions if there aren't any actions existent
-        loadAllActions();
-        // start all actions if the rule is active
-        if(active) {
-            for (int i = 0; i < actions.size(); i++) {
-                actions.get(i).stopAction();
-            }
-        }
-    }
-
-    /**
      * Registers alarm for all time conditions assigned to this rule
      */
     public void registerAllAlarms(){

@@ -72,14 +72,6 @@ public class DBActionSound extends DBAction {
     }
 
     /**
-     * TODO: fill JavaDoc
-     */
-    @Override
-    protected void doActionStop() {
-        // TODO: discuss what to do here!! (dilemma?)
-    }
-
-    /**
      * Selects all sound actions from the database which are assigned to a given rule.
      * @param ruleId the id of the rule for which the sound actions shall be selected
      * @return an arraylist of the sound actions fetched from the database

@@ -86,19 +86,7 @@ public class DBActionMessage extends DBAction {
      */
     @Override
     protected void doActionStart() {
-        // to avoid costs for anybody without a flatrate don't send any SMS!
-        // TODO: Change it back!
-
-        /* // // SMSFactory.createSMS(number, message);*/
-        NotificationFactory.createNotification(ContextManager.getContext(), "SMS would've been sent to: " + number, message, false);
-    }
-
-    /**
-     * Does nothing. There is nothing to be undone when the rule's conditions aren't fulfilled anymore.
-     */
-    @Override
-    protected void doActionStop() {
-
+        SMSFactory.createSMS(number, message);
     }
 
     /**

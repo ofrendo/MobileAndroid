@@ -39,7 +39,7 @@ public abstract class DBObject {
         db.close();
     }
 
-    public void setId(long id){
+    protected void setId(long id){
         this.id = id;
         existsOnDB = true;
     }

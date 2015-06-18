@@ -83,14 +83,6 @@ public class DBActionNotification extends DBAction {
     }
 
     /**
-     * Does nothing. There is nothing to be undone when the rule's conditions aren't fulfilled anymore.
-     */
-    @Override
-    protected void doActionStop() {
-
-    }
-
-    /**
      * Creates a new notification action.
      * Use this to create notification actions fetched from the database.
      * @param id the id of the notification action
