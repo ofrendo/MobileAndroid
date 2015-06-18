@@ -3,8 +3,11 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.dhbw.geo.map.Maps;
 
 import java.util.ArrayList;
 
@@ -113,6 +116,17 @@ public class DBFence extends DBObject {
     public LatLng getLatLng(){
         LatLng loc = new LatLng(latitude, longitude);
         return loc;
+    }
+
+    public Boolean isConditionMet(){
+        // get current Location
+        Maps maps = new Maps();
+        Location currentLocation = maps.getCurrentLocation();
+        // check if currentLocation is in geofence
+        if(Math.pow(currentLocation.getLongitude() - longitude,2) + Math.pow((currentLocation.getLatitude() - latitude),2) < Math.pow(radius,2)){
+            return true;
+        }
+        return false;
     }
 
     public float getLatitude() {

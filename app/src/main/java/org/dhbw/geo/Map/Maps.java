@@ -60,17 +60,15 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private EditText mapMarkerEditName;
     private ImageButton deleteMarkerButton;
 
+    public void Maps(){
+        getGoogleApiClient();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
+        getGoogleApiClient();
         markerCircelMapping = new HashMap<String, Circle>();
         markerLocationMapping = new HashMap<String, TestLocation>();
         testLocations = new ArrayList<TestLocation>();
@@ -79,6 +77,15 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         getUpMap();
         setUpSeekerBar();
         setMarkerChangeVisibility(false);
+    }
+
+    private void getGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
     }
 
     private void getLocations() {
@@ -268,6 +275,13 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15));
     }
 
+    public Location getCurrentLocation(){
+        // check mGoogleApiClient
+       Location location = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        return location;
+    }
+
     private void startGeofencing(){
         setUpGeofenceList();
         LocationServices.GeofencingApi.addGeofences(
@@ -338,8 +352,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     public void onConnected(Bundle bundle) {
         mMap.setMyLocationEnabled(true);
         Log.e("Maps/GoogleAp/conn", "Connection succ");
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mLastLocation = getCurrentLocation();
         setCameraFocus(mLastLocation);
         Log.e("Maps/googleAp/LaLo", String.valueOf(mLastLocation.getLatitude()) + ", " + String.valueOf(mLastLocation.getLongitude()));
         startLocationUpdates();
