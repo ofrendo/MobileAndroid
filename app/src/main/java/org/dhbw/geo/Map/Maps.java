@@ -4,8 +4,11 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -30,10 +33,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dhbw.geo.R;
-import org.dhbw.geo.hardware.NotificationFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener {
 
@@ -41,11 +47,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     //Geofencing
     private PendingIntent mGeofencePendingIntent;
     private ArrayList mGeofenceList = new ArrayList();
-    private static final TestLocation[] testLocations = new TestLocation[] {
-            new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10),
-            new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 30),
-            new TestLocation( new LatLng(49.543011, 8.663211), "HomeSweetHome", 100)
-    };
+    private List<TestLocation> testLocations;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
@@ -73,9 +75,19 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mGoogleApiClient.connect();
         markerCircelMapping = new HashMap<String, Circle>();
         markerLocationMapping = new HashMap<String, TestLocation>();
+        testLocations = new ArrayList<TestLocation>();
+        getLocations();
         getUIObjects();
         getUpMap();
         setUpSeekerBar();
+        setMarkerChangeVisibility(false);
+    }
+
+    private void getLocations() {
+        testLocations.add(new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10));
+        testLocations.add(new TestLocation( new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
+        testLocations.add(new TestLocation( new LatLng(49.543011, 8.663211), "HomeSweetHome", 100));
+        // get Locations from Database
     }
 
     private void getUIObjects() {
@@ -85,6 +97,23 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         radiusTextUnit = (TextView) findViewById(R.id.map_radius_unit);
         mapMarkerName = (TextView) findViewById(R.id.map_marker_name);
         mapMarkerEditName = (EditText) findViewById(R.id.map_marker_edit_name);
+        mapMarkerEditName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                markerLocationMapping.get(activeMarker.getId()).setName(s.toString());
+                activeMarker.setTitle(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -103,8 +132,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void setUpSeekerBar() {
-        radius.setProgress(testLocations[0].getRadius());
-        setTextViewSeekbarText(testLocations[0].getRadius());
+        setTextViewSeekbarText(50);
         radius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -131,6 +159,11 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private void setTextViewSeekbarText(int progress) {
         Log.d("Maps/Seekbar", String.valueOf(progress));
         radiusText.setText(String.valueOf(progress));
+        radius.setProgress(progress);
+    }
+
+    private void setMarkerNameTextView(String name) {
+        mapMarkerEditName.setText(name);
     }
 
     @Override
@@ -159,22 +192,41 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mMap.setOnMapClickListener(this);
     }
 
-    private void addMarkerToMap() {
+    private void addInitialMarkersToMap() {
         for (int i = 0 ; i < mGeofenceList.size(); i++){
             Marker m = mMap.addMarker(new MarkerOptions()
-                    .position(testLocations[i].getLocation())
-                    .title(testLocations[i].getName())
+                    .position(testLocations.get(i).getLocation())
+                    .title(testLocations.get(i).getName())
                     .draggable(true));
             Circle circle = mMap.addCircle(new CircleOptions()
-                    .center(testLocations[i].getLocation())
-                    .radius(testLocations[i].getRadius())
+                    .center(testLocations.get(i).getLocation())
+                    .radius(testLocations.get(i).getRadius())
                     .strokeColor(Color.RED));
             String circleId = circle.getId();
             String markerId = m.getId();
             Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
             markerCircelMapping.put(m.getId(), circle);
-            markerLocationMapping.put(m.getId(), testLocations[i]);
+            markerLocationMapping.put(m.getId(), testLocations.get(i));
         }
+    }
+
+    private Marker addMarkerToMap(LatLng loc, String name){
+        int initialRadius = 50;
+        Marker m = mMap.addMarker(new MarkerOptions()
+                .position(loc)
+                .title(name)
+                .draggable(true));
+        Circle circle = mMap.addCircle(new CircleOptions()
+                .center(loc)
+                .radius(initialRadius)
+                .strokeColor(Color.RED));
+        String circleId = circle.getId();
+        String markerId = m.getId();
+        Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
+        testLocations.add(new TestLocation(loc, name, initialRadius));
+        markerCircelMapping.put(m.getId(), circle);
+        markerLocationMapping.put(m.getId(), testLocations.get(testLocations.size()-1));
+        return m;
     }
 
     private void setMarkerChangeVisibility(Boolean visibility){
@@ -195,6 +247,10 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         }
     }
 
+    private void setCameraFocus(Location mLastLocation) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15));
+    }
+
     private void startGeofencing(){
         setUpGeofenceList();
         LocationServices.GeofencingApi.addGeofences(
@@ -207,25 +263,25 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     private void setUpGeofenceList() {
         mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations[0].getName())
+                .setRequestId(testLocations.get(0).getName())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations[0].getLocation().latitude, testLocations[0].getLocation().longitude, testLocations[0].getRadius())
+                .setCircularRegion(testLocations.get(0).getLocation().latitude, testLocations.get(0).getLocation().longitude, testLocations.get(0).getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
         mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations[1].getName())
+                .setRequestId(testLocations.get(1).getName())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations[1].getLocation().latitude, testLocations[1].getLocation().longitude, testLocations[1].getRadius())
+                .setCircularRegion(testLocations.get(1).getLocation().latitude, testLocations.get(1).getLocation().longitude, testLocations.get(1).getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build());
         mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations[2].getName())
+                .setRequestId(testLocations.get(1).getName())
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
-                .setCircularRegion(testLocations[2].getLocation().latitude, testLocations[2].getLocation().longitude, testLocations[0].getRadius())
+                .setCircularRegion(testLocations.get(1).getLocation().latitude, testLocations.get(1).getLocation().longitude, testLocations.get(1).getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setLoiteringDelay(5000)
                 .build());
-        addMarkerToMap();
+        addInitialMarkersToMap();
     }
 
 
@@ -248,7 +304,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     private void startLocationUpdates() {
         createLocationRequest();
-
     }
 
     @Override
@@ -268,10 +323,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         startGeofencing();
     }
 
-    private void setCameraFocus(Location mLastLocation) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15));
-    }
-
     @Override
     public void onConnectionSuspended(int i) {
         Log.e("Maps/GoogleApi/connSus", "Connection fail");
@@ -284,18 +335,22 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        NotificationFactory.createNotification(this, "Test Map Marker", marker.getId(), false);
         // set Name/Radius visible
         setMarkerChangeVisibility(true);
         // Save Marker to change radius
         activeMarker = marker;
+        // set current data
+        setTextViewSeekbarText((int) markerCircelMapping.get(marker.getId()).getRadius());
+        setMarkerNameTextView(markerLocationMapping.get(marker.getId()).getName());
         return false;
     }
+
 
     @Override
     public void onMapLongClick(LatLng latLng) {
         //create new marker
-        NotificationFactory.createNotification(this, "Test Map Long Click", "Create new Marker", false);
+        activeMarker = addMarkerToMap(latLng, getString(R.string.newMarker));
+        //set Edit functions true
         setMarkerChangeVisibility(true);
     }
 
