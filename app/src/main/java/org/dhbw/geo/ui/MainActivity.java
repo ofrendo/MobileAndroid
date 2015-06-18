@@ -20,6 +20,7 @@ import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
+import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
@@ -52,8 +53,9 @@ public class MainActivity extends ActionBarActivity {
         // Test an api call
         BackendController backendController = new BackendController();
         backendController.getAllFenceGroups();
-
-
+        // start GoogleApiClient in Service
+        Intent mConditionService = new Intent(this, ConditionService.class);
+        startService(mConditionService);
     }
 
     @Override

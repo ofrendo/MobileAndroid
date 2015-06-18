@@ -389,6 +389,19 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         activeMarker = addMarkerToMap(latLng, getString(R.string.newMarker));
         //set Edit functions true
         setMarkerChangeVisibility(true);
+        //add geofence
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId("Test")
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
+                .setCircularRegion(latLng.latitude, latLng.longitude, 50)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setLoiteringDelay(20)
+                .build());
+        LocationServices.GeofencingApi.addGeofences(
+                mGoogleApiClient,
+                getGeofencingRequest(),
+                getGeofencePendingIntent()
+        ).setResultCallback(this);
     }
 
     @Override
