@@ -181,7 +181,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        childObject.text = "" + input.getText();
+                        childObject.setText( "" + input.getText());
                     }
                 });
 
@@ -209,7 +209,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void afterTextChanged(Editable s) {
 
-                        childObject.numberText = "" + numInput.getText();
+                        childObject.setNumbertext("" + numInput.getText());
                     }
                 });
 

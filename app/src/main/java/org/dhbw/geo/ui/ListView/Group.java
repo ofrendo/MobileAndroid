@@ -22,6 +22,7 @@ public class Group {
     }
     public void setActive (boolean active){
         this.active = active;
+        saveToDB();
     }
 
     public void saveToDB(){

@@ -1,5 +1,7 @@
 package org.dhbw.geo.ui.ListView;
 
+import android.util.Log;
+
 import org.dhbw.geo.database.DBActionSound;
 
 import java.util.ArrayList;
@@ -91,15 +93,23 @@ public class Child {
     }
 
     String text;
-    public Child(String name, String inputText){
+    public Child( Group parent,String name, String inputText){
+        this.parent = parent;
         type = TEXTINPUT;
         this.text = inputText;
         this.name = name;
+        Log.e("MESSAGE","new TEXTINPUT : "+inputText);
+        Log.e("MESSAGE","new TEXTINPUT : "+text);
 
+    }
+    public void setText(String text){
+        this.text = text;
+        parent.saveToDB();
     }
 
     String numberText;
-    public Child(String name, String input, boolean number){
+    public Child(Group parent, String name, String input, boolean number){
+        this.parent = parent;
         this.name = name;
         if (number){
             type = NUMBERINPUT;
@@ -109,7 +119,12 @@ public class Child {
             type = TEXTINPUT;
             this.text = input;
         }
-
+        Log.e("MESSAGE","new NUMINPUT : "+input);
+        Log.e("MESSAGE","new NUMINPUT : "+numberText);
+    }
+    public void setNumbertext(String text){
+        numberText = text;
+        parent.saveToDB();
     }
 
     //Sound

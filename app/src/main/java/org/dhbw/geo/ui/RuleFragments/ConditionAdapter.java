@@ -37,7 +37,7 @@ public class ConditionAdapter extends ArrayAdapter<DBCondition> {
         }
 
         TextView tv = (TextView)v.findViewById(R.id.ruleCondition_text);
-        Log.e("Conditions","Condition: "+items.get(position).getName());
+        //Log.e("Conditions","Condition: "+items.get(position).getName());
         tv.setText(items.get(position).getName());
 
         ImageView icon = (ImageView)v.findViewById(R.id.ruleCondition_icon);

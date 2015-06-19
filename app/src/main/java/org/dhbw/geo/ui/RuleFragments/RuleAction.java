@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 
+import org.dhbw.geo.database.DBAction;
+import org.dhbw.geo.database.DBActionMessage;
+import org.dhbw.geo.database.DBActionNotification;
 import org.dhbw.geo.ui.ListView.Bluetooth;
 import org.dhbw.geo.ui.ListView.Child;
 import org.dhbw.geo.ui.ListView.Group;
@@ -28,41 +31,23 @@ import java.util.ArrayList;
  * Activities that contain this fragment must implement the
  * {@link RuleAction.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link RuleAction#newInstance} factory method to
+ * Use the {@link RuleAction} factory method to
  * create an instance of this fragment.
  */
 public class RuleAction extends Fragment {
 
     ArrayList<Group> groups = new ArrayList<Group>();
+    RuleContainer activity;
+    ArrayList<DBAction> actionList;
+    WLAN wlan;
+    Message message;
+    Notification notification;
+    Sound sound;
+    Bluetooth bluetooth;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RuleAction.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RuleAction newInstance(String param1, String param2) {
-        RuleAction fragment = new RuleAction();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     public RuleAction() {
         // Required empty public constructor
@@ -71,10 +56,6 @@ public class RuleAction extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
 
     }
@@ -82,6 +63,8 @@ public class RuleAction extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
         createData();
         ExpandableListView listView = (ExpandableListView) getView().findViewById(R.id.expandableListView);
         MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(),
@@ -128,6 +111,8 @@ public class RuleAction extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        this.activity = (RuleContainer)activity;
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -159,42 +144,35 @@ public class RuleAction extends Fragment {
     }
 
     public void createData() {
-        /*for (int j = 0; j < 5; j++) {
-            Group group = new Group("Test " + j);
-            for (int i = 0; i < 5; i++) {
-                group.children.add(new Child("child" + i, false));
-            }
-            groups.append(j, group);
-        }*/
+
         if (groups.size()!=0){
             return;
         }
-        groups.add(new Message());
+
+        ArrayList<DBAction> actions = DBAction.selectAllFromDB(activity.rule.getId());
+        for (int i = 0; i<actions.size(); i++){
+            DBAction action = actions.get(i);
+            if (action instanceof DBActionMessage){
+                Log.e("MESSAGE","Message vorhanden");
+                message = new Message((DBActionMessage)action);
+            }
+            else if (action instanceof DBActionNotification){
+                notification = new Notification(((DBActionNotification)action).getMessage());
+            }
+        }
+
+
+
+
+        if (message == null){
+            message = new Message(activity.rule);
+        }
+        groups.add(message);
         groups.add(new Notification());
         groups.add(new WLAN());
         groups.add(new Bluetooth());
         groups.add(new Sound());
-        //groups.add(new Sound());
 
-        /*
-        Group group = new Group ("Wlan");
-        group.add(new Child("Active", true,true));
-        group.add(new Child("Status",true,false));
-        group.add(new Child("Status1",true,false));
-        group.add(new Child("Status2",true,false));
-        group.add(new Child("Slider",20,120,50));
-        group.add(new Child("Text","Hallo"));
-        group.add(new Child("Number","0156545254632",true));
-
-        Group group3 = new Group("whatever");
-        group3.add(new Child("active", true,true));
-        group3.add(new Child("status", true,false));
-
-        Group group4 = new Group("whatever2");
-        group4.add(new Child("active", true,true));
-        group4.add(new Child("status", true,false));
-        groups.add(group3);
-        groups.add(group4);*/
     }
 
 }
