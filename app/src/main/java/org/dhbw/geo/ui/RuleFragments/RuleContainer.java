@@ -58,11 +58,14 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
 
         if (id != -1){
             rule = DBRule.selectFromDB(id);
-            setTitle(rule.getName());
         }
         else{
-            setTitle("GEO");
+            rule = new DBRule();
+            rule.setActive(false);
+            rule.setName("");
+            rule.writeToDB();
         }
+        setTitle(rule.getName());
 
 
 

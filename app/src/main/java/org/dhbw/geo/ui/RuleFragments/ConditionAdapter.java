@@ -43,10 +43,10 @@ public class ConditionAdapter extends ArrayAdapter<DBCondition> {
         ImageView icon = (ImageView)v.findViewById(R.id.ruleCondition_icon);
 
         if (items.get(position) instanceof DBConditionFence){
-            Log.i("Condition", "Fence");
+            icon.setImageResource(R.drawable.map);
         }
         else{
-            Log.i("Condition", "Time");
+            icon.setImageResource(R.drawable.time);
         }
 
         return v;

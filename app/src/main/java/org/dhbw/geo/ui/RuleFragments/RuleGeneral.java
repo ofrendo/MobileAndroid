@@ -56,6 +56,8 @@ public class RuleGeneral extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
         //get Rule
         rule = activity.rule;
 
@@ -76,7 +78,7 @@ public class RuleGeneral extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 rule.setName("" + name.getText());
-                getActivity().setTitle(name.getText());
+                getActivity().setTitle(""+name.getText());
                 rule.writeToDB();
             }
         });

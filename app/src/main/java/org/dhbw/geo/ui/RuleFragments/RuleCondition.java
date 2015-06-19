@@ -61,6 +61,7 @@ public class RuleCondition extends ListFragment {
         rule = activity.rule;
         conditions = DBCondition.selectAllFromDB(rule.getId());
 
+        Log.e("Conditions", "ID: "+rule.getId());
         Log.e("Conditions" , "Anzahl conditions "+conditions.size());
 
         //set adapter for dynamical listview
