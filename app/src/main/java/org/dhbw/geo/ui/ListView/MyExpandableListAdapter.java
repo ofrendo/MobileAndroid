@@ -78,9 +78,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                 switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        Log.i(tag,groupName);
-                        Log.i(tag,childObject.name + "changed to "+ isChecked);
-                        childObject.checked =  isChecked;
+                        childObject.setChecked(isChecked);
                     }
                 });
                 text = (TextView) convertView.findViewById(R.id.switch_text);
@@ -93,9 +91,8 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                 checkObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        Log.i(tag,groupName);
-                        Log.i(tag,childObject.name + "changed to "+ isChecked);
-                        childObject.checked =  isChecked;
+
+                        childObject.setChecked(isChecked);
                     }
                 });
                 text = (TextView) convertView.findViewById(R.id.checkbox_text);
@@ -149,7 +146,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         childObject.value = seekBar.getProgress() + childObject.min;
                         actual.setText("" + (seekBar.getProgress() + childObject.min));
-                        Log.i(tag, childObject.name + " changed to " + childObject.value);
 
                     }
                 });

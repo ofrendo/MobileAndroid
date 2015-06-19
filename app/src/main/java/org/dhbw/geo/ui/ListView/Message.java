@@ -40,10 +40,7 @@ public class Message extends Group {
 
     @Override
     public void saveToDB() {
-        Log.e("MESSAGE","Write to DB");
-        Log.e("MESSAGE", message.text);
-        Log.e("MESSAGE",number.numberText);
-        Log.e("MESSAGE",""+active);
+
         action.setMessage(message.text);
         action.setNumber(number.numberText);
         action.setActive(active);

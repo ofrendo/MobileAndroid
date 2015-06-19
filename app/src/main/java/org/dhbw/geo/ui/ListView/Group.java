@@ -29,17 +29,7 @@ public class Group {
         return;
     };
 
-    public ArrayList<String> getActions(){
-        if (active){
-            ArrayList<String> list = new ArrayList<String>();
-            for (int i = 0; i<children.size();i++){
-                list.add(name+" : "+children.get(i).getAction());
-            }
-            return list;
-        }
-        else
-            return null;
-    }
+
 
 
 }

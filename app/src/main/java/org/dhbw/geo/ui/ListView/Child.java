@@ -26,7 +26,8 @@ public class Child {
     public boolean checked;
 
     //checkbox/switch
-    public Child(String name, boolean checked, boolean checkBox){
+    public Child(Group parent, String name, boolean checked, boolean checkBox){
+        this.parent = parent;
         if (checkBox)
         type = CHECKBOX;
         else
@@ -34,8 +35,12 @@ public class Child {
         this.name = name;
         this.checked = checked;
     }
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+        parent.saveToDB();
+    }
 
-    //Radiobuttons
+    //Radiobuttons  //*************************unused*********************
     public ArrayList<String> options;
     public String selectedOption;
 
@@ -51,7 +56,7 @@ public class Child {
     }
 
 
-    //Slider
+    //Slider //*************Unused*****************
     public int value;
     public int min;
     public int max;
@@ -73,33 +78,15 @@ public class Child {
         this.range = max-min;
     }
 
-    public String getAction(){
-        switch (type){
-            case SLIDER:
-                return name + " : "+value;
-            case CHECKBOX:
-                return name + " : "+checked;
-            case SWITCH:
-                return name + " : "+checked;
-            case RADIOBUTTONS:
-                return name + " : "+selectedOption;
-            case TEXTINPUT:
-                return name + " : "+text;
-            case NUMBERINPUT:
-                return name + " : "+numberText;
-            default:
-                return "";
-        }
-    }
 
+    //text
     String text;
     public Child( Group parent,String name, String inputText){
         this.parent = parent;
         type = TEXTINPUT;
         this.text = inputText;
         this.name = name;
-        Log.e("MESSAGE","new TEXTINPUT : "+inputText);
-        Log.e("MESSAGE","new TEXTINPUT : "+text);
+
 
     }
     public void setText(String text){
@@ -107,6 +94,7 @@ public class Child {
         parent.saveToDB();
     }
 
+    //numbertext
     String numberText;
     public Child(Group parent, String name, String input, boolean number){
         this.parent = parent;
@@ -119,8 +107,7 @@ public class Child {
             type = TEXTINPUT;
             this.text = input;
         }
-        Log.e("MESSAGE","new NUMINPUT : "+input);
-        Log.e("MESSAGE","new NUMINPUT : "+numberText);
+
     }
     public void setNumbertext(String text){
         numberText = text;

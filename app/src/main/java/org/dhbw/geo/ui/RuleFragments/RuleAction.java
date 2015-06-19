@@ -14,6 +14,8 @@ import android.widget.ExpandableListView;
 import org.dhbw.geo.database.DBAction;
 import org.dhbw.geo.database.DBActionMessage;
 import org.dhbw.geo.database.DBActionNotification;
+import org.dhbw.geo.database.DBActionSimple;
+import org.dhbw.geo.database.DBActionSound;
 import org.dhbw.geo.ui.ListView.Bluetooth;
 import org.dhbw.geo.ui.ListView.Child;
 import org.dhbw.geo.ui.ListView.Group;
@@ -80,19 +82,6 @@ public class RuleAction extends Fragment {
         });*/
     }
 
-    private void listActions() {
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i=0;i<groups.size();i++){
-            Group gp = groups.get(i);
-            if (gp.getActions()!=null)
-            list.addAll(gp.getActions());
-        }
-        for (int i=0;i<list.size();i++){
-            Log.i("Action",list.get(i));
-        }
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,16 +137,29 @@ public class RuleAction extends Fragment {
         if (groups.size()!=0){
             return;
         }
+        activity.rule.loadAllActions();
+
 
         ArrayList<DBAction> actions = DBAction.selectAllFromDB(activity.rule.getId());
         for (int i = 0; i<actions.size(); i++){
             DBAction action = actions.get(i);
             if (action instanceof DBActionMessage){
-                Log.e("MESSAGE","Message vorhanden");
                 message = new Message((DBActionMessage)action);
             }
             else if (action instanceof DBActionNotification){
-                notification = new Notification(((DBActionNotification)action).getMessage());
+                notification = new Notification((DBActionNotification)action);
+            }
+            else if (action instanceof DBActionSound){
+                //sound
+            }
+            else if (action instanceof DBActionSimple){
+                if (((DBActionSimple) action).getType().equals(DBActionSimple.TYPE_WIFI)){
+
+                    wlan = new WLAN((DBActionSimple)action);
+                }
+                else if (((DBActionSimple) action).getType().equals(DBActionSimple.TYPE_BLUETOOTH)){
+                    bluetooth = new Bluetooth((DBActionSimple)action);
+                }
             }
         }
 
@@ -167,10 +169,20 @@ public class RuleAction extends Fragment {
         if (message == null){
             message = new Message(activity.rule);
         }
+        if (notification == null){
+            notification = new Notification(activity.rule);
+        }
+        if (wlan == null){
+            wlan = new WLAN(activity.rule);
+        }
+        if (bluetooth == null){
+            bluetooth = new Bluetooth(activity.rule);
+        }
+
         groups.add(message);
-        groups.add(new Notification());
-        groups.add(new WLAN());
-        groups.add(new Bluetooth());
+        groups.add(notification);
+        groups.add(wlan);
+        groups.add(bluetooth);
         groups.add(new Sound());
 
     }
