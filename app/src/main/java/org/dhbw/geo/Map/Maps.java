@@ -278,7 +278,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     public Location getCurrentLocation(){
         // check mGoogleApiClient
        Location location = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+               mGoogleApiClient);
         return location;
     }
 
