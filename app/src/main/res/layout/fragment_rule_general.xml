@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:ems="10"
-                android:id="@+id/editText"
+                android:id="@+id/ruleGeneral_name"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
@@ -43,7 +43,7 @@
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/switch2"
+                android:id="@+id/ruleGeneral_active"
                 android:checked="false"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
@@ -77,7 +77,7 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton"
+                android:id="@+id/ruleGeneral_delete"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"

@@ -41,6 +41,7 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
     String [] tabs = {"General","Condition","Action"};
     ActionBar actionBar;
     RuleAdapter mAdapter;
+    DBRule rule;
 
     @Override
     public void onBackPressed() {
@@ -54,7 +55,7 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
 
         Intent i = getIntent();
         long id = i.getLongExtra("RuleID",-1);
-        DBRule rule;
+
         if (id != -1){
             rule = DBRule.selectFromDB(id);
             setTitle(rule.getName());

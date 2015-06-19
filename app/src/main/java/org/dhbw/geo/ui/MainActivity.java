@@ -88,6 +88,14 @@ public class MainActivity extends ActionBarActivity {
         listView.setAdapter(adapter);
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listItems = DBRule.selectAllFromDB();
+        adapter.notifyDataSetChanged();
+    }
+
     public void onTestPage(View view){
         Intent nextScreen = new Intent(getApplicationContext(), TestActivity.class);
         startActivity(nextScreen);

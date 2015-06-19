@@ -253,6 +253,7 @@ public class TestActivity extends ActionBarActivity {
         workRule.writeToDB();
         // create time condition
         DBConditionTime workTime = new DBConditionTime();
+        workTime.setName("Working Time");
         workTime.addDay(Calendar.MONDAY);
         workTime.addDay(Calendar.TUESDAY);
         workTime.addDay(Calendar.WEDNESDAY);
@@ -263,6 +264,21 @@ public class TestActivity extends ActionBarActivity {
         workRule.addCondition(workTime);
         workTime.writeToDB();
         workTime.updateAlarm();
+
+        // create time condition
+        DBConditionTime workTime2 = new DBConditionTime();
+        workTime2.setName("Working Time2");
+        workTime2.addDay(Calendar.MONDAY);
+        workTime2.addDay(Calendar.TUESDAY);
+        workTime2.addDay(Calendar.WEDNESDAY);
+        workTime2.addDay(Calendar.THURSDAY);
+        workTime2.addDay(Calendar.FRIDAY);
+        workTime2.setStart(8, 0);
+        workTime2.setEnd(16, 30);
+        workRule.addCondition(workTime2);
+        workTime2.writeToDB();
+        workTime2.updateAlarm();
+
         // create sound action
         DBActionSound music = new DBActionSound();
         music.setActive(true);
