@@ -1,5 +1,6 @@
 package org.dhbw.geo.ui;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -76,8 +77,11 @@ public class MainActivity extends ActionBarActivity {
         // start GoogleApiClient in Service
         Intent mConditionService = new Intent(this, ConditionService.class);
         mConditionService.setAction(ConditionService.STARTAPP);
+        //start ConditionService as Pending Intent
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
+        // add PendingIntent
+        mConditionService.putExtra("pendingIntent", pendingIntent);
         startService(mConditionService);
-
         //initialize listitems
         listItems = DBRule.selectAllFromDB();
 

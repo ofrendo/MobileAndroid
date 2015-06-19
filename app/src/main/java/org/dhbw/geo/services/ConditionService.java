@@ -1,6 +1,7 @@
 package org.dhbw.geo.services;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -8,27 +9,44 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingEvent;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
+import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
+import org.dhbw.geo.Map.TestLocation;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.NotificationFactory;
+import org.dhbw.geo.ui.ListView.Notification;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles conditions and sets conditions on startup.
  * @author Matthias
  */
-public class ConditionService extends IntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    public static final String TAG = "checkConditionService";
+public class ConditionService extends IntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+    public static final String TAG = "CheckConditionService";
     public static final String AUTO_START = "Autostart";
-    public static final String ADDGEO = "addGeofence";
-    public static final String STARTAPP = "startApp";
-    public static final String REMOVESTRING = "removeGeofence";
-    public static final String CHECKCONDITIONTIME = "checkConditionTime";
+    public static final String ADDGEO = "AddGeofence";
+    public static final String STARTAPP = "StartApp";
+    public static final String REMOVEGEO = "RemoveGeofence";
+    public static final String CHECKCONDITIONTIME = "CheckConditionTime";
 
     private GoogleApiClient mGoogleApiClient;
+    private ArrayList mGeofenceList = new ArrayList();
+    private LocationRequest mLocationRequest;
+    private PendingIntent mPendingIntent;
+
+    // just for testing
+    private List<TestLocation> testLocations;
 
     public ConditionService() {
         super(TAG);
@@ -59,16 +77,115 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 handleAutoStart(intent);
                 break;
             case STARTAPP:
-                startApp(intent);
+                handleStartApp(intent);
                 break;
             case CHECKCONDITIONTIME:
                 handleCheckConditionTime(intent);
                 break;
+            case ADDGEO:
+                handleAddGeofence(intent);
+                break;
+            case REMOVEGEO:
+                handleRemoveGeofence(intent);
+                break;
+            default:
+                // check if geofenceevent was triggerd
+                handleGeofence(intent);
         }
     }
 
-    private void startApp(Intent intent) {
+    private void handleGeofence(Intent intent) {
+        try {
+            GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+            if (geofencingEvent.hasError()) {
+                Log.d("Maps/Geofencing", String.valueOf(geofencingEvent.getErrorCode()));
+                return;
+            }
 
+            NotificationFactory.createNotification(this, "GeofenceIntentService", "onHandle", false);
+
+            // Get the transition type.
+            int geofenceTransition = geofencingEvent.getGeofenceTransition();
+
+            // Test that the reported transition was of interest.
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
+                    geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+
+                // Get the geofences that were triggered. A single event can trigger
+                // multiple geofences.
+                List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+                NotificationFactory.createNotification(this,"ConditionService", "Triggering Geos" + triggeringGeofences.toString(), false);
+
+                // Get the transition details as a String.
+                String geofenceTransitionDetails = getGeofenceTransitionDetails(
+                        this,
+                        geofenceTransition,
+                        triggeringGeofences
+                );
+
+                // Send notification and log the transition details.
+                NotificationFactory.createNotification(this, "Test Map", geofenceTransitionDetails, false);
+                Log.d("Map/Geofancing", geofenceTransitionDetails);
+            } else {
+                // Log the error.
+                Log.e("Map/Geofancing - Error", "Fehler");
+            }
+        }catch (Exception e){
+            NotificationFactory.createNotification(this, "Map/Geofence","Error:" + e.getMessage(), false);
+        }
+    }
+
+    private void handleRemoveGeofence(Intent intent) {
+        // TODO: remove Geofence
+    }
+
+    private void handleAddGeofence(Intent intent) {
+        //TODO: add Geofence
+    }
+
+    private void handleStartApp(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        mPendingIntent = (PendingIntent) bundle.get("pendingIntent");
+        // TODO: add all geofences and build a list with them
+    }
+
+    private void setUpTestList() {
+    // ONLY FOR TESTING!!!!
+        // TODO: Get data from database and build new geofences
+        testLocations = new ArrayList<TestLocation>();
+            testLocations.add(new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10));
+            testLocations.add(new TestLocation(new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
+            testLocations.add(new TestLocation(new LatLng(49.543011, 8.663158), "HomeSweetHome", 20));
+            testLocations.add(new TestLocation(new LatLng(49.430101, 8.529264),"Bei Matthias", 20));
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations.get(0).getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations.get(0).getLocation().latitude, testLocations.get(0).getLocation().longitude, testLocations.get(0).getRadius())
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build());
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations.get(1).getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations.get(1).getLocation().latitude, testLocations.get(1).getLocation().longitude, testLocations.get(1).getRadius())
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build());
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations.get(2).getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations.get(2).getLocation().latitude, testLocations.get(2).getLocation().longitude, testLocations.get(2).getRadius())
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build());
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(testLocations.get(3).getName())
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
+                .setCircularRegion(testLocations.get(3).getLocation().latitude, testLocations.get(3).getLocation().longitude, testLocations.get(3).getRadius())
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build());
+    }
+
+    private String getGeofenceTransitionDetails(ConditionService geofenceTransistionsIntentService, int geofenceTransition, List triggeringGeofences) {
+        Geofence geo = (Geofence) triggeringGeofences.get(geofenceTransition);
+        return geo.getRequestId();
     }
 
     /**
@@ -115,9 +232,33 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         // TODO: set geofences for all rules
     }
 
+    public Location getLastLocation(){
+        // get last location
+        return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
+
+    private void startGeofencing(){
+        // start geofencing
+        LocationServices.GeofencingApi.addGeofences(
+                mGoogleApiClient,
+                getGeofencingRequest(),
+                mPendingIntent
+        ).setResultCallback(this);
+    }
+
+    private GeofencingRequest getGeofencingRequest(){
+        // create GeofenceRequest
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(mGeofenceList);
+        return builder.build();
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
-        Log.d("ConditionService","Connection to GoogleAPI successful");
+        Log.d("ConditionService", "Connection to GoogleAPI successful");
+        setUpTestList();
+        startGeofencing();
     }
 
     @Override
@@ -128,5 +269,10 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.d("ConditionService","Connection to GoogleAPI failed");
+    }
+
+    @Override
+    public void onResult(Status status) {
+        Log.d("ConditionService","Add Geofence: " + status.toString());
     }
 }
