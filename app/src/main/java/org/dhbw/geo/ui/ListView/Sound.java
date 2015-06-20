@@ -57,7 +57,7 @@ public class Sound extends Group {
             actionAlarm.setStatus(DBActionSound.STATUS_SOUND);
     }
         if (soundMusic == null){
-            soundMusic = new Child(this,AudioManager.STREAM_ALARM,50,false,DBActionSound.STATUS_SOUND);
+            soundMusic = new Child(this,AudioManager.STREAM_MUSIC,50,false,DBActionSound.STATUS_SOUND);
             actionMusic = new DBActionSound();
             actionMusic.setActive(false);
             actionMusic.setRule(rule);
