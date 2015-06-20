@@ -3,8 +3,10 @@ package org.dhbw.geo.ui.ListView;
 import android.media.AudioManager;
 import android.util.Log;
 
+import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBActionSound;
 import org.dhbw.geo.database.DBRule;
+import org.dhbw.geo.services.ContextManager;
 
 /**
  * Created by Joern on 15.06.2015.
@@ -21,7 +23,7 @@ public class Sound extends Group {
 
 
     public Sound(){
-        super("Sound");
+        super(ContextManager.getContext().getString(R.string.action_Sound));
     }
     public void addChild(DBActionSound action){
         switch (action.getType()){
@@ -99,10 +101,6 @@ public class Sound extends Group {
                 return;
         }
 
-        Log.e("SOUND", "write to db");
-        Log.e("SOUND", ""+child.active);
-        Log.e("SOUND", ""+child.status);
-        Log.e("SOUND", ""+child.soundActual);
 
         action.setActive(child.active);
         action.setStatus(child.status);
