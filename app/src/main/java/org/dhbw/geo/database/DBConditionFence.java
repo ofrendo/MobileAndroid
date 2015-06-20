@@ -132,6 +132,7 @@ public class DBConditionFence extends DBCondition {
         values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
         long id = db.insert(DBHelper.TABLE_CONDITION_FENCE, null, values);
+        setId(id);
         if(getRule() != null){
             writeRuleToDB();
         }
