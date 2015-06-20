@@ -28,6 +28,9 @@ public class Group {
     public void saveToDB(){
         return;
     };
+    public void saveToDB(int soundtype){
+        return;
+    }
 
 
 
