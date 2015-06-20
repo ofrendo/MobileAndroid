@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBRule;
 
 import java.util.ArrayList;
@@ -28,10 +30,18 @@ public class DBRuleAdapter extends ArrayAdapter<DBRule> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(android.R.layout.simple_list_item_activated_1, null);
+            v = vi.inflate(R.layout.rule_condition_row, null);
         }
-        TextView tv = (TextView)v.findViewById(android.R.id.text1);
+        TextView tv = (TextView)v.findViewById(R.id.ruleCondition_text);
         tv.setText(items.get(position).getName());
+
+        ImageView iv = (ImageView)v.findViewById(R.id.ruleCondition_icon);
+        if (items.get(position).isActive()){
+            iv.setImageResource(R.drawable.active);
+        }else{
+            iv.setImageResource(R.drawable.notactive);
+        }
+
 
         return v;
     }
