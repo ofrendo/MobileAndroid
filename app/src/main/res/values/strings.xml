@@ -38,4 +38,25 @@
     <string name="MapsTitleDeleteGeofence">Delete Geofence</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="main_existingRules">Existing Rules</string>
+    <string name="main_new_rule">New Rule</string>
+
+    <string name="rule_tab_general">General</string>
+    <string name="rule_tab_condition">Condition</string>
+    <string name="rule_tab_action">Action</string>
+
+    <string name="action_bluetooth">Bluetooth</string>
+    <string name="action_wifi">WIFI</string>
+    <string name="action_Notification">Notification</string>
+    <string name="action_Message">Message</string>
+    <string name="action_Sound">Sound</string>
+    <string name="action_Status">Status</string>
+
+    <string name="action_Number">Phone Number</string>
+    <string name="action_text">Message</string>
+
+
+
+
+
+
 </resources>

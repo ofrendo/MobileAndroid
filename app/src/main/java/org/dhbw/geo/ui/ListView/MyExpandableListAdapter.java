@@ -30,6 +30,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.database.DBActionSound;
 
 import java.util.ArrayList;
 
@@ -215,21 +216,76 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                 text.setText(childName);
                 break;
             case Child.SOUND:
+
                 convertView = inflater.inflate(R.layout.rule_soundtype, null);
                 TextView type = (TextView) convertView.findViewById(R.id.soundtype_type);
                 type.setText(childObject.name);
 
+
+                Switch soundActive = (Switch) convertView.findViewById(R.id.soundType_active);
+                soundActive.setChecked(childObject.active);
+                soundActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        childObject.setActive(isChecked);
+                    }
+                });
+                final TextView soundActual = (TextView) convertView.findViewById(R.id.soundtype_actual);
+                soundActual.setText("" + childObject.soundActual);
+                final SeekBar soundSlider = (SeekBar) convertView.findViewById(R.id.soundtype_slider);
+                soundSlider.setMax(childObject.soundMax);
+                soundSlider.setProgress(childObject.soundActual);
+                if (childObject.status.equals(DBActionSound.STATUS_SOUND)){
+                    soundSlider.setEnabled(true);
+                }else {
+                    soundSlider.setEnabled(false);
+                }
+
+                soundSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        soundActual.setText(""+progress);
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        childObject.setSoundActual(seekBar.getProgress());
+                    }
+                });
+
                 RadioGroup soundRadioGroup = (RadioGroup) convertView.findViewById(R.id.soundtype_radio);
+                soundRadioGroup.removeAllViews();
                 //add new buttons
                 for (int i = 0; i<childObject.soundOptions.length; i++){
                     RadioButton radioButton = new RadioButton(activity);
                     soundRadioGroup.addView(radioButton);
                     radioButton.setText(childObject.soundOptions[i]);
 
-                    if (childObject.status == childObject.statusOption[i]){
+                    if (childObject.status.equals(childObject.statusOption[i])){
                         radioButton.setChecked(true);
                     }
                 }
+                soundRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                        String status = childObject.statusOption[(checkedId - 1) % childObject.statusOption.length];
+                        if (status.equals(DBActionSound.STATUS_SOUND)){
+                            soundSlider.setEnabled(true);
+                        }
+                        else {
+                            soundSlider.setEnabled(false);
+                        }
+
+                        childObject.setStatus(status);
+                    }
+                });
+
 
 
                 break;
@@ -320,6 +376,10 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         RelativeLayout header = (RelativeLayout)convertView.findViewById(R.id.HeaderRow);
         Switch switchObject = (Switch)convertView.findViewById(R.id.switch1);
         switchObject.setChecked(group.active);
+
+        if (group instanceof Sound){
+            header.removeView(switchObject);
+        }
 
         switchObject.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

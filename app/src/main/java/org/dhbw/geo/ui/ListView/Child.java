@@ -1,5 +1,6 @@
 package org.dhbw.geo.ui.ListView;
 
+import android.media.AudioManager;
 import android.util.Log;
 
 import org.dhbw.geo.database.DBActionSound;
@@ -115,29 +116,46 @@ public class Child {
     }
 
     //Sound
-    public static final int MEDIA = 1;
-    public static final int ALARM = 2;
+
     String status;
     int soundActual;
     int soundtype;
-    String [] statusOption = {DBActionSound.STATUS_SOUND,"Vibrate",DBActionSound.STATUS_MUTE};
-    String [] soundOptions = {"Sound","Vibrate","Mute"};
+    String [] statusOption = {DBActionSound.STATUS_SOUND,DBActionSound.STATUS_MUTE};
+    String [] soundOptions = {"Sound","Mute"};
+    boolean active;
+    int soundMax = 100;
 
-    public Child(Group parent, int soundtype){
+    public Child(Group parent, int soundtype, int actual, boolean active, String status){
+
+        Log.e("SOUND", ""+status);
+
         this.type = SOUND;
         this.parent = parent;
-        this.soundActual = 50;
+        this.soundActual = actual;
 
         switch (soundtype){
-            case MEDIA: name = "Media"; break;
-            case ALARM: name = "Alarm"; break;
+            case AudioManager.STREAM_MUSIC: name = "Music"; break;
+            case AudioManager.STREAM_RING: name = "Ring"; break;
+            case AudioManager.STREAM_ALARM: name = "Alarm"; break;
             default: break;
         }
-
+        this.active = active;
         this.soundtype = soundtype;
+        this.status = status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+        parent.saveToDB(soundtype);
+    }
 
+    public void setActive(boolean active) {
+        this.active = active;
+        parent.saveToDB(soundtype);
+    }
 
-
+    public void setSoundActual(int soundActual) {
+        this.soundActual = soundActual;
+        parent.saveToDB(soundtype);
+    }
 }

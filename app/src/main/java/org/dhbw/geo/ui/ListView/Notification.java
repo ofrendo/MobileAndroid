@@ -1,7 +1,9 @@
 package org.dhbw.geo.ui.ListView;
 
+import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBActionNotification;
 import org.dhbw.geo.database.DBRule;
+import org.dhbw.geo.services.ContextManager;
 
 /**
  * Created by Joern on 15.06.2015.
@@ -10,12 +12,12 @@ public class Notification extends Group {
     Child notification;
     DBActionNotification action;
     public Notification(DBRule rule){
-        super("Notification");
+        super(ContextManager.getContext().getString(R.string.action_Notification));
         action = new DBActionNotification();
         action.setActive(active);
         action.setRule(rule);
 
-        notification = new Child(this,"Message","");
+        notification = new Child(this,ContextManager.getContext().getString(R.string.action_text),"");
 
         action.setMessage(notification.text);
 
@@ -24,10 +26,10 @@ public class Notification extends Group {
     public Notification(DBActionNotification action){
 
 
-        super("Notification");
+        super(ContextManager.getContext().getString(R.string.action_Notification));
         this.action = action;
 
-        this.notification = new Child(this,"Message",action.getMessage());
+        this.notification = new Child(this,ContextManager.getContext().getString(R.string.action_text),action.getMessage());
 
         //set active status
         active = action.isActive();

@@ -1,6 +1,7 @@
 package org.dhbw.geo.ui.RuleFragments;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -139,6 +140,8 @@ public class RuleAction extends Fragment {
         }
         activity.rule.loadAllActions();
 
+        //create soundcontainer
+        sound = new Sound();
 
         ArrayList<DBAction> actions = DBAction.selectAllFromDB(activity.rule.getId());
         for (int i = 0; i<actions.size(); i++){
@@ -150,7 +153,7 @@ public class RuleAction extends Fragment {
                 notification = new Notification((DBActionNotification)action);
             }
             else if (action instanceof DBActionSound){
-                //sound
+                sound.addChild((DBActionSound)action);
             }
             else if (action instanceof DBActionSimple){
                 if (((DBActionSimple) action).getType().equals(DBActionSimple.TYPE_WIFI)){
@@ -179,11 +182,13 @@ public class RuleAction extends Fragment {
             bluetooth = new Bluetooth(activity.rule);
         }
 
+        sound.addChildren(activity.rule);
+
         groups.add(message);
         groups.add(notification);
         groups.add(wlan);
         groups.add(bluetooth);
-        groups.add(new Sound());
+        groups.add(sound);
 
     }
 

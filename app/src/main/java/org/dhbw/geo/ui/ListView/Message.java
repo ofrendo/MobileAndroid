@@ -2,8 +2,10 @@ package org.dhbw.geo.ui.ListView;
 
 import android.util.Log;
 
+import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBActionMessage;
 import org.dhbw.geo.database.DBRule;
+import org.dhbw.geo.services.ContextManager;
 
 /**
  * Created by Joern on 15.06.2015.
@@ -14,22 +16,22 @@ public class Message extends Group {
     DBActionMessage action;
 
     public Message(DBRule rule){
-        super("Message");
+        super(ContextManager.getContext().getString(R.string.action_Message));
         action = new DBActionMessage();
         rule.addAction(action);
         action.setActive(active);
-        number = new Child(this,"Number","",true);
-        message = new Child(this, "Message","");
+        number = new Child(this,ContextManager.getContext().getString(R.string.action_Number),"",true);
+        message = new Child(this, ContextManager.getContext().getString(R.string.action_text),"");
         //sets action
         action.setMessage(message.text);
         action.setNumber(number.numberText);
         addAll();
     }
     public Message(DBActionMessage action){
-        super("Message");
+        super(ContextManager.getContext().getString(R.string.action_Message));
         this.action = action;
-        this.number = new Child(this,"Number", action.getNumber(), true);
-        this.message = new Child(this, "Message",action.getMessage());
+        this.number = new Child(this,ContextManager.getContext().getString(R.string.action_Number), action.getNumber(), true);
+        this.message = new Child(this, ContextManager.getContext().getString(R.string.action_text),action.getMessage());
         active = action.isActive();
         addAll();
     }

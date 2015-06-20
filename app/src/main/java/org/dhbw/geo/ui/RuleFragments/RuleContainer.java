@@ -38,7 +38,8 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    String [] tabs = {"General","Condition","Action"};
+    String [] tabs;
+
     ActionBar actionBar;
     RuleAdapter mAdapter;
     DBRule rule;
@@ -50,6 +51,10 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        tabs = new String[3];
+        tabs[0] = this.getString(R.string.rule_tab_general);
+        tabs [1] = this.getString(R.string.rule_tab_condition);
+        tabs[2] = this.getString(R.string.rule_tab_action);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rule_container);
 
