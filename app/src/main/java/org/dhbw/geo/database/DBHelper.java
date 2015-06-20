@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * the database version (this has to be increased)
      */
-    private static final int DB_VERSION = 17;
+    private static final int DB_VERSION = 18;
     /**
      * the name of the sqlite database (the file it is stored in).
      */
@@ -195,7 +195,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_CONDITION_TIME_ID + " INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE," +
                 COLUMN_DAY + " INTEGER NOT NULL )";
         String createTableRuleCondition = "CREATE TABLE " + TABLE_RULE_CONDITION + " ( " +
-                COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) NOT NULL, " +
+                COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL, " +
                 COLUMN_CONDITION_FENCE_ID + " INTEGER REFERENCES " + TABLE_CONDITION_FENCE + "(ConditionFenceID) ON UPDATE CASCADE ON DELETE CASCADE, " +
                 COLUMN_CONDITION_TIME_ID + " INTEGER REFERENCES " + TABLE_CONDITION_TIME + "(ConditionTimeID) ON UPDATE CASCADE ON DELETE CASCADE )";
 

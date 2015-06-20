@@ -241,7 +241,9 @@ public class DBConditionTime extends DBCondition {
         setId(id); // has to be done now because of the foreign keys in the next statement!
         // create DayStatus entries
         insertDayStatusIntoDB(db);
-        writeRuleToDB();
+        if(getRule() != null){
+            writeRuleToDB();
+        }
         return id;
     }
 
@@ -262,7 +264,9 @@ public class DBConditionTime extends DBCondition {
         // recreate DayStatus entries
         deleteDayStatusFromDB(db);
         insertDayStatusIntoDB(db);
-        writeRuleToDB();
+        if(getRule() != null){
+            writeRuleToDB();
+        }
     }
 
     /**
@@ -271,6 +275,7 @@ public class DBConditionTime extends DBCondition {
     @Override
     public void deleteFromDB() {
         SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys = ON;");
         // delete DayStatus entries
         deleteDayStatusFromDB(db);
         // delete ConditionTime entry

@@ -151,7 +151,9 @@ public class DBActionSound extends DBAction {
         values.put(DBHelper.COLUMN_TYPE, type);
         values.put(DBHelper.COLUMN_STATUS, status);
         values.put(DBHelper.COLUMN_VOLUME, volume);
-        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        if(getRule()!= null){
+            values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        }
         values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_SOUND_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};

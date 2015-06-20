@@ -131,7 +131,11 @@ public class DBConditionFence extends DBCondition {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
-        return db.insert(DBHelper.TABLE_CONDITION_FENCE, null, values);
+        long id = db.insert(DBHelper.TABLE_CONDITION_FENCE, null, values);
+        if(getRule() != null){
+            writeRuleToDB();
+        }
+        return id;
     }
 
     /**
@@ -146,6 +150,9 @@ public class DBConditionFence extends DBCondition {
         String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_CONDITION_FENCE, values, where, whereArgs);
+        if(getRule() != null){
+            writeRuleToDB();
+        }
     }
 
     /**

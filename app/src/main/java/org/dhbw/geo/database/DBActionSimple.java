@@ -137,7 +137,9 @@ public class DBActionSimple extends DBAction {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_TYPE, type);
         values.put(DBHelper.COLUMN_STATUS, status);
-        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        if(getRule()!= null){
+            values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        }
         values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};

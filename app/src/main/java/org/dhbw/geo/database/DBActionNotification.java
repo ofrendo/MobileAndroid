@@ -117,7 +117,9 @@ public class DBActionNotification extends DBAction {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_MESSAGE, message);
         values.put(DBHelper.COLUMN_ACTIVE, isActive());
-        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        if(getRule()!= null){
+            values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        }
         String where = DBHelper.COLUMN_ACTION_NOTIFICATION_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_ACTION_NOTIFICATION, values, where, whereArgs);

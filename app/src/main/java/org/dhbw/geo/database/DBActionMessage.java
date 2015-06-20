@@ -127,7 +127,9 @@ public class DBActionMessage extends DBAction {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NUMBER, number);
         values.put(DBHelper.COLUMN_MESSAGE, message);
-        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        if(getRule()!= null){
+            values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+        }
         values.put(DBHelper.COLUMN_ACTIVE, isActive());
         String where = DBHelper.COLUMN_ACTION_MESSAGE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
