@@ -1,5 +1,6 @@
 package org.dhbw.geo.Map;
 
+import android.animation.ObjectAnimator;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,8 +11,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -59,6 +63,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private TextView mapMarkerName;
     private TextView mapMarkerEditName;
     private ImageButton deleteMarkerButton;
+    private LinearLayout mapLayout;
 
     public void Maps(){
         getGoogleApiClient();
@@ -96,6 +101,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     }
 
     private void getUIObjects() {
+        mapLayout = (LinearLayout) findViewById(R.id.map_layout);
         radius = (SeekBar) findViewById(R.id.map_radius_seekbar);
         radiusText = (TextView) findViewById(R.id.map_radius);
         radiusTextDescription = (TextView) findViewById(R.id.map_radius_description);
@@ -231,7 +237,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         Log.e("Maps/BuildMarker", "CircelId: " + circleId + " MarkerId: " + markerId);
         testLocations.add(new TestLocation(loc, name, initialRadius));
         markerCircelMapping.put(m.getId(), circle);
-        markerLocationMapping.put(m.getId(), testLocations.get(testLocations.size()-1));
+        markerLocationMapping.put(m.getId(), testLocations.get(testLocations.size() - 1));
         return m;
     }
 
@@ -255,6 +261,8 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             mapMarkerName.setVisibility(View.VISIBLE);
             mapMarkerEditName.setVisibility(View.VISIBLE);
             deleteMarkerButton.setVisibility(View.VISIBLE);
+            moveMapDown(mapLayout);
+
         }else{
             radius.setVisibility(View.INVISIBLE);
             radiusTextUnit.setVisibility(View.INVISIBLE);
@@ -263,7 +271,28 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             mapMarkerName.setVisibility(View.INVISIBLE);
             mapMarkerEditName.setVisibility(View.INVISIBLE);
             deleteMarkerButton.setVisibility(View.INVISIBLE);
+            moveMapUp(mapLayout);
         }
+    }
+
+    private void moveMapUp(LinearLayout layout){
+        Animation animation = new TranslateAnimation(0,0,0,-100);
+        animation.setDuration(1000);
+        animation.setFillAfter(true);
+        layout.startAnimation(animation);
+    }
+
+    private void moveMapDown(LinearLayout layout){
+        Animation animation = new TranslateAnimation(0,0,0,0);
+        animation.setDuration(1000);
+        animation.setFillAfter(true);
+        layout.startAnimation(animation);
+    }
+
+    private void moveKeyPadUpdated(LinearLayout keyPad){
+        ObjectAnimator mover = ObjectAnimator.ofFloat(keyPad,"translationY",0,-500);
+        mover.setDuration(300);
+        mover.start();
     }
 
     private Boolean createAlertDialog(String title, String question, String yes, String no) {
