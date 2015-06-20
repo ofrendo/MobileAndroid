@@ -166,20 +166,18 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM sqlite_sequence");
 
         // test action start and stop
-        /*DBRule rule = new DBRule();
+        DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
         DBConditionTime conditionTime = new DBConditionTime();
         Calendar now = Calendar.getInstance();
         conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));
-        /*now.add(Calendar.MINUTE, 1);
+        now.add(Calendar.MINUTE, 1);
         conditionTime.setStart(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, 2);
-        conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));*/
-        /*conditionTime.setStart(19, 0);
-        conditionTime.setEnd(20, 0);
+        now.add(Calendar.HOUR_OF_DAY, 1);
+        conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         rule.addCondition(conditionTime);
         conditionTime.writeToDB();
         DBActionSimple wifi = new DBActionSimple();
@@ -194,7 +192,7 @@ public class TestActivity extends ActionBarActivity {
         rule.addAction(notification);
         notification.writeToDB();
         dbHelper.logDB();
-        conditionTime.updateAlarm();*/
+        conditionTime.updateAlarm();
 
         /*DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
@@ -213,7 +211,7 @@ public class TestActivity extends ActionBarActivity {
         dbHelper.logDB();
         if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");*/
 
-        // Create the test database
+        /*// Create the test database
         // create home rule
         DBRule homeRule = new DBRule();
         homeRule.setActive(true);
@@ -292,7 +290,9 @@ public class TestActivity extends ActionBarActivity {
         phone.setVolume(20);
         phone.setActive(true);
         workRule.addAction(phone);
-        phone.writeToDB();
+        phone.writeToDB();*/
+
+
 
 
         // log database
