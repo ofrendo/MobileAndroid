@@ -355,8 +355,8 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mLastLocation = getCurrentLocation();
         if (mLastLocation != null){
             setCameraFocus(mLastLocation);
+            Log.e("Maps/googleAp/LaLo", String.valueOf(mLastLocation.getLatitude()) + ", " + String.valueOf(mLastLocation.getLongitude()));
         }
-        Log.e("Maps/googleAp/LaLo", String.valueOf(mLastLocation.getLatitude()) + ", " + String.valueOf(mLastLocation.getLongitude()));
         startLocationUpdates();
         startGeofencing();
     }
