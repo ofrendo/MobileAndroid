@@ -64,10 +64,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:progress="200"/>
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:id="@+id/map" tools:context="org.dhbw.geo.Map.Maps"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/map_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+            android:layout_height="match_parent" android:id="@+id/map" tools:context="org.dhbw.geo.Map.Maps"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+    </LinearLayout>
+    </LinearLayout>
+
 
 
