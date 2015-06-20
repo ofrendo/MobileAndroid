@@ -258,7 +258,9 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     public void onConnected(Bundle bundle) {
         Log.d("ConditionService", "Connection to GoogleAPI successful");
         setUpTestList();
-        startGeofencing();
+        if (mPendingIntent != null){
+            startGeofencing();
+        }
     }
 
     @Override
