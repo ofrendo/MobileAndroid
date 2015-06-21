@@ -62,6 +62,31 @@ public class DBFence extends DBObject {
     }
 
     /**
+     * Selects all fences from database.
+     * @return an arraylist of the fetched fences
+     */
+    public static ArrayList<DBFence> selectAllFromDB(){
+        ArrayList<DBFence> fences = new ArrayList<DBFence>();
+        // read from database
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
+        String[] columns = {
+                DBHelper.COLUMN_FENCE_ID,
+                DBHelper.COLUMN_LATITUDE,
+                DBHelper.COLUMN_LONGITUDE,
+                DBHelper.COLUMN_RADIUS
+        };
+        Cursor cursor = db.query(DBHelper.TABLE_FENCE, columns, null, null, null, null, null);
+        // read result
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            DBFence fence = new DBFence(cursor.getLong(0), cursor.getFloat(1), cursor.getFloat(2), cursor.getInt(3));
+            fences.add(fence);
+            cursor.moveToNext();
+        }
+        return fences;
+    }
+
+    /**
      * Selects a specific fence from the database.
      * @param id the id of the fence
      * @return the fence fetched from the database
