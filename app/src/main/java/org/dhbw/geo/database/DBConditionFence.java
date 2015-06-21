@@ -24,6 +24,30 @@ public class DBConditionFence extends DBCondition {
     private ArrayList<DBFence> fences = new ArrayList<DBFence>();
 
     /**
+     * Selects all geofence conditions from the database.
+     * @return an arraylist of the geofence conditions fetched from the database
+     */
+    public static ArrayList<DBCondition> selectAllFromDB(){
+        ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
+        // read from database
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
+        String query = "SELECT " +
+                DBHelper.COLUMN_CONDITION_FENCE_ID + ", " +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE +
+                " FROM " + DBHelper.TABLE_CONDITION_FENCE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION;
+        Cursor cursor = db.rawQuery(query, new String[]{});
+        // read result
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            DBConditionFence fence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+            conditions.add(fence);
+            cursor.moveToNext();
+        }
+        return conditions;
+    }
+
+    /**
      * Selects all geofence conditions from the database which are assigned to a given rule.
      * @param ruleId the id of the rule for which the geofence conditions shall be selected
      * @return an arraylist of the geofence conditions fetched from the database
