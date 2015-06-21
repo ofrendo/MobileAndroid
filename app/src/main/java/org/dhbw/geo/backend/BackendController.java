@@ -15,8 +15,9 @@ public class BackendController {
      * Use as such:
      * <pre>
      * <code>BackendController controller = new BackendController(new BackendCallback() {
-     *     public void actionPerformed(JSONObject object) {
-     *         //do stuff on callback with object
+     *     public void actionPerformed(String result) {
+     *         //do stuff on callback with result
+     *         ArrayList<DBConditionFence> groups = JSONConverter.getFenceGroups(result);
      *     }
      * }
      * controller.getAllFenceGroups();

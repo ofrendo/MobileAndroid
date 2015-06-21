@@ -92,13 +92,7 @@ public class APICaller extends AsyncTask<String, String, String> {
     }
 
     protected void onPostExecute(String result) {
-        try {
-            JSONObject object = new JSONObject(result);
-            callback.actionPerformed(object);
-        }
-        catch (Exception e) {
-            Log.i("APICaller", "Error: " + e.getMessage());
-        }
+        callback.actionPerformed(result);
     }
 
 }
