@@ -18,7 +18,9 @@ import android.widget.RadioButton;
 import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
+import org.dhbw.geo.backend.BackendCallback;
 import org.dhbw.geo.backend.BackendController;
+import org.dhbw.geo.backend.JSONConverter;
 import org.dhbw.geo.database.*;
 import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
@@ -26,7 +28,9 @@ import org.dhbw.geo.hardware.SMSFactory;
 import org.dhbw.geo.services.AutoStart;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -57,7 +61,12 @@ public class TestActivity extends ActionBarActivity {
 
         //
         // Test an api call
-        BackendController backendController = new BackendController();
+        BackendController backendController = new BackendController(new BackendCallback() {
+            public void actionPerformed(String result) {
+                Log.i("Test BackendCallback", result.toString());
+                ArrayList<DBConditionFence> groups = JSONConverter.getFenceGroups(result);
+            }
+        });
         backendController.getAllFenceGroups();
 
     }

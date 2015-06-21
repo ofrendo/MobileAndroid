@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -29,8 +30,10 @@ import java.net.URL;
 public class APICaller extends AsyncTask<String, String, String> {
 
     private final Route route;
+    private final BackendCallback callback;
 
-    public APICaller(Route route) {
+    public APICaller(Route route, BackendCallback callback) {
+        this.callback = callback;
         this.route = route;
     }
 
@@ -89,7 +92,7 @@ public class APICaller extends AsyncTask<String, String, String> {
     }
 
     protected void onPostExecute(String result) {
-        Log.i("APICaller", result);
+        callback.actionPerformed(result);
     }
 
 }

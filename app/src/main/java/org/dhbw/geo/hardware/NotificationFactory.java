@@ -96,7 +96,7 @@ public class NotificationFactory {
      */
     private static NotificationCompat.Builder createBuilder(Context context, String title, String text) {
         return new NotificationCompat.Builder(context)
-                        .setSmallIcon(android.R.drawable.ic_menu_send)
+                        .setSmallIcon(R.drawable.launch) //android.R.drawable.ic_menu_send
                         .setContentTitle(title)
                         .setContentText(text);
     }
