@@ -26,6 +26,7 @@ import org.dhbw.geo.hardware.HardwareController;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
 import org.dhbw.geo.services.AutoStart;
+import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 import org.json.JSONObject;
@@ -175,7 +176,7 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM sqlite_sequence");
 
         // test action start and stop
-        DBRule rule = new DBRule();
+/*        DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
@@ -201,14 +202,15 @@ public class TestActivity extends ActionBarActivity {
         rule.addAction(notification);
         notification.writeToDB();
         dbHelper.logDB();
-        conditionTime.updateAlarm();
+        conditionTime.updateAlarm();*/
 
-        /*DBRule fenceRule = new DBRule();
+        DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
         fenceRule.setName("Test rule");
         fenceRule.writeToDB();
         DBConditionFence conditionFence = new DBConditionFence();
         conditionFence.setType(DBConditionFence.TYPE_ENTER);
+        conditionFence.setName("Test Condition Fence");
         fenceRule.addCondition(conditionFence);
         conditionFence.writeToDB();
         DBFence fence = new DBFence();
@@ -217,8 +219,14 @@ public class TestActivity extends ActionBarActivity {
         fence.setRadius(30);
         conditionFence.addFence(fence);
         fence.writeToDB();
+        DBFence fence2 = new DBFence();
+        fence2.setLatitude(49.543047);
+        fence2.setLongitude(8.663150);
+        fence2.setRadius(30);
+        conditionFence.addFence(fence2);
+        fence2.writeToDB();
         dbHelper.logDB();
-        if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");*/
+      //  if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");
 
         /*// Create the test database
         // create home rule
@@ -301,7 +309,16 @@ public class TestActivity extends ActionBarActivity {
         workRule.addAction(phone);
         phone.writeToDB();*/
 
-
+        // Only for setuptests
+        // TODO: if geofencsetup is working delete this
+        // start GoogleApiClient in Service
+        Intent mConditionService = new Intent(this, ConditionService.class);
+        mConditionService.setAction(ConditionService.STARTAPP);
+        //start ConditionService as Pending Intent
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
+        // add PendingIntent
+        mConditionService.putExtra("pendingIntent", pendingIntent);
+        startService(mConditionService);
 
 
         // log database

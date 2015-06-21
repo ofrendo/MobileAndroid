@@ -73,15 +73,15 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(nextScreen);
             }
         });
-
-        // start GoogleApiClient in Service
+        // TODO: Delete comments after testing
+        /*// start GoogleApiClient in Service
         Intent mConditionService = new Intent(this, ConditionService.class);
         mConditionService.setAction(ConditionService.STARTAPP);
         //start ConditionService as Pending Intent
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
         // add PendingIntent
         mConditionService.putExtra("pendingIntent", pendingIntent);
-        startService(mConditionService);
+        startService(mConditionService);*/
         //initialize listitems
         listItems = DBRule.selectAllFromDB();
 

@@ -20,12 +20,17 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.TestLocation;
+import org.dhbw.geo.database.DBCondition;
+import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBConditionTime;
+import org.dhbw.geo.database.DBFence;
+import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.ui.ListView.Notification;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -41,9 +46,14 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     public static final String CHECKCONDITIONTIME = "CheckConditionTime";
 
     private GoogleApiClient mGoogleApiClient;
+    private ArrayList<DBFence> mDBGeofenceList;
+    private ArrayList<DBCondition> dbConditionFences;
     private ArrayList mGeofenceList = new ArrayList();
     private LocationRequest mLocationRequest;
     private PendingIntent mPendingIntent;
+
+    //mappingtable
+    private HashMap<String , Integer> typeMapping ;
 
     // just for testing
     private List<TestLocation> testLocations;
@@ -61,6 +71,15 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+
+        setUpTypeMapping();
+    }
+
+    private void setUpTypeMapping() {
+        typeMapping = new HashMap<String, Integer>();
+        typeMapping.put(DBConditionFence.TYPE_ENTER, Geofence.GEOFENCE_TRANSITION_ENTER);
+        typeMapping.put(DBConditionFence.TYPE_LEAVE, Geofence.GEOFENCE_TRANSITION_EXIT);
+        typeMapping.put(DBConditionFence.TYPE_STAY, Geofence.GEOFENCE_TRANSITION_DWELL);
     }
 
     /**
@@ -147,6 +166,37 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         Bundle bundle = intent.getExtras();
         mPendingIntent = (PendingIntent) bundle.get("pendingIntent");
         // TODO: add all geofences and build a list with them
+        // get all active ContionFences from DB
+        try {
+            dbConditionFences = DBConditionFence.selectAllFromDB();
+        }catch (Exception e){
+            Log.e("Error", "Can't get ConditionFences from DB");
+            e.printStackTrace();
+        }
+        if (dbConditionFences != null){
+            // set Up List with fences
+            setUpGeofenceList(dbConditionFences);
+            //set geofences active
+            startGeofencing();
+        }
+
+    }
+
+    private void setUpGeofenceList(ArrayList<DBCondition> dbConditionFences) {
+        for (int i = 0; i< dbConditionFences.size() ; i++){
+            DBConditionFence cf = (DBConditionFence) dbConditionFences.get(i);
+            cf.loadAllFences();
+            ArrayList<DBFence> fences = cf.getFences();
+            for (int j = 0; j<fences.size() ; j++){
+                mGeofenceList.add(new Geofence.Builder()
+                        .setRequestId(String.valueOf(fences.get(j).getId()))
+                        .setTransitionTypes(typeMapping.get(cf.getType()))
+                        .setCircularRegion(fences.get(j).getLatitude(), fences.get(j).getLongitude(), fences.get(j).getRadius())
+                        .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                        .setLoiteringDelay(500)
+                        .build());
+            }
+        }
     }
 
     private void setUpTestList() {
