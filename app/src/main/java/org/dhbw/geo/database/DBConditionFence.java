@@ -135,7 +135,7 @@ public class DBConditionFence extends DBCondition {
      * It only calls the database, if no geofences are loaded to the condition yet.
      */
     public void loadAllFences() {
-        if (fences.size() == 0) {
+        if (fences.size() != 0) {
             return; // don't load fences if they are already loaded!
         }
         fences.addAll(DBFence.selectAllFromDB(getId()));
