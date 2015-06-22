@@ -337,15 +337,6 @@ public class TestActivity extends ActionBarActivity {
 
         // Only for setuptests
         // TODO: if geofencsetup is working delete this
-        // start GoogleApiClient in Service
-        Intent mConditionService = new Intent(this, ConditionService.class);
-        mConditionService.setAction(ConditionService.STARTAPP);
-        //start ConditionService as Pending Intent
-        mPendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
-        // add PendingIntent
-        mConditionService.putExtra("PendingIntent", mPendingIntent);
-
-        startService(mConditionService);
 
         mconditionFence = conditionFence;*/
 
