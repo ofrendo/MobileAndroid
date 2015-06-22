@@ -34,10 +34,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.support.v4.content.WakefulBroadcastReceiver.startWakefulService;
+
 
 public class TestActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
+    private DBConditionFence mconditionFence;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -318,8 +321,10 @@ public class TestActivity extends ActionBarActivity {
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
         // add PendingIntent
         mConditionService.putExtra("pendingIntent", pendingIntent);
-        startService(mConditionService);
 
+        startWakefulService(this, mConditionService);
+
+        mconditionFence = conditionFence;
 
         // log database
         dbHelper.logDB();
@@ -327,4 +332,20 @@ public class TestActivity extends ActionBarActivity {
 
     }
 
+    public void onClickAddFence(View view) {
+
+        // Test add fence
+        DBFence fence3 = new DBFence();
+        fence3.setLatitude(49.543047);
+        fence3.setLongitude(8.663150);
+        fence3.setRadius(30);
+        mconditionFence.addFence(fence3);
+        fence3.writeToDB();
+
+        Intent addFence = new Intent(this, ConditionService.class);
+        addFence.setAction(ConditionService.ADDGEO);
+        addFence.putExtra("DBFenceID", fence3.getId());
+        addFence.putExtra("DBConditionFenceID", mconditionFence.getId());
+        startWakefulService(this, addFence);
+    }
 }

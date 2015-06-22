@@ -65,6 +65,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     public void onCreate(){
     super.onCreate();
+        // set Service as foreground Service
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -159,13 +160,30 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     }
 
     private void handleAddGeofence(Intent intent) {
+        Bundle bundle = intent.getExtras();
+        long fenceId = bundle.getLong("DBFenceID");
+        long conditionFenceId = bundle.getLong("DBConditionFenceID");
+        DBFence fence = DBFence.selectFromDB(fenceId);
+        DBConditionFence conditionFence = DBConditionFence.selectFromDB(conditionFenceId);
         //TODO: add Geofence
+        mGeofenceList.add(new Geofence.Builder()
+                .setRequestId(String.valueOf(fence.getId()))
+                .setTransitionTypes(typeMapping.get(conditionFence.getType()))
+                .setCircularRegion(fence.getLatitude(), fence.getLongitude(), fence.getRadius())
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setLoiteringDelay(500)
+                .build());
+        if (mPendingIntent != null){
+            startGeofencing();
+        }else{
+            Log.e("ERROR", "PendingIntent must be specified!");
+        }
+        Log.d("ConditionService/add", "AddGeofence succ");
     }
 
     private void handleStartApp(Intent intent) {
         Bundle bundle = intent.getExtras();
         mPendingIntent = (PendingIntent) bundle.get("pendingIntent");
-        // TODO: add all geofences and build a list with them
         // get all active ContionFences from DB
         try {
             dbConditionFences = DBConditionFence.selectAllFromDB();
@@ -176,9 +194,10 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         if (dbConditionFences != null){
             // set Up List with fences
             setUpGeofenceList(dbConditionFences);
-            //set geofences active
-            startGeofencing();
+            Log.d("ConditionService", "Setup List successful");
+            //the geofence start, when connection to googleAPI is successful
         }
+
 
     }
 
@@ -199,39 +218,6 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         }
     }
 
-    private void setUpTestList() {
-    // ONLY FOR TESTING!!!!
-        // TODO: Get data from database and build new geofences
-        testLocations = new ArrayList<TestLocation>();
-            testLocations.add(new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10));
-            testLocations.add(new TestLocation(new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
-            testLocations.add(new TestLocation(new LatLng(49.543011, 8.663158), "HomeSweetHome", 20));
-            testLocations.add(new TestLocation(new LatLng(49.430101, 8.529264),"Bei Matthias", 20));
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(0).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(0).getLocation().latitude, testLocations.get(0).getLocation().longitude, testLocations.get(0).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(1).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(1).getLocation().latitude, testLocations.get(1).getLocation().longitude, testLocations.get(1).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(2).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(2).getLocation().latitude, testLocations.get(2).getLocation().longitude, testLocations.get(2).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(3).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(3).getLocation().latitude, testLocations.get(3).getLocation().longitude, testLocations.get(3).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-    }
 
     private String getGeofenceTransitionDetails(ConditionService geofenceTransistionsIntentService, int geofenceTransition, List triggeringGeofences) {
         Geofence geo = (Geofence) triggeringGeofences.get(geofenceTransition);
@@ -307,7 +293,6 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("ConditionService", "Connection to GoogleAPI successful");
-        setUpTestList();
         if (mPendingIntent != null){
             startGeofencing();
         }
