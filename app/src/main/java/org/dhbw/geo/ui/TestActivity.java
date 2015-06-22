@@ -34,10 +34,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.support.v4.content.WakefulBroadcastReceiver.startWakefulService;
+
 
 public class TestActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
+    private DBConditionFence mconditionFence;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +207,7 @@ public class TestActivity extends ActionBarActivity {
         dbHelper.logDB();
         conditionTime.updateAlarm();
 
-        /*DBRule fenceRule = new DBRule();
+        DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
         fenceRule.setName("Test rule");
         fenceRule.writeToDB();
@@ -225,10 +228,10 @@ public class TestActivity extends ActionBarActivity {
         fence2.setRadius(30);
         conditionFence.addFence(fence2);
         fence2.writeToDB();
-        dbHelper.logDB();*/
+        dbHelper.logDB();
       //  if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");
 
-        /*// Create the test database
+        // Create the test database
         // create home rule
         DBRule homeRule = new DBRule();
         homeRule.setActive(true);
@@ -241,14 +244,14 @@ public class TestActivity extends ActionBarActivity {
         homeRule.addCondition(homeCondition);
         homeCondition.writeToDB();
         // create the fence
-        DBFence fence = new DBFence();
+        fence = new DBFence();
         fence.setLatitude(49.474292);
         fence.setLongitude(8.534501);
         fence.setRadius(30);
         homeCondition.addFence(fence);
         fence.writeToDB();
         // create a wifi action
-        DBActionSimple wifi = new DBActionSimple();
+        wifi = new DBActionSimple();
         homeRule.addAction(wifi);
         wifi.setStatus(true); // turn wifi on
         wifi.setActive(true);
@@ -307,19 +310,21 @@ public class TestActivity extends ActionBarActivity {
         phone.setVolume(20);
         phone.setActive(true);
         workRule.addAction(phone);
-        phone.writeToDB();*/
+        phone.writeToDB();
 
         // Only for setuptests
         // TODO: if geofencsetup is working delete this
         // start GoogleApiClient in Service
-        /*Intent mConditionService = new Intent(this, ConditionService.class);
+        Intent mConditionService = new Intent(this, ConditionService.class);
         mConditionService.setAction(ConditionService.STARTAPP);
         //start ConditionService as Pending Intent
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
         // add PendingIntent
         mConditionService.putExtra("pendingIntent", pendingIntent);
-        startService(mConditionService);*/
 
+        startWakefulService(this, mConditionService);
+
+        mconditionFence = conditionFence;
 
         // log database
         dbHelper.logDB();
@@ -327,4 +332,20 @@ public class TestActivity extends ActionBarActivity {
 
     }
 
+    public void onClickAddFence(View view) {
+
+        // Test add fence
+        DBFence fence3 = new DBFence();
+        fence3.setLatitude(49.543047);
+        fence3.setLongitude(8.663150);
+        fence3.setRadius(30);
+        mconditionFence.addFence(fence3);
+        fence3.writeToDB();
+
+        Intent addFence = new Intent(this, ConditionService.class);
+        addFence.setAction(ConditionService.ADDGEO);
+        addFence.putExtra("DBFenceID", fence3.getId());
+        addFence.putExtra("DBConditionFenceID", mconditionFence.getId());
+        startWakefulService(this, addFence);
+    }
 }
