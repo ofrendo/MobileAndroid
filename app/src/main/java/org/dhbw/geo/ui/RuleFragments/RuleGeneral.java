@@ -101,8 +101,8 @@ public class RuleGeneral extends Fragment {
             public void onClick(View v) {
                 new AlertDialog.Builder(activity)
                         .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setTitle("Attention")
-                        .setMessage("Do you really want to delete Rule \"" + rule.getName()+"\"")
+                        .setTitle(activity.getString(R.string.alert_title))
+                        .setMessage(activity.getString(R.string.alert_text)+" "+activity.getString(R.string.alert_rule)+": " + rule.getName()+"?")
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 
                             @Override

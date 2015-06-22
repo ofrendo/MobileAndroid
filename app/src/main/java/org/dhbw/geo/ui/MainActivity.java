@@ -1,46 +1,43 @@
 package org.dhbw.geo.ui;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.media.AudioManager;
+
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
 
-import org.dhbw.geo.Map.Maps;
+
 import org.dhbw.geo.R;
-import org.dhbw.geo.backend.BackendController;
+
 import org.dhbw.geo.database.*;
-import org.dhbw.geo.hardware.HardwareController;
-import org.dhbw.geo.hardware.NotificationFactory;
-import org.dhbw.geo.hardware.SMSFactory;
+
 import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
-import java.util.Calendar;
+
 
 
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
-
-    ArrayList<DBRule> listItems=new ArrayList<DBRule>();
+    ArrayList<DBRule> listItems=new ArrayList<>();
     ArrayAdapter<DBRule> adapter;
 
     public static PendingIntent gPendingIntent = null;
@@ -75,6 +72,33 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(nextScreen);
             }
         });
+
+        final Activity activity = this;
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                new AlertDialog.Builder(activity)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(activity.getString(R.string.alert_title))
+                        .setMessage(activity.getString(R.string.alert_text) + " " + activity.getString(R.string.alert_rule) + ": " + listItems.get(position).getName() + "?")
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //delete and notify listadapter
+                                listItems.get(position).deleteFromDB();
+                                listItems.remove(position);
+                                adapter.notifyDataSetChanged();
+
+                            }
+
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+                return true;
+            }
+        });
+
         // TODO: Delete comments after testing
         // start GoogleApiClient in Service
         Intent mConditionService = new Intent(this, ConditionService.class);
@@ -85,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
         mConditionService.putExtra("PendingIntent", gPendingIntent);
         startService(mConditionService);
         //initialize listitems
-        listItems = DBRule.selectAllFromDB();
+        listItems.addAll(DBRule.selectAllFromDB());
 
         Log.e(TAG,"items vorhanden: "+listItems.size());
 
@@ -95,12 +119,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        listItems = DBRule.selectAllFromDB();
-        adapter.notifyDataSetChanged();
-    }
+
 
     public void onTestPage(View view){
         Intent nextScreen = new Intent(getApplicationContext(), TestActivity.class);
@@ -133,12 +152,6 @@ public class MainActivity extends ActionBarActivity {
         //Neues Intent anlegen
         Intent nextScreen = new Intent(getApplicationContext(), RuleContainer.class);
 
-        //Intent mit den Daten fuellen
-        // nextScreen.putExtra("Vorname", inputVorname.getText().toString());
-        // nextScreen.putExtra("Nachname", inputNachname.getText().toString());
-
-        // Log schreiben fuer Logausgabe
-        //Log.e("n", inputVorname.getText()+"."+ inputNachname.getText());
 
         // Intent starten und zur zweiten Activity wechseln
         startActivity(nextScreen);

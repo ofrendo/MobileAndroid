@@ -55,6 +55,12 @@
     <string name="action_text">Message</string>
     <string name="title_activity_time">Time</string>
 
+    <string name="alert_title">Attention</string>
+    <string name="alert_text">Do you really want to delete</string>
+    <string name="alert_rule">rule</string>
+    <string name="alert_condition">condition</string>
+
+
 
 
 

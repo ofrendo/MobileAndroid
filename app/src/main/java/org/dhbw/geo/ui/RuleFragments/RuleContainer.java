@@ -47,8 +47,8 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
 
     @Override
     public void onBackPressed() {
-        Log.e("TIME", "test");
         startActivity(getParentActivityIntent());
+        finish();
     }
 
     @Override

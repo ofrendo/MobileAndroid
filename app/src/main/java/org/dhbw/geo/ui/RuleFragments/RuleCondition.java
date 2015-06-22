@@ -94,10 +94,33 @@ public class RuleCondition extends ListFragment {
                     nextScreen.putExtra("DBRuleID", rule.getId());
                     startActivity(nextScreen);
                 }
-
-
             }
         });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                new AlertDialog.Builder(activity)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle(activity.getString(R.string.alert_title))
+                        .setMessage(activity.getString(R.string.alert_text)+" "+activity.getString(R.string.alert_condition)+": " + conditions.get(position).getName()+"?")
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //delete and go to other window
+                                conditions.get(position).deleteFromDB();
+                                conditions.remove(position);
+                                adapter.notifyDataSetChanged();
+
+                            }
+
+                        })
+                        .setNegativeButton(R.string.no, null)
+                        .show();
+                return true;
+            }
+        });
+
 
         //Buttnhandler for new FenceCondition
         Button addFence = (Button)activity.findViewById(R.id.rulecondition_addfence);
