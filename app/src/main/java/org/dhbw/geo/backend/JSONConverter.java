@@ -75,11 +75,10 @@ public class JSONConverter {
             String name = (obj.isNull("name")) ? "null" : (String) obj.get("name");
             String type = (obj.isNull("type")) ? "null" : (String) obj.get("type");
 
-            result = new DBConditionFence(
-                   (int) obj.get("fence_group_id"),
-                   name,
-                   type
-            );
+            result = new DBConditionFence();
+            result.setName(name);
+            result.setType(type);
+            result.setServerId((int) obj.get("fence_group_id"));
         }
         catch (Exception e) {
             Log.i("JSONConverter", "Error: " + e.getMessage());
@@ -89,12 +88,10 @@ public class JSONConverter {
     private static DBFence createFence(JSONObject obj) {
         DBFence result = null;
         try {
-            result = new DBFence(
-                    (int) obj.get("fence_id"),
-                    (float) obj.get("lat"),
-                    (float) obj.get("lng"),
-                    (int) obj.get("radius")
-            );
+            result = new DBFence();
+            result.setLatitude(Float.parseFloat((String) obj.get("lat")));
+            result.setLongitude(Float.parseFloat((String) obj.get("lng")));
+            result.setRadius((int) obj.get("radius"));
         }
         catch (Exception e) {
             Log.i("JSONConverter", "Error: " + e.getMessage());
@@ -102,4 +99,32 @@ public class JSONConverter {
         return result;
     }
 
+
+    public static String toJSONString(DBConditionFence fenceGroup) {
+        JSONObject outerObj = new JSONObject();
+        JSONObject fenceGroupObj = new JSONObject();
+        try {
+            fenceGroupObj.put("name", fenceGroup.getName());
+            fenceGroupObj.put("type", fenceGroup.getType());
+            outerObj.put("fence_group", fenceGroupObj);
+        }
+        catch (Exception e) {
+            Log.i("JSONConverter", "Error: " + e.getMessage());
+        }
+        return outerObj.toString();
+    }
+    public static String toJSONString(DBFence fence) {
+        JSONObject outerObj = new JSONObject();
+        JSONObject fenceObj = new JSONObject();
+        try {
+            fenceObj.put("lat", fence.getLatitude());
+            fenceObj.put("lng", fence.getLongitude());
+            fenceObj.put("radius", fence.getRadius());
+            outerObj.put("fence", fenceObj);
+        }
+        catch (Exception e) {
+            Log.i("JSONConverter", "Error: " + e.getMessage());
+        }
+        return outerObj.toString();
+    }
 }

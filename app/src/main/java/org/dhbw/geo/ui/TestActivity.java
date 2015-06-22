@@ -63,16 +63,42 @@ public class TestActivity extends ActionBarActivity {
 
         Log.i(TAG, "Start wifi status is: " + wifiStatus);
 
-        //
-        // Test an api call
+        // Test api calls
+        testBackendApiCalls();
+    }
+
+    public void testBackendApiCalls() {
         BackendController backendController = new BackendController(new BackendCallback() {
             public void actionPerformed(String result) {
-                Log.i("Test BackendCallback", result.toString());
+                Log.i("Test BackendCallback", "getAllFenceGroups: " + result);
                 ArrayList<DBConditionFence> groups = JSONConverter.getFenceGroups(result);
             }
         });
         backendController.getAllFenceGroups();
 
+        BackendController backendController2 = new BackendController(new BackendCallback() {
+            public void actionPerformed(String result) {
+                Log.i("Test BackendCallback", "createFenceGroup: " + result);
+                DBConditionFence fenceGroup = JSONConverter.getFenceGroup(result);
+                int server_fence_group_id = fenceGroup.getServerId();
+
+                BackendController backendController3 = new BackendController(new BackendCallback() {
+                    public void actionPerformed(String result) {
+                        Log.i("Test BackendCallback", "createFence: " + result);
+                        DBFence fence = JSONConverter.getFence(result);
+                    }
+                });
+                DBFence testFence = new DBFence();
+                testFence.setLatitude(-1);
+                testFence.setLatitude(-1);
+                testFence.setRadius(-1);
+                backendController3.createFence(server_fence_group_id, testFence);
+            }
+        });
+        DBConditionFence testFenceGroup = new DBConditionFence();
+        testFenceGroup.setType("testType");
+        testFenceGroup.setName("testName");
+        backendController2.createFenceGroup(testFenceGroup);
     }
 
     @Override
