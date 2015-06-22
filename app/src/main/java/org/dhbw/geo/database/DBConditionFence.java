@@ -22,6 +22,10 @@ public class DBConditionFence extends DBCondition {
      * a list of all observed geofences for this condition
      */
     private ArrayList<DBFence> fences = new ArrayList<DBFence>();
+    /**
+     * a unique id set on the server
+     */
+    private int serverId = -1;
 
     /**
      * Selects all geofence conditions from the database.
@@ -155,6 +159,7 @@ public class DBConditionFence extends DBCondition {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
+        values.put(DBHelper.COLUMN_SERVER_ID, serverId);
         long id = db.insert(DBHelper.TABLE_CONDITION_FENCE, null, values);
         setId(id);
         if(getRule() != null){
@@ -172,6 +177,7 @@ public class DBConditionFence extends DBCondition {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
+        values.put(DBHelper.COLUMN_SERVER_ID, serverId);
         String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_CONDITION_FENCE, values, where, whereArgs);
@@ -251,5 +257,13 @@ public class DBConditionFence extends DBCondition {
 
     public ArrayList<DBFence> getFences() {
         return fences;
+    }
+
+    public int getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 }

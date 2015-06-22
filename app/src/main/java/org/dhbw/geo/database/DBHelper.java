@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * the database version (this has to be increased)
      */
-    private static final int DB_VERSION = 18;
+    private static final int DB_VERSION = 19;
     /**
      * the name of the sqlite database (the file it is stored in).
      */
@@ -63,6 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DAY = "Day";
     public static final String COLUMN_START = "Start";
     public static final String COLUMN_END = "End";
+    public static final String COLUMN_SERVER_ID = "ServerID";
     // the database instance
     private SQLiteDatabase db;
 
@@ -178,6 +179,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_RULE_ID + " INTEGER REFERENCES " + TABLE_RULE + "(RuleID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL )";
         String createTableConditionFence = "CREATE TABLE " + TABLE_CONDITION_FENCE + " ( " +
                 COLUMN_CONDITION_FENCE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COLUMN_SERVER_ID + " INTEGER, " +
                 COLUMN_NAME + " VARCHAR, " +
                 COLUMN_TYPE + " VARCHAR NOT NULL )";
         String createTableFence = "CREATE TABLE " + TABLE_FENCE + " ( " +
