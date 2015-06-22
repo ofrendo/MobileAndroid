@@ -136,7 +136,7 @@ public class Time extends ActionBarActivity {
                         }
 
                         //if end is smaller start
-                        if (!isEndGreaterStart(hourOfDay,minute,getHour(calendarEnd),getMinute(calendarEnd))){
+                        if (!isEndGreaterStart(hourOfDay, minute, getHour(calendarEnd), getMinute(calendarEnd))){
                             time.setEnd(hourOfDay, minute);
                             textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
                             setHour(calendarEnd, hourOfDay);
@@ -194,7 +194,8 @@ public class Time extends ActionBarActivity {
             button.setText(weekdays[index]);
             button.setTextOn(weekdays[index]);
             button.setTextOff(weekdays[index]);
-            button.setWidth(4);
+            button.setScaleX((float) 0.8);
+            button.setScaleY((float) 0.8);
             weekdayLayout.addView(button);
             //setActive
             if (activeDays.contains(new Integer(indWeekdays[index]))){

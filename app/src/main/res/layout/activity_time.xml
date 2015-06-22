@@ -116,7 +116,8 @@
                 android:id="@+id/time_weekdays"
                 android:rowCount="2"
                 android:columnCount="4"
-                android:layout_margin="5dp">
+                android:useDefaultMargins="false"
+                android:alignmentMode="alignBounds">
 
             </GridLayout>
 
