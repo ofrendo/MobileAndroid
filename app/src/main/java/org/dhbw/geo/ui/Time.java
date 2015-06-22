@@ -7,18 +7,27 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.ToggleButton;
 
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBRule;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Time extends ActionBarActivity {
@@ -56,6 +65,8 @@ public class Time extends ActionBarActivity {
             time = new DBConditionTime();
             time.setRule(DBRule.selectFromDB(ruleID));
             time.setName(i.getStringExtra("DBConditionTimeName"));
+            time.setStart(0, 0);
+            time.setEnd(0,1);
             time.writeToDB();
         }
 
@@ -96,9 +107,9 @@ public class Time extends ActionBarActivity {
                 if (!isChecked) {
                     //set Endtime = starttime
                     textEnd.setText(textStart.getText());
-                    setHour(calendarEnd,getHour(calendarStart));
-                    setMinute(calendarEnd,getMinute(calendarStart));
-                    time.setEnd(getHour(calendarEnd),getMinute(calendarStart));
+                    setHour(calendarEnd, getHour(calendarStart));
+                    setMinute(calendarEnd, getMinute(calendarStart));
+                    time.setEnd(getHour(calendarEnd), getMinute(calendarStart));
                     time.writeToDB();
                 }
             }
@@ -116,15 +127,15 @@ public class Time extends ActionBarActivity {
                         time.setStart(hourOfDay, minute);
 
                         textStart.setText(pad(hourOfDay) + ":" + pad(minute));
-                        setHour(calendarStart,hourOfDay);
-                        setMinute(calendarStart,minute);
+                        setHour(calendarStart, hourOfDay);
+                        setMinute(calendarStart, minute);
 
-                        if (!enabler.isChecked()){
+                        if (!enabler.isChecked()) {
                             time.setEnd(hourOfDay, minute);
 
                             textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
-                            setHour(calendarEnd,hourOfDay);
-                            setMinute(calendarEnd,minute);
+                            setHour(calendarEnd, hourOfDay);
+                            setMinute(calendarEnd, minute);
                         }
                         time.writeToDB();
                     }
@@ -145,14 +156,54 @@ public class Time extends ActionBarActivity {
                         time.setEnd(hourOfDay, minute);
                         time.writeToDB();
                         textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
-                        setHour(calendarEnd,hourOfDay);
-                        setMinute(calendarEnd,minute);
+                        setHour(calendarEnd, hourOfDay);
+                        setMinute(calendarEnd, minute);
                     }
                 }, getHour(calendarEnd), getMinute(calendarEnd), true);
                 pickStart.show();
             }
 
         });
+
+
+
+
+        //weekday togglebuttons
+        GridLayout weekdayLayout = (GridLayout) findViewById(R.id.time_weekdays);
+        String [] weekdays = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+        final int [] indWeekdays = {Calendar.MONDAY,Calendar.TUESDAY,Calendar.WEDNESDAY,Calendar.THURSDAY,Calendar.FRIDAY,Calendar.SATURDAY,Calendar.SUNDAY};
+
+        ArrayList<Integer> activeDays = time.getDays();
+
+        // Build button for each day.
+        for (int index = 0; index < 7; index++) {
+
+            final ToggleButton button = new ToggleButton(this);
+            button.setText(weekdays[index]);
+            button.setTextOn(weekdays[index]);
+            button.setTextOff(weekdays[index]);
+            button.setWidth(5);
+            weekdayLayout.addView(button);
+            //setActive
+            if (activeDays.contains(new Integer(indWeekdays[index]))){
+                button.setChecked(true);
+            }
+
+            //onClickHandler
+            final int finalIndex = index;
+            button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked){
+                        time.addDay(indWeekdays[finalIndex]);
+                    }
+                    else {
+                        time.removeDay(indWeekdays[finalIndex]);
+                    }
+                    time.writeToDB();
+                }
+            });
+        }
 
 
     }

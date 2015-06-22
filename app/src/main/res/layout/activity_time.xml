@@ -13,8 +13,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5px"
-            android:layout_marginBottom="20px">
+            android:layout_margin="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -39,9 +38,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5px"
-            android:layout_marginBottom="20px"
-            android:layout_marginTop="20px">
+            android:layout_margin="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -70,8 +67,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5px"
-            android:layout_marginTop="20px">
+            android:layout_margin="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,6 +91,29 @@
                 android:focusable="false"
                 android:editable="false" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Weekdays"
+                android:id="@+id/textView10" />
+        </RelativeLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_weekdays"
+            android:rowCount="2"
+            android:columnCount="4"
+            android:layout_margin="5dp">
+
+        </GridLayout>
 
     </LinearLayout>
 
