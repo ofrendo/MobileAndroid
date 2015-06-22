@@ -16,18 +16,14 @@ import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 
-import org.dhbw.geo.Map.GeofenceTransistionsIntentService;
 import org.dhbw.geo.Map.TestLocation;
 import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBFence;
-import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.NotificationFactory;
-import org.dhbw.geo.ui.ListView.Notification;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +61,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     public void onCreate(){
     super.onCreate();
-        // set Service as foreground Service
+        // get GoogleApiClient
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -103,10 +99,10 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 handleCheckConditionTime(intent);
                 break;
             case ADDGEO:
-                handleAddGeofence(intent);
+                handleStartApp(intent);
                 break;
             case REMOVEGEO:
-                handleRemoveGeofence(intent);
+                handleStartApp(intent);
                 break;
             default:
                 // check if geofenceevent was triggerd
@@ -156,13 +152,20 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     }
 
     private void handleRemoveGeofence(Intent intent) {
-        // TODO: remove Geofence
+        Bundle bundle = intent.getExtras();
+        //remove fence from db
+        DBFence fence = DBFence.selectFromDB(bundle.getLong("DBFenceID"));
+        DBConditionFence conditionFence = DBConditionFence.selectFromDB(bundle.getLong("DBConditionFenceID"));
+        conditionFence.removeFence(fence);
+        conditionFence.writeToDB();
+        handleAutoStart(intent);
     }
 
     private void handleAddGeofence(Intent intent) {
         Bundle bundle = intent.getExtras();
         long fenceId = bundle.getLong("DBFenceID");
         long conditionFenceId = bundle.getLong("DBConditionFenceID");
+        mPendingIntent = (PendingIntent) bundle.get("PendingIntent");
         DBFence fence = DBFence.selectFromDB(fenceId);
         DBConditionFence conditionFence = DBConditionFence.selectFromDB(conditionFenceId);
         //TODO: add Geofence
@@ -174,7 +177,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 .setLoiteringDelay(500)
                 .build());
         if (mPendingIntent != null){
-            startGeofencing();
+            registerGeofences();
         }else{
             Log.e("ERROR", "PendingIntent must be specified!");
         }
@@ -183,7 +186,18 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     private void handleStartApp(Intent intent) {
         Bundle bundle = intent.getExtras();
-        mPendingIntent = (PendingIntent) bundle.get("pendingIntent");
+        mPendingIntent = (PendingIntent) bundle.get("PendingIntent");
+
+        if (dbConditionFences != null){
+            // set Up List with fences
+
+            //the geofence start, when connection to googleAPI is successful
+        }
+
+
+    }
+
+    private void setUpGeofenceList() {
         // get all active ContionFences from DB
         try {
             dbConditionFences = DBConditionFence.selectAllFromDB();
@@ -191,17 +205,6 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
             Log.e("Error", "Can't get ConditionFences from DB");
             e.printStackTrace();
         }
-        if (dbConditionFences != null){
-            // set Up List with fences
-            setUpGeofenceList(dbConditionFences);
-            Log.d("ConditionService", "Setup List successful");
-            //the geofence start, when connection to googleAPI is successful
-        }
-
-
-    }
-
-    private void setUpGeofenceList(ArrayList<DBCondition> dbConditionFences) {
         for (int i = 0; i< dbConditionFences.size() ; i++){
             DBConditionFence cf = (DBConditionFence) dbConditionFences.get(i);
             cf.loadAllFences();
@@ -216,6 +219,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                         .build());
             }
         }
+        Log.d("ConditionService", "Setup List successful");
     }
 
 
@@ -273,13 +277,14 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
-    private void startGeofencing(){
+    private void registerGeofences(){
         // start geofencing
         LocationServices.GeofencingApi.addGeofences(
                 mGoogleApiClient,
                 getGeofencingRequest(),
                 mPendingIntent
         ).setResultCallback(this);
+
     }
 
     private GeofencingRequest getGeofencingRequest(){
@@ -294,7 +299,8 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     public void onConnected(Bundle bundle) {
         Log.d("ConditionService", "Connection to GoogleAPI successful");
         if (mPendingIntent != null){
-            startGeofencing();
+            setUpGeofenceList();
+            registerGeofences();
         }
     }
 
