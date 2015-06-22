@@ -12,8 +12,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONObject;
 
@@ -59,7 +61,6 @@ public class APICaller extends AsyncTask<String, String, String> {
         HttpContext localContext = new BasicHttpContext();
 
         String url = route.url;
-        HttpHost httpHost;
 
         HttpUriRequest request;
         switch (route.method) {
@@ -80,6 +81,22 @@ public class APICaller extends AsyncTask<String, String, String> {
 
         String result = null;
         try {
+            // Add json stuff if needed
+            StringEntity entityContent = null;
+            if (route.jsonContent != null) {
+                entityContent = new StringEntity(route.jsonContent, HTTP.UTF_8);
+                entityContent.setContentType("application/json");
+                Log.i("APICaller", "Sending: " + route.jsonContent);
+            }
+            if (request instanceof HttpPost) {
+                ((HttpPost) request).setEntity(entityContent);
+            }
+            if (request instanceof HttpPut) {
+                ((HttpPut) request).setEntity(entityContent);
+            }
+
+
+            // Do actual request
             HttpResponse response = httpClient.execute(request, localContext);
             HttpEntity entity = response.getEntity();
             result = getASCIIContentFromEntity(entity);

@@ -2,6 +2,8 @@ package org.dhbw.geo.backend;
 
 import android.app.DownloadManager;
 
+import org.dhbw.geo.database.DBConditionFence;
+import org.dhbw.geo.database.DBFence;
 import org.json.JSONObject;
 
 /**
@@ -33,8 +35,8 @@ public class BackendController {
         Route route = new Route("/fence_group/getAll", RequestMethod.GET);
         doCall(route);
     }
-    public void createFenceGroup() {
-        Route route = new Route("/fence_group", RequestMethod.POST);
+    public void createFenceGroup(DBConditionFence fenceGroup) {
+        Route route = new Route("/fence_group", RequestMethod.POST, fenceGroup);
         doCall(route);
     }
     public void getFenceGroup(int fence_group_id) {
@@ -45,8 +47,8 @@ public class BackendController {
         Route route = new Route("/fence_group/" + fence_group_id + "/getFences", RequestMethod.GET);
         doCall(route);
     }
-    public void updateFenceGroup(int fence_group_id) {
-        Route route = new Route("/fence_group/" + fence_group_id, RequestMethod.PUT);
+    public void updateFenceGroup(int fence_group_id, DBConditionFence fenceGroup) {
+        Route route = new Route("/fence_group/" + fence_group_id, RequestMethod.PUT, fenceGroup);
         doCall(route);
     }
     public void deleteFenceGroup(int fence_group_id) {
@@ -55,16 +57,16 @@ public class BackendController {
     }
 
 
-    public void createFence(int fence_group_id) {
-        Route route = new Route("/fence_group/" + fence_group_id, RequestMethod.POST);
+    public void createFence(int fence_group_id, DBFence fence) {
+        Route route = new Route("/fence_group/" + fence_group_id + "/fence", RequestMethod.POST, fence);
         doCall(route);
     }
     public void getFence(int fence_group_id, int fence_id) {
         Route route = new Route("/fence_group/" + fence_group_id + "/fence/" + fence_id, RequestMethod.GET);
         doCall(route);
     }
-    public void updateFence(int fence_group_id, int fence_id) {
-        Route route = new Route("/fence_group/" + fence_group_id + "/fence/" + fence_id, RequestMethod.PUT);
+    public void updateFence(int fence_group_id, int fence_id, DBFence fence) {
+        Route route = new Route("/fence_group/" + fence_group_id + "/fence/" + fence_id, RequestMethod.PUT, fence);
         doCall(route);
     }
     public void deleteFence(int fence_group_id, int fence_id) {
