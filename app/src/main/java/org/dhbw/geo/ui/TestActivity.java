@@ -176,7 +176,7 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM sqlite_sequence");
 
         // test action start and stop
-/*        DBRule rule = new DBRule();
+        DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
@@ -202,9 +202,9 @@ public class TestActivity extends ActionBarActivity {
         rule.addAction(notification);
         notification.writeToDB();
         dbHelper.logDB();
-        conditionTime.updateAlarm();*/
+        conditionTime.updateAlarm();
 
-        DBRule fenceRule = new DBRule();
+        /*DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
         fenceRule.setName("Test rule");
         fenceRule.writeToDB();
@@ -225,7 +225,7 @@ public class TestActivity extends ActionBarActivity {
         fence2.setRadius(30);
         conditionFence.addFence(fence2);
         fence2.writeToDB();
-        dbHelper.logDB();
+        dbHelper.logDB();*/
       //  if(conditionFence.isConditionMet()) Log.d("Main", "im Fence!");
 
         /*// Create the test database
@@ -312,13 +312,13 @@ public class TestActivity extends ActionBarActivity {
         // Only for setuptests
         // TODO: if geofencsetup is working delete this
         // start GoogleApiClient in Service
-        Intent mConditionService = new Intent(this, ConditionService.class);
+        /*Intent mConditionService = new Intent(this, ConditionService.class);
         mConditionService.setAction(ConditionService.STARTAPP);
         //start ConditionService as Pending Intent
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
         // add PendingIntent
         mConditionService.putExtra("pendingIntent", pendingIntent);
-        startService(mConditionService);
+        startService(mConditionService);*/
 
 
         // log database

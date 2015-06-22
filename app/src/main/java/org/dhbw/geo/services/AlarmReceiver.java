@@ -60,7 +60,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         intent.setAction(ConditionService.CHECKCONDITIONTIME);
         intent.putExtra("conditionId", conditionTime.getId());
         // set a broadcast id to allow multiple alarms :-)
-        alarmIntent = PendingIntent.getBroadcast(context, (int) conditionTime.getId(), intent, PendingIntent.FLAG_ONE_SHOT);
+        alarmIntent = PendingIntent.getBroadcast(context, (int) conditionTime.getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
         // set the android alarm (RTC = real time clock)
         alarmMgr.set(AlarmManager.RTC_WAKEUP, conditionTime.getStart().getTimeInMillis(), alarmIntent);
         Log.d("AlarmReceiver", "setAlarm with action: " + intent.getAction() + ": " + conditionTime.getStart().toString());
