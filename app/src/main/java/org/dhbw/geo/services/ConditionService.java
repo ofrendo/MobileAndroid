@@ -49,6 +49,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     private ArrayList mGeofenceList = new ArrayList();
     private LocationRequest mLocationRequest;
     private PendingIntent mPendingIntent;
+    private Boolean addSingleFence = false;
 
     //mappingtable
     private HashMap<String , Integer> typeMapping ;
@@ -191,16 +192,22 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         // remove Geofence from GoogleApiScoupe
         List<String> fences = new ArrayList<String>();
         fences.add(String.valueOf(fence.getId()));
-        LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, fences);
+        try {
+            LocationServices.GeofencingApi.removeGeofences(mGoogleApiClient, fences);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("ERROR", "Romoving Geofence: Google API is not connected");
+        }
+
         // delete Geofence from DB
         fence.deleteFromDB();
     }
 
     private void handleAddGeofence(Intent intent) {
         Bundle bundle = intent.getExtras();
-        long fenceId = bundle.getLong("DBFenceID");
+        long fenceId = bundle.getLong("DBFenceID", -1);
         if (fenceId != -1){
-            long conditionFenceId = bundle.getLong("DBConditionFenceID");
+            long conditionFenceId = bundle.getLong("DBConditionFenceID", -1);
             if (conditionFenceId != -1){
                 mPendingIntent = (PendingIntent) bundle.get("PendingIntent");
                 DBFence fence = DBFence.selectFromDB(fenceId);
@@ -215,9 +222,8 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                         .build());
             }
         }
-        if (mPendingIntent != null){
-            registerGeofences();
-        }else{
+        addSingleFence = true;
+        if (mPendingIntent == null){
             Log.e("ERROR", "PendingIntent must be specified!");
         }
         Log.d("ConditionService/add", "AddGeofence succ");
@@ -317,10 +323,12 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                     getGeofencingRequest(),
                     mPendingIntent
             ).setResultCallback(this);
+            addSingleFence = false;
         }catch (Exception e){
             Log.e("ERROR", "Register Geofences failed");
             e.printStackTrace();
         }
+        Log.d("ConditionService/Reg","Geofence Registration succ");
 
     }
 
@@ -342,7 +350,9 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     public void onConnected(Bundle bundle) {
         Log.d("ConditionService", "Connection to GoogleAPI successful");
         if (mPendingIntent != null){
-            setUpGeofenceList();
+            if (!addSingleFence){
+                setUpGeofenceList();
+            }
             registerGeofences();
         }
     }
