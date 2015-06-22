@@ -230,13 +230,13 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * Checks the conditions and fires the actions if all conditions are met after an alarm was triggered.
-     * @param id the id of the condition
      */
     private void handleCheckConditionTime(Intent intent){
         // get Id out of intent
         long id = intent.getLongExtra("conditionId", 0);
         // get the corresponding condition
         DBConditionTime condition = DBConditionTime.selectFromDB(id);
+        if(condition == null) return;
         Log.d(TAG, "Condition: " + condition.getName());
         // reset the alarm
         condition.updateAlarm();

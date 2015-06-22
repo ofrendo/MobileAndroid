@@ -37,6 +37,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.database.DBCondition;
+import org.dhbw.geo.database.DBConditionFence;
+import org.dhbw.geo.database.DBRule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +74,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
 
     long ruleID;
+    DBConditionFence fenceGroup;
 
     @Override
     public void onBackPressed() {
@@ -93,20 +97,24 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
 
         if (fenceGroupID != -1 ){
             //load DBconditionfence
-            Log.i("FENCE","Fence vorhanden: "+fenceGroupID);
+            fenceGroup = DBConditionFence.selectFromDB(fenceGroupID);
 
         }else {
 
             if (ruleID != -1){
+
                 //create new DBConditionFence
-                Log.i("FENCE", "Rule mitgegeben: "+ruleID);
-            }
-            else
-            {
-                //ARGHHHHHHHHHHHH, sollte nicht passsieren:D
+                fenceGroup = new DBConditionFence();
+                fenceGroup.setRule(DBRule.selectFromDB(ruleID));
+                fenceGroup.setName(i.getStringExtra("DBConditionFenceName"));
+                fenceGroup.writeToDB();
+
+
             }
 
         }
+        Log.i("FENCE", "ID: " + fenceGroup.getId());
+        Log.i("FENCE", "NAME: "+fenceGroup.getName());
 
 
         setContentView(R.layout.activity_maps);

@@ -1,6 +1,8 @@
 package org.dhbw.geo.ui.RuleFragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.ListFragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import org.dhbw.geo.Map.Maps;
@@ -99,13 +102,29 @@ public class RuleCondition extends ListFragment {
         nextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //new Fence
-                //Neues Intent anlegen
-                Intent nextScreen = new Intent(activity.getApplicationContext(), Maps.class);
-                nextScreen.putExtra("DBRuleID", rule.getId());
+                final EditText inputName = new EditText(activity);
+                new AlertDialog.Builder(activity)
+                        .setTitle("Create new Fences")
+                        .setMessage("Enter a name please")
+                        .setView(inputName)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //new Fence
+                                //Neues Intent anlegen
+                                Intent nextScreen = new Intent(activity.getApplicationContext(), Maps.class);
+                                nextScreen.putExtra("DBRuleID", rule.getId());
+                                nextScreen.putExtra("DBConditionFenceName", ""+inputName.getText());
+                                // Intent starten und zur zweiten Activity wechseln
+                                startActivity(nextScreen);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
-                // Intent starten und zur zweiten Activity wechseln
-                startActivity(nextScreen);
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+
             }
         });
 
