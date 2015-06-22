@@ -286,8 +286,20 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         circle.remove();
         marker.remove();
         // remove geofence
-        fence.deleteFromDB();
-        updateGeofences();
+        deleteGeofence(fence);
+        // set activeMarker inaktive
+        activeMarker = null;
+        // hide Options
+        setMarkerChangeVisibility(false);
+    }
+
+    private void deleteGeofence(DBFence fence) {
+        Intent removeFence = new Intent(this, ConditionService.class);
+        removeFence.setAction(ConditionService.REMOVEGEO);
+        removeFence.putExtra("PendingIntent", MainActivity.gPendingIntent);
+        removeFence.putExtra("DBFenceID", fence.getId());
+        removeFence.putExtra("DBConditionFenceID", fenceGroup.getId());
+        startService(removeFence);
     }
 
     private void setMarkerChangeVisibility(Boolean visibility){
@@ -315,6 +327,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         Intent updateFenceIntent = new Intent(this, ConditionService.class);
         updateFenceIntent.setAction(ConditionService.ADDGEO);
         updateFenceIntent.putExtra("PendingIntent", MainActivity.gPendingIntent);
+        updateFenceIntent.putExtra("DBFenceID", 1);
+        updateFenceIntent.putExtra("DBConditionFenceID", 1);
         startService(updateFenceIntent);
     }
 
@@ -345,13 +359,15 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     private void setCameraFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (DBFence fence : mDBFenceList){
-            builder.include(fence.getLatLng());
+        if (mDBFenceList.size() >= 1){
+            for (DBFence fence : mDBFenceList){
+                builder.include(fence.getLatLng());
+            }
+            LatLngBounds bounds = builder.build();
+            int padding = 60;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.moveCamera(cameraUpdate);
         }
-        LatLngBounds bounds = builder.build();
-        int padding = 60;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-        mMap.moveCamera(cameraUpdate);
     }
 
     public Location getCurrentLocation(){
