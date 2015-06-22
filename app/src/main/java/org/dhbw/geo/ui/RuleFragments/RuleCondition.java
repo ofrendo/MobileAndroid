@@ -12,13 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
+import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBCondition;
+import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBRule;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,7 +81,30 @@ public class RuleCondition extends ListFragment {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // When clicked, show a toast with the TextView text
-                Intent nextScreen = new Intent(getActivity().getApplicationContext(), RuleContainer.class);
+                if (conditions.get(position) instanceof DBConditionFence) {
+                    Intent nextScreen = new Intent(getActivity().getApplicationContext(), Maps.class);
+                    nextScreen.putExtra("DBConditionFenceID", conditions.get(position).getId());
+                    nextScreen.putExtra("DBRuleID",rule.getId());
+                    startActivity(nextScreen);
+                } else {
+                    Intent nextScreen = new Intent(getActivity().getApplicationContext(), RuleContainer.class);
+                    startActivity(nextScreen);
+                }
+
+
+            }
+        });
+
+        Button nextPage = (Button)activity.findViewById(R.id.rulecondition_addfence);
+        nextPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //new Fence
+                //Neues Intent anlegen
+                Intent nextScreen = new Intent(activity.getApplicationContext(), Maps.class);
+                nextScreen.putExtra("DBRuleID", rule.getId());
+
+                // Intent starten und zur zweiten Activity wechseln
                 startActivity(nextScreen);
             }
         });
@@ -138,5 +165,6 @@ public class RuleCondition extends ListFragment {
 
 
     }
+
 
 }

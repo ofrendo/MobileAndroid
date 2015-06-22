@@ -109,6 +109,7 @@ public class DBConditionTime extends DBCondition {
             this.end = Calendar.getInstance();
             this.end.setTimeInMillis(end);
         }
+        updateAlarm();
     }
 
     /**
@@ -168,6 +169,8 @@ public class DBConditionTime extends DBCondition {
      * Updates the alarm which is sent to the android api
      */
     public void updateAlarm(){
+        // if it doesn't exist on database, there is no id, so no alarm can be set (will be done after inserting automatically)
+        if(!existsOnDB()) return;
         // if there is no AlarmReceiver object yet, create one
         if(alarm == null){
             alarm = new AlarmReceiver();
@@ -215,6 +218,7 @@ public class DBConditionTime extends DBCondition {
      */
     public void addDay(int day){
         days.add(day);
+        updateAlarm();
     }
 
     /**
@@ -223,6 +227,7 @@ public class DBConditionTime extends DBCondition {
      */
     public void removeDay(int day){
         days.remove(days.indexOf(day));
+        updateAlarm();
     }
 
     /**
@@ -244,6 +249,7 @@ public class DBConditionTime extends DBCondition {
         if(getRule() != null){
             writeRuleToDB();
         }
+        updateAlarm();
         return id;
     }
 
@@ -383,6 +389,7 @@ public class DBConditionTime extends DBCondition {
         start.set(Calendar.MINUTE, minute);
         start.set(Calendar.SECOND, 0);
         start.set(Calendar.MILLISECOND, 0);
+        updateAlarm();
     }
 
     public void setEnd(int hour, int minute){

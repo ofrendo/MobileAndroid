@@ -212,11 +212,8 @@ public class TestActivity extends ActionBarActivity {
         DBConditionTime conditionTime = new DBConditionTime();
         Calendar now = Calendar.getInstance();
         conditionTime.addDay(now.get(Calendar.DAY_OF_WEEK));
-        now.add(Calendar.MINUTE, 1);
+        now.add(Calendar.MINUTE, 4);
         conditionTime.setStart(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
-        now = Calendar.getInstance();
-        now.add(Calendar.HOUR_OF_DAY, 1);
-        conditionTime.setEnd(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
         rule.addCondition(conditionTime);
         conditionTime.writeToDB();
         DBActionSimple wifi = new DBActionSimple();
@@ -230,10 +227,8 @@ public class TestActivity extends ActionBarActivity {
         notification.setMessage("Let's rule!");
         rule.addAction(notification);
         notification.writeToDB();
-        dbHelper.logDB();
-        conditionTime.updateAlarm();
 
-        DBRule fenceRule = new DBRule();
+        /*DBRule fenceRule = new DBRule();
         fenceRule.setActive(true);
         fenceRule.setName("Test rule");
         fenceRule.writeToDB();
@@ -259,7 +254,7 @@ public class TestActivity extends ActionBarActivity {
 
         // Create the test database
         // create home rule
-        DBRule homeRule = new DBRule();
+        /*DBRule homeRule = new DBRule();
         homeRule.setActive(true);
         homeRule.setName("Home Rule");
         homeRule.writeToDB();
@@ -350,7 +345,7 @@ public class TestActivity extends ActionBarActivity {
 
         startWakefulService(this, mConditionService);
 
-        mconditionFence = conditionFence;
+        mconditionFence = conditionFence;*/
 
         // log database
         dbHelper.logDB();
