@@ -1,6 +1,7 @@
 package org.dhbw.geo.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -129,10 +130,18 @@ public class Time extends ActionBarActivity {
 
                         if (!enabler.isChecked()) {
                             time.setEnd(hourOfDay, minute);
-
                             textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
                             setHour(calendarEnd, hourOfDay);
                             setMinute(calendarEnd, minute);
+                        }
+
+                        //if end is smaller start
+                        if (!isEndGreaterStart(hourOfDay,minute,getHour(calendarEnd),getMinute(calendarEnd))){
+                            time.setEnd(hourOfDay, minute);
+                            textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
+                            setHour(calendarEnd, hourOfDay);
+                            setMinute(calendarEnd, minute);
+                            showAlert();
                         }
                         time.writeToDB();
                     }
@@ -150,11 +159,17 @@ public class Time extends ActionBarActivity {
                 TimePickerDialog pickStart = new TimePickerDialog(activity, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if (!isEndGreaterStart(getHour(calendarStart),getMinute(calendarStart),hourOfDay,minute)){
+                            hourOfDay = getHour(calendarStart);
+                            minute = getMinute(calendarStart);
+                            showAlert();
+                        }
                         time.setEnd(hourOfDay, minute);
                         time.writeToDB();
                         textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
                         setHour(calendarEnd, hourOfDay);
                         setMinute(calendarEnd, minute);
+
                     }
                 }, getHour(calendarEnd), getMinute(calendarEnd), true);
                 pickStart.show();
@@ -203,6 +218,24 @@ public class Time extends ActionBarActivity {
         }
 
 
+    }
+    private void showAlert(){
+        new AlertDialog.Builder(this)
+                .setTitle(this.getString(R.string.alert_title))
+                .setMessage(this.getString(R.string.alert_start_greater_end))
+                .setPositiveButton(R.string.ok,null)
+                .show();
+    }
+    private boolean isEndGreaterStart(int startHour,int startMinute,int endHour, int endMinute){
+        if (endHour>startHour){
+            return true;
+        }
+        else if (endHour == startHour && endMinute>=startMinute){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     private void setHour(Calendar c,int hour){
         c.set(Calendar.HOUR_OF_DAY,hour);

@@ -35,6 +35,7 @@
     <string name="MapsQuestionDeleteGeofence">You want to remove this geofence?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
     <string name="MapsTitleDeleteGeofence">Delete Geofence</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="main_existingRules">Existing Rules</string>
@@ -59,11 +60,11 @@
     <string name="alert_text">Do you really want to delete</string>
     <string name="alert_rule">rule</string>
     <string name="alert_condition">condition</string>
-
-
-
-
-
+    <string name="alert_start_greater_end">The end time must not be earlier than the start time!</string>
+    <string name="time_selectTimeframe">Select Timeframe</string>
+    <string name="time_start_time">Start time</string>
+    <string name="time_end_time">End time</string>
+    <string name="time_weekdays">Weekdays</string>
 
 
 </resources>

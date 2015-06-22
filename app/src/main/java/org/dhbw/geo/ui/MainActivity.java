@@ -89,9 +89,7 @@ public class MainActivity extends ActionBarActivity {
                                 listItems.get(position).deleteFromDB();
                                 listItems.remove(position);
                                 adapter.notifyDataSetChanged();
-
                             }
-
                         })
                         .setNegativeButton(R.string.no, null)
                         .show();
