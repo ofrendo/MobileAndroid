@@ -7,56 +7,57 @@ import android.graphics.Color;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingRequest;
+
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dhbw.geo.R;
-import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
+import org.dhbw.geo.database.DBFence;
 import org.dhbw.geo.database.DBRule;
+import org.dhbw.geo.services.ConditionService;
+import org.dhbw.geo.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Maps extends FragmentActivity implements ResultCallback<Status>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener {
+public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //Geofencing
     private PendingIntent mGeofencePendingIntent;
     private ArrayList mGeofenceList = new ArrayList();
+    private ArrayList<DBFence> mDBFenceList = new ArrayList<DBFence>();
     private List<TestLocation> testLocations;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     private HashMap<String, Circle> markerCircelMapping;
-    private HashMap<String, TestLocation> markerLocationMapping;
+    private HashMap<String, DBFence> markerLocationMapping;
     private Marker activeMarker;
     // Marker Options --> Seekbar, change name
     private SeekBar radius;
@@ -68,15 +69,29 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
     private ImageButton deleteMarkerButton;
     private LinearLayout mapLayout;
 
-    public void Maps(){
-        getGoogleApiClient();
-    }
-
-
     long ruleID;
     DBConditionFence fenceGroup;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+        @Override
     public void onBackPressed() {
         Intent parent = getParentActivityIntent();
         //pls enter ruleID
@@ -98,9 +113,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         if (fenceGroupID != -1 ){
             //load DBconditionfence
             fenceGroup = DBConditionFence.selectFromDB(fenceGroupID);
-
         }else {
-
             if (ruleID != -1){
 
                 //create new DBConditionFence
@@ -108,41 +121,29 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 fenceGroup.setRule(DBRule.selectFromDB(ruleID));
                 fenceGroup.setName(i.getStringExtra("DBConditionFenceName"));
                 fenceGroup.writeToDB();
-
-
             }
-
         }
         Log.i("FENCE", "ID: " + fenceGroup.getId());
-        Log.i("FENCE", "NAME: "+fenceGroup.getName());
+        Log.i("FENCE", "NAME: " + fenceGroup.getName());
 
 
         setContentView(R.layout.activity_maps);
-        getGoogleApiClient();
         markerCircelMapping = new HashMap<String, Circle>();
-        markerLocationMapping = new HashMap<String, TestLocation>();
+        markerLocationMapping = new HashMap<String, DBFence>();
         testLocations = new ArrayList<TestLocation>();
         getLocations();
         getUIObjects();
-        getUpMap();
         setUpSeekerBar();
+        getUpMap();
+        addInitialMarkersToMap();
         setMarkerChangeVisibility(false);
     }
 
-    private void getGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
 
     private void getLocations() {
-        testLocations.add(new TestLocation(new LatLng(49.474275, 8.533699), "Lidl, BW", 10));
-        testLocations.add(new TestLocation(new LatLng(49.474292, 8.534501), "DHBW, BW", 30));
-        testLocations.add(new TestLocation(new LatLng(49.430080, 8.529243), "HomeSweetHome", 20));
-        // get Locations from Database
+        // load locations from DB
+        fenceGroup.loadAllFences();
+        mDBFenceList = fenceGroup.getFences();
     }
 
     private void getUIObjects() {
@@ -154,38 +155,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mapMarkerName = (TextView) findViewById(R.id.map_marker_name);
         mapMarkerEditName = (TextView) findViewById(R.id.map_marker_edit_name);
         deleteMarkerButton = (ImageButton) findViewById(R.id.deleteMarkerButton);
-        mapMarkerEditName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                markerLocationMapping.get(activeMarker.getId()).setName(s.toString());
-                activeMarker.setTitle(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void setUpSeekerBar() {
@@ -199,6 +168,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
                 circle.setRadius(progress);
                 //update database
                 markerLocationMapping.get(activeMarker.getId()).setRadius(progress);
+                // TODO : Update new Radius to DB
             }
 
             @Override
@@ -235,6 +205,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             // Try to obtain the Map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
+            mMap.setMyLocationEnabled(true);
             // Check if we were successful in obtaining the Map.
             if (mMap != null) {
                 setUpMap();
@@ -247,23 +218,24 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapClickListener(this);
+        mMap.setOnCameraChangeListener(this);
     }
 
     private void addInitialMarkersToMap() {
-        for (int i = 0 ; i < mGeofenceList.size(); i++){
+        for (int i = 0 ; i < mDBFenceList.size(); i++){
             Marker m = mMap.addMarker(new MarkerOptions()
-                    .position(testLocations.get(i).getLocation())
-                    .title(testLocations.get(i).getName())
+                    .position(mDBFenceList.get(i).getLatLng())
+                    .title(fenceGroup.getName())
                     .draggable(true));
             Circle circle = mMap.addCircle(new CircleOptions()
-                    .center(testLocations.get(i).getLocation())
-                    .radius(testLocations.get(i).getRadius())
+                    .center(mDBFenceList.get(i).getLatLng())
+                    .radius(mDBFenceList.get(i).getRadius())
                     .strokeColor(Color.RED));
             String circleId = circle.getId();
             String markerId = m.getId();
             Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
             markerCircelMapping.put(m.getId(), circle);
-            markerLocationMapping.put(m.getId(), testLocations.get(i));
+            markerLocationMapping.put(m.getId(), mDBFenceList.get(i));
         }
     }
 
@@ -280,21 +252,54 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         String circleId = circle.getId();
         String markerId = m.getId();
         Log.e("Maps/BuildMarker", "CircelId: " + circleId + " MarkerId: " + markerId);
-        testLocations.add(new TestLocation(loc, name, initialRadius));
+        DBFence fence = createDBFence(loc, initialRadius);
+
+        mDBFenceList.add(fence);
         markerCircelMapping.put(m.getId(), circle);
-        markerLocationMapping.put(m.getId(), testLocations.get(testLocations.size() - 1));
+        markerLocationMapping.put(m.getId(), mDBFenceList.get(mDBFenceList.size() - 1));
+        //save new marker to DB
+        writeNewMarkerToDB(mDBFenceList.get(mDBFenceList.size() - 1));
         return m;
     }
 
+    private DBFence createDBFence(LatLng loc, int initialRadius) {
+        DBFence fence = new DBFence();
+        fence.setLongitude(loc.longitude);
+        fence.setLatitude(loc.latitude);
+        fence.setRadius(initialRadius);
+        fence.setConditionFence(fenceGroup);
+        return fence;
+    }
+
+    private void writeNewMarkerToDB(DBFence dbFence) {
+        //write new Geofence to DB
+        dbFence.writeToDB();
+        updateGeofences();
+    }
+
     private void deleteMarker(Marker marker){
-        TestLocation testLocation = markerLocationMapping.get(marker.getId());
+        DBFence fence = markerLocationMapping.get(marker.getId());
         Circle circle = markerCircelMapping.get(marker.getId());
-        testLocations.remove(testLocation);
+        testLocations.remove(fence);
         markerLocationMapping.remove(marker.getId());
         markerCircelMapping.remove(marker.getId());
         circle.remove();
         marker.remove();
         // remove geofence
+        deleteGeofence(fence);
+        // set activeMarker inaktive
+        activeMarker = null;
+        // hide Options
+        setMarkerChangeVisibility(false);
+    }
+
+    private void deleteGeofence(DBFence fence) {
+        Intent removeFence = new Intent(this, ConditionService.class);
+        removeFence.setAction(ConditionService.REMOVEGEO);
+        removeFence.putExtra("PendingIntent", MainActivity.gPendingIntent);
+        removeFence.putExtra("DBFenceID", fence.getId());
+        removeFence.putExtra("DBConditionFenceID", fenceGroup.getId());
+        startService(removeFence);
     }
 
     private void setMarkerChangeVisibility(Boolean visibility){
@@ -306,7 +311,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             mapMarkerName.setVisibility(View.VISIBLE);
             mapMarkerEditName.setVisibility(View.VISIBLE);
             deleteMarkerButton.setVisibility(View.VISIBLE);
-            moveMapDown(mapLayout);
 
         }else{
             radius.setVisibility(View.INVISIBLE);
@@ -316,8 +320,16 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
             mapMarkerName.setVisibility(View.INVISIBLE);
             mapMarkerEditName.setVisibility(View.INVISIBLE);
             deleteMarkerButton.setVisibility(View.INVISIBLE);
-            moveMapUp(mapLayout);
         }
+    }
+
+    private void updateGeofences() {
+        Intent updateFenceIntent = new Intent(this, ConditionService.class);
+        updateFenceIntent.setAction(ConditionService.ADDGEO);
+        updateFenceIntent.putExtra("PendingIntent", MainActivity.gPendingIntent);
+        updateFenceIntent.putExtra("DBFenceID", 1);
+        updateFenceIntent.putExtra("DBConditionFenceID", 1);
+        startService(updateFenceIntent);
     }
 
     private void moveMapUp(LinearLayout layout){
@@ -345,8 +357,17 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         return false;
     }
 
-    private void setCameraFocus(Location mLastLocation) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 15));
+    private void setCameraFocus() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        if (mDBFenceList.size() >= 1){
+            for (DBFence fence : mDBFenceList){
+                builder.include(fence.getLatLng());
+            }
+            LatLngBounds bounds = builder.build();
+            int padding = 60;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.moveCamera(cameraUpdate);
+        }
     }
 
     public Location getCurrentLocation(){
@@ -356,60 +377,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         return location;
     }
 
-    private void startGeofencing(){
-        setUpGeofenceList();
-        LocationServices.GeofencingApi.addGeofences(
-                mGoogleApiClient,
-                getGeofencingRequest(),
-                getGeofencePendingIntent()
-        ).setResultCallback(this);
-
-    }
-
-    private void setUpGeofenceList() {
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(0).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(0).getLocation().latitude, testLocations.get(0).getLocation().longitude, testLocations.get(0).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(1).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(1).getLocation().latitude, testLocations.get(1).getLocation().longitude, testLocations.get(1).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId(testLocations.get(2).getName())
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setCircularRegion(testLocations.get(2).getLocation().latitude, testLocations.get(2).getLocation().longitude, testLocations.get(2).getRadius())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .build());
-        addInitialMarkersToMap();
-    }
-
-
-    private GeofencingRequest getGeofencingRequest(){
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(mGeofenceList);
-        return builder.build();
-    }
-
-    private PendingIntent getGeofencePendingIntent(){
-        Log.d("Maps", "getGEofencePendingIntent triggered!");
-        if (mGeofencePendingIntent != null) {
-            return mGeofencePendingIntent;
-        }
-        Intent intent = new Intent(this, GeofenceTransistionsIntentService.class);
-        mGeofencePendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return mGeofencePendingIntent;
-    }
-
-    private void startLocationUpdates() {
-        createLocationRequest();
-    }
-
     public void onClickDeleteButton(View view){
         // show dialog --> are you shure to delete this geofence?
         Boolean delete = createAlertDialog(getString(R.string.MapsTitleDeleteGeofence), getString(R.string.MapsQuestionDeleteGeofence), getString(R.string.yes), getString(R.string.no));
@@ -417,33 +384,6 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         activeMarker = null;
     }
 
-    @Override
-    public void onResult(Status status) {
-        Log.e("Maps/geofancing/Log", "Status = " + status.getStatus());
-        }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        mMap.setMyLocationEnabled(true);
-        Log.e("Maps/GoogleAp/conn", "Connection succ");
-        mLastLocation = getCurrentLocation();
-        if (mLastLocation != null){
-            setCameraFocus(mLastLocation);
-            Log.e("Maps/googleAp/LaLo", String.valueOf(mLastLocation.getLatitude()) + ", " + String.valueOf(mLastLocation.getLongitude()));
-        }
-        startLocationUpdates();
-        startGeofencing();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.e("Maps/GoogleApi/connSus", "Connection fail");
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e("Maps/GoogleApi/connFail", "Connection failed");
-    }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -453,7 +393,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         activeMarker = marker;
         // set current data
         setTextViewSeekbarText((int) markerCircelMapping.get(marker.getId()).getRadius());
-        setMarkerNameTextView(markerLocationMapping.get(marker.getId()).getName());
+        setMarkerNameTextView(fenceGroup.getName());
         return false;
     }
 
@@ -465,19 +405,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         activeMarker = addMarkerToMap(latLng, getString(R.string.newMarker));
         //set Edit functions true
         setMarkerChangeVisibility(true);
-        //add geofence
-        mGeofenceList.add(new Geofence.Builder()
-                .setRequestId("Test")
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT | Geofence.GEOFENCE_TRANSITION_DWELL)
-                .setCircularRegion(latLng.latitude, latLng.longitude, 50)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setLoiteringDelay(20)
-                .build());
-        LocationServices.GeofencingApi.addGeofences(
-                mGoogleApiClient,
-                getGeofencingRequest(),
-                getGeofencePendingIntent()
-        ).setResultCallback(this);
+
     }
 
     @Override
@@ -499,6 +427,7 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         LatLng latLong = marker.getPosition();
         Circle circle = markerCircelMapping.get(marker.getId());
         circle.setCenter(latLong);
+        updateGeofences();
     }
 
     @Override
@@ -507,5 +436,13 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         activeMarker = null;
         // search possibility to hide progressbar
         setMarkerChangeVisibility(false);
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        // move camera
+        setCameraFocus();
+        // remove listener
+        mMap.setOnCameraChangeListener(null);
     }
 }

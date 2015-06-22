@@ -43,6 +43,8 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<DBRule> listItems=new ArrayList<DBRule>();
     ArrayAdapter<DBRule> adapter;
 
+    public static PendingIntent gPendingIntent = null;
+
 
 
 
@@ -74,14 +76,14 @@ public class MainActivity extends ActionBarActivity {
             }
         });
         // TODO: Delete comments after testing
-        /*// start GoogleApiClient in Service
+        // start GoogleApiClient in Service
         Intent mConditionService = new Intent(this, ConditionService.class);
         mConditionService.setAction(ConditionService.STARTAPP);
         //start ConditionService as Pending Intent
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
+        gPendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
         // add PendingIntent
-        mConditionService.putExtra("pendingIntent", pendingIntent);
-        startService(mConditionService);*/
+        mConditionService.putExtra("PendingIntent", gPendingIntent);
+        startService(mConditionService);
         //initialize listitems
         listItems = DBRule.selectAllFromDB();
 

@@ -41,6 +41,8 @@ public class TestActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
     private DBConditionFence mconditionFence;
+    private PendingIntent mPendingIntent;
+    private DBFence addedFence;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,8 +246,8 @@ public class TestActivity extends ActionBarActivity {
         conditionFence.addFence(fence);
         fence.writeToDB();
         DBFence fence2 = new DBFence();
-        fence2.setLatitude(49.543047);
-        fence2.setLongitude(8.663150);
+        fence2.setLatitude(50.57828);
+        fence2.setLongitude(8.777);
         fence2.setRadius(30);
         conditionFence.addFence(fence2);
         fence2.writeToDB();
@@ -335,15 +337,6 @@ public class TestActivity extends ActionBarActivity {
 
         // Only for setuptests
         // TODO: if geofencsetup is working delete this
-        // start GoogleApiClient in Service
-        Intent mConditionService = new Intent(this, ConditionService.class);
-        mConditionService.setAction(ConditionService.STARTAPP);
-        //start ConditionService as Pending Intent
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, mConditionService, PendingIntent.FLAG_UPDATE_CURRENT);
-        // add PendingIntent
-        mConditionService.putExtra("pendingIntent", pendingIntent);
-
-        startWakefulService(this, mConditionService);
 
         mconditionFence = conditionFence;*/
 
@@ -356,17 +349,26 @@ public class TestActivity extends ActionBarActivity {
     public void onClickAddFence(View view) {
 
         // Test add fence
-        DBFence fence3 = new DBFence();
-        fence3.setLatitude(49.543047);
-        fence3.setLongitude(8.663150);
-        fence3.setRadius(30);
-        mconditionFence.addFence(fence3);
-        fence3.writeToDB();
+        addedFence = new DBFence();
+        addedFence.setLatitude(49.543047);
+        addedFence.setLongitude(8.663150);
+        addedFence.setRadius(30);
+        mconditionFence.addFence(addedFence);
+        addedFence.writeToDB();
 
         Intent addFence = new Intent(this, ConditionService.class);
         addFence.setAction(ConditionService.ADDGEO);
-        addFence.putExtra("DBFenceID", fence3.getId());
+        addFence.putExtra("PendingIntent", mPendingIntent);
+        addFence.putExtra("DBFenceID", addedFence.getId());
         addFence.putExtra("DBConditionFenceID", mconditionFence.getId());
-        startWakefulService(this, addFence);
+        startService(addFence);
+    }
+
+    public void onClickRemoveFence(View view) {
+        addedFence.deleteFromDB();
+        Intent removeFence = new Intent(this, ConditionService.class);
+        removeFence.setAction(ConditionService.REMOVEGEO);
+        removeFence.putExtra("PendingIntent", mPendingIntent);
+        startService(removeFence);
     }
 }
