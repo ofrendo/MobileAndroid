@@ -58,7 +58,8 @@
 
         <activity
             android:name=".Map.Maps"
-            android:label="@string/title_activity_maps" >
+            android:label="@string/title_activity_maps"
+            android:parentActivityName=".ui.RuleFragments.RuleContainer">
         </activity>
 
         <receiver android:name=".services.AlarmReceiver" />

@@ -69,9 +69,46 @@ public class Maps extends FragmentActivity implements ResultCallback<Status>, Go
         getGoogleApiClient();
     }
 
+
+    long ruleID;
+
+    @Override
+    public void onBackPressed() {
+        Intent parent = getParentActivityIntent();
+        //pls enter ruleID
+        parent.putExtra("RuleID",ruleID);
+        startActivity(parent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //get ID from intent
+        Intent i = getIntent();
+
+        //get RuleID and ConditionFenceID
+        ruleID = i.getLongExtra("DBRuleID",-1);
+        long fenceGroupID = i.getLongExtra("DBConditionFenceID",-1);
+
+        if (fenceGroupID != -1 ){
+            //load DBconditionfence
+            Log.i("FENCE","Fence vorhanden: "+fenceGroupID);
+
+        }else {
+
+            if (ruleID != -1){
+                //create new DBConditionFence
+                Log.i("FENCE", "Rule mitgegeben: "+ruleID);
+            }
+            else
+            {
+                //ARGHHHHHHHHHHHH, sollte nicht passsieren:D
+            }
+
+        }
+
+
         setContentView(R.layout.activity_maps);
         getGoogleApiClient();
         markerCircelMapping = new HashMap<String, Circle>();
