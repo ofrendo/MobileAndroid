@@ -109,8 +109,6 @@ public class MainActivity extends ActionBarActivity {
         //initialize listitems
         listItems.addAll(DBRule.selectAllFromDB());
 
-        Log.e(TAG,"items vorhanden: "+listItems.size());
-
         //create adapter for listview
         adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
         listView.setAdapter(adapter);

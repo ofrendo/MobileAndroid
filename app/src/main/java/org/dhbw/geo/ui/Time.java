@@ -194,7 +194,7 @@ public class Time extends ActionBarActivity {
             button.setText(weekdays[index]);
             button.setTextOn(weekdays[index]);
             button.setTextOff(weekdays[index]);
-            button.setWidth(5);
+            button.setWidth(4);
             weekdayLayout.addView(button);
             //setActive
             if (activeDays.contains(new Integer(indWeekdays[index]))){

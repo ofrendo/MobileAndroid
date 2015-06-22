@@ -1,7 +1,6 @@
 package org.dhbw.geo.ui.ListView;
 
 import android.media.AudioManager;
-import android.util.Log;
 
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBActionSound;

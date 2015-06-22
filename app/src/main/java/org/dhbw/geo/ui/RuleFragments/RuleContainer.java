@@ -63,9 +63,6 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
         Intent i = getIntent();
         long id = i.getLongExtra("RuleID",-1);
 
-
-        Log.i("TIME", "rule id: " + id);
-
         if (id != -1){
             rule = DBRule.selectFromDB(id);
         }

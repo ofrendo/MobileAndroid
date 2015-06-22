@@ -127,7 +127,6 @@ public class Child {
 
     public Child(Group parent, int soundtype, int actual, boolean active, String status){
 
-        Log.e("SOUND", ""+status);
 
         this.type = SOUND;
         this.parent = parent;
