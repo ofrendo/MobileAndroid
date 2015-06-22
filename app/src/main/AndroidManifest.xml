@@ -59,7 +59,7 @@
         <activity
             android:name=".Map.Maps"
             android:label="@string/title_activity_maps"
-            android:parentActivityName=".ui.RuleFragments.RuleContainer">
+            android:parentActivityName=".ui.RuleFragments.RuleContainer" >
         </activity>
 
         <receiver android:name=".services.AlarmReceiver" />
@@ -73,7 +73,6 @@
 
         <service android:name=".services.ConditionService" />
 
-
         <activity
             android:name=".ui.TestActivity"
             android:label="@string/title_activity_test"
@@ -85,6 +84,14 @@
 
         <service android:name=".Map.GeofenceTransistionsIntentService" />
 
+        <activity
+            android:name=".ui.Time"
+            android:label="@string/title_activity_time"
+            android:parentActivityName=".ui.RuleFragments.RuleContainer" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.dhbw.geo.ui.RuleFragments.RuleContainer" />
+        </activity>
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
 
     @Override
     public void onBackPressed() {
+        Log.e("TIME", "test");
         startActivity(getParentActivityIntent());
     }
 
@@ -61,6 +63,9 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
         Intent i = getIntent();
         long id = i.getLongExtra("RuleID",-1);
 
+
+        Log.i("TIME", "rule id: " + id);
+
         if (id != -1){
             rule = DBRule.selectFromDB(id);
         }
@@ -71,6 +76,7 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
             rule.writeToDB();
         }
         setTitle(rule.getName());
+
 
 
 
@@ -118,6 +124,13 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
             }
         });
 
+
+        //set screen if specified
+        int screen = i.getIntExtra("ScreenID",-1);
+        if (screen == 1){
+            mViewPager.setCurrentItem(screen);
+        }
+
     }
 
 
@@ -134,6 +147,10 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
