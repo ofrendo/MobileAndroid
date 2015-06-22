@@ -18,8 +18,9 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Fence"
+        android:text="Add "
         android:id="@+id/rulecondition_addfence"
+        android:drawableLeft="@drawable/map_low"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -27,18 +28,20 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Time"
-        android:id="@+id/button3"
+        android:text="Add"
+        android:id="@+id/rulecondition_addtime"
+        android:drawableLeft="@drawable/time_low"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/button5"
-        android:layout_toStartOf="@+id/button5" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Import Fence"
-        android:id="@+id/button5"
+        android:text="Import"
+        android:id="@+id/rulecondition_importfence"
+        android:drawableLeft="@drawable/map_low"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/rulecondition_addfence"
-        android:layout_toStartOf="@+id/rulecondition_addfence" />
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

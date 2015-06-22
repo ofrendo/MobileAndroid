@@ -53,6 +53,7 @@
 
     <string name="action_Number">Phone Number</string>
     <string name="action_text">Message</string>
+    <string name="title_activity_time">Time</string>
 
 
 

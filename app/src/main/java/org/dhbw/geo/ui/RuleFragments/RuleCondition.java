@@ -8,12 +8,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -23,9 +21,9 @@ import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBRule;
+import org.dhbw.geo.ui.Time;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,10 +85,13 @@ public class RuleCondition extends ListFragment {
                 if (conditions.get(position) instanceof DBConditionFence) {
                     Intent nextScreen = new Intent(getActivity().getApplicationContext(), Maps.class);
                     nextScreen.putExtra("DBConditionFenceID", conditions.get(position).getId());
-                    nextScreen.putExtra("DBRuleID",rule.getId());
+                    nextScreen.putExtra("DBRuleID", rule.getId());
                     startActivity(nextScreen);
                 } else {
-                    Intent nextScreen = new Intent(getActivity().getApplicationContext(), RuleContainer.class);
+
+                    Intent nextScreen = new Intent(getActivity().getApplicationContext(), Time.class);
+                    nextScreen.putExtra("DBConditionTimeID", conditions.get(position).getId());
+                    nextScreen.putExtra("DBRuleID", rule.getId());
                     startActivity(nextScreen);
                 }
 
@@ -98,8 +99,9 @@ public class RuleCondition extends ListFragment {
             }
         });
 
-        Button nextPage = (Button)activity.findViewById(R.id.rulecondition_addfence);
-        nextPage.setOnClickListener(new View.OnClickListener() {
+        //Buttnhandler for new FenceCondition
+        Button addFence = (Button)activity.findViewById(R.id.rulecondition_addfence);
+        addFence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final EditText inputName = new EditText(activity);
@@ -113,7 +115,38 @@ public class RuleCondition extends ListFragment {
                                 //Neues Intent anlegen
                                 Intent nextScreen = new Intent(activity.getApplicationContext(), Maps.class);
                                 nextScreen.putExtra("DBRuleID", rule.getId());
-                                nextScreen.putExtra("DBConditionFenceName", ""+inputName.getText());
+                                nextScreen.putExtra("DBConditionFenceName", "" + inputName.getText());
+                                // Intent starten und zur zweiten Activity wechseln
+                                startActivity(nextScreen);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Do nothing.
+                    }
+                }).show();
+
+            }
+        });
+
+        //Buttnhandler for new TimeCondition
+        Button addTime = (Button)activity.findViewById(R.id.rulecondition_addtime);
+        addTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText inputName = new EditText(activity);
+                new AlertDialog.Builder(activity)
+                        .setTitle("Create new time-condition")
+                        .setMessage("Enter a name please")
+                        .setView(inputName)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //new Fence
+                                //Neues Intent anlegen
+                                Intent nextScreen = new Intent(activity.getApplicationContext(), Time.class);
+                                nextScreen.putExtra("DBRuleID", rule.getId());
+                                nextScreen.putExtra("DBConditionTimeName", "" + inputName.getText());
                                 // Intent starten und zur zweiten Activity wechseln
                                 startActivity(nextScreen);
                             }
