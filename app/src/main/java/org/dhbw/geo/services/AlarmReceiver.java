@@ -53,6 +53,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         // if there has already been an alarm, cancel it
         cancelAlarm();
         // get the android Alarmmanager
+        if(alarmMgr == null)
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         // create a new intent for this
         Intent intent = new Intent(context, AlarmReceiver.class);
