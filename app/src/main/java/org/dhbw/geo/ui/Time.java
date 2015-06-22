@@ -66,6 +66,8 @@ public class Time extends ActionBarActivity {
             time.setStart(0, 0);
             time.setEnd(0,1);
             time.writeToDB();
+
+            i.putExtra("DBConditionTimeID", time.getId());
         }
 
         setTitle("" + time.getName());
@@ -181,7 +183,7 @@ public class Time extends ActionBarActivity {
 
 
         //weekday togglebuttons
-        GridLayout weekdayLayout = (GridLayout) findViewById(R.id.time_weekdays);
+        FlowLayout weekdayLayout = (FlowLayout) findViewById(R.id.time_weekdays);
         String [] weekdays = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
         final int [] indWeekdays = {Calendar.MONDAY,Calendar.TUESDAY,Calendar.WEDNESDAY,Calendar.THURSDAY,Calendar.FRIDAY,Calendar.SATURDAY,Calendar.SUNDAY};
 
@@ -194,8 +196,6 @@ public class Time extends ActionBarActivity {
             button.setText(weekdays[index]);
             button.setTextOn(weekdays[index]);
             button.setTextOff(weekdays[index]);
-            button.setScaleX((float) 0.8);
-            button.setScaleY((float) 0.8);
             weekdayLayout.addView(button);
             //setActive
             if (activeDays.contains(new Integer(indWeekdays[index]))){

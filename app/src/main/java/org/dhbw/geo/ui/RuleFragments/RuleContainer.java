@@ -71,6 +71,9 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
             rule.setActive(false);
             rule.setName("");
             rule.writeToDB();
+
+            //add extra for optional resizing
+            i.putExtra("RuleID",rule.getId());
         }
         setTitle(rule.getName());
 

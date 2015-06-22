@@ -123,6 +123,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
                 fenceGroup.setRule(DBRule.selectFromDB(ruleID));
                 fenceGroup.setName(i.getStringExtra("DBConditionFenceName"));
                 fenceGroup.writeToDB();
+
+                //set Extra for optional resizing event
+                i.putExtra("DBConditionFenceID", fenceGroup.getId());
             }
         }
         Log.i("FENCE", "ID: " + fenceGroup.getId());
