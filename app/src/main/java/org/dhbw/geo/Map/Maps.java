@@ -96,6 +96,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         Intent parent = getParentActivityIntent();
         //pls enter ruleID
         parent.putExtra("RuleID",ruleID);
+        parent.putExtra("ScreenID",1);
+
         startActivity(parent);
     }
 
@@ -233,7 +235,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
                     .strokeColor(Color.RED));
             String circleId = circle.getId();
             String markerId = m.getId();
-            Log.e("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
+            Log.d("Maps/BuildMarker","CircelId: " + circleId + " MarkerId: " + markerId);
             markerCircelMapping.put(m.getId(), circle);
             markerLocationMapping.put(m.getId(), mDBFenceList.get(i));
         }
@@ -274,7 +276,16 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     private void writeNewMarkerToDB(DBFence dbFence) {
         //write new Geofence to DB
         dbFence.writeToDB();
-        updateGeofences();
+        addSingleGeofence(dbFence);
+    }
+
+    private void addSingleGeofence(DBFence dbFence) {
+        Intent addFence = new Intent(this, ConditionService.class);
+        addFence.setAction(ConditionService.ADDGEO);
+        addFence.putExtra("PendingIntent", MainActivity.gPendingIntent);
+        addFence.putExtra("DBFenceID", dbFence.getId());
+        addFence.putExtra("DBConditionFenceID", fenceGroup.getId());
+        startService(addFence);
     }
 
     private void deleteMarker(Marker marker){
@@ -364,7 +375,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
                 builder.include(fence.getLatLng());
             }
             LatLngBounds bounds = builder.build();
-            int padding = 60;
+            int padding = 100;
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
             mMap.moveCamera(cameraUpdate);
         }
