@@ -22,7 +22,6 @@ import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBFence;
-import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.NotificationFactory;
 
@@ -50,6 +49,8 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     private LocationRequest mLocationRequest;
     private PendingIntent mPendingIntent;
     private Boolean addSingleFence = false;
+    private Boolean updateFence = false;
+    private DBFence fenceToRemove = null;
 
     //mappingtable
     private HashMap<String , Integer> typeMapping ;
@@ -111,15 +112,15 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 handleUpdateGeofence(intent);
             default:
                 // check if geofenceevent was triggerd
-                NotificationFactory.createNotification(this, "Geofence", "Geofence triggert", false);
                 handleGeofence(intent);
         }
     }
 
     private void handleUpdateGeofence(Intent intent) {
+        updateFence = true;
         Bundle bundle = intent.getExtras();
         long fenceId = bundle.getLong("DBFenceID", -1);
-        if (fenceId != -0){
+        if (fenceId != -1){
             DBFence fence = DBFence.selectFromDB(fenceId);
             removeGeofence(fence);
             addGeofence(fence);
@@ -139,20 +140,19 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 return;
             }
 
-            NotificationFactory.createNotification(this, "GeofenceIntentService", "onHandle", false);
 
             // Get the transition type.
             int geofenceTransition = geofencingEvent.getGeofenceTransition();
-            NotificationFactory.createNotification(this, "Geofence Type", "Type = " + geofencingEvent.getGeofenceTransition(), false);
-            // Test that the reported transition was of interest.
-            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                    geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-
+            if (geofenceTransition != -1){
                 // Get the geofences that were triggered. A single event can trigger
                 // multiple geofences.
-                NotificationFactory.createNotification(this,"ConditionService", "Triggering Geos" , false);
                 List triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-
+                for (Object object : triggeringGeofences){
+                    Geofence geofence = (Geofence) object;
+                    DBFence fence = DBFence.selectFromDB(Long.parseLong(geofence.getRequestId()));
+                    DBConditionFence conditionFence = fence.getConditionFence();
+                    performeAction(conditionFence);
+                }
 
                 // Get the transition details as a String.
                 String geofenceTransitionDetails = getGeofenceTransitionDetails(
@@ -162,12 +162,9 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 );
 
                 // Send notification and log the transition details.
-                NotificationFactory.createNotification(this, "Test Map", geofenceTransitionDetails, false);
-                Log.d("Map/Geofancing", geofenceTransitionDetails);
-            } else {
-                // Log the error.
-                Log.e("Map/Geofancing - Error", "Fehler");
+                Log.d("ConditionService/Geo", geofenceTransitionDetails);
             }
+
         }catch (Exception e){
             NotificationFactory.createNotification(this, "Map/Geofence","Error:" + e.getMessage(), false);
         }
@@ -199,9 +196,10 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
             e.printStackTrace();
             Log.e("ERROR", "Romoving Geofence: Google API is not connected");
         }
-
-        // delete Geofence from DB
-        fence.deleteFromDB();
+        if (!updateFence){
+            // delete Geofence from DB
+            fence.deleteFromDB();
+        }
     }
 
     private void handleAddGeofence(Intent intent) {
@@ -279,6 +277,10 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         Log.d(TAG, "Condition: " + condition.getName());
         // reset the alarm
         condition.updateAlarm();
+        performeAction(condition);
+    }
+
+    private void performeAction(DBCondition condition) {
         // get the corresponding rules
         ArrayList<DBRule> rules = DBRule.selectFromDB(condition);
         Log.d(TAG, "Number of rules to be checked: " + rules.size());
