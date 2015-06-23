@@ -95,8 +95,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     public void onBackPressed() {
         Intent parent = getParentActivityIntent();
         //pls enter ruleID
-        parent.putExtra("RuleID",ruleID);
-        parent.putExtra("ScreenID",1);
+        parent.putExtra("RuleID", ruleID);
+        parent.putExtra("ScreenID", 1);
 
         startActivity(parent);
     }
@@ -173,7 +173,6 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
                 circle.setRadius(progress);
                 //update database
                 markerLocationMapping.get(activeMarker.getId()).setRadius(progress);
-                // TODO : Update new Radius to DB
             }
 
             @Override
@@ -183,7 +182,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                seekBar.getProgress();
+                updateFenceInDB(activeMarker);
             }
         });
     }
@@ -337,33 +337,30 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
-    private void updateGeofences() {
+    private void updateGeofences(DBFence fence, Marker marker) {
+        //update fence in db
+        updateFenceInDB(marker);
         Intent updateFenceIntent = new Intent(this, ConditionService.class);
-        updateFenceIntent.setAction(ConditionService.ADDGEO);
+        updateFenceIntent.setAction(ConditionService.UPDATEGEO);
         updateFenceIntent.putExtra("PendingIntent", MainActivity.gPendingIntent);
-        updateFenceIntent.putExtra("DBFenceID", 1);
-        updateFenceIntent.putExtra("DBConditionFenceID", 1);
+        updateFenceIntent.putExtra("DBFenceID", fence.getId());
+        updateFenceIntent.putExtra("DBConditionFenceID", fenceGroup.getId());
         startService(updateFenceIntent);
     }
 
-    private void moveMapUp(LinearLayout layout){
-        Animation animation = new TranslateAnimation(0,0,0,-100);
-        animation.setDuration(1000);
-        animation.setFillAfter(true);
-        layout.startAnimation(animation);
+    private void updateFenceInDB(Marker marker) {
+        Log.d("Maps/UpdateDB","Update Fence in DB");
+        DBFence fence = getFence(marker);
+        fence.setLatitude(marker.getPosition().latitude);
+        fence.setLongitude(marker.getPosition().longitude);
+        // get radius
+        Circle circle = markerCircelMapping.get(marker.getId());
+        fence.setRadius((int) circle.getRadius());
+        fence.writeToDB();
     }
 
-    private void moveMapDown(LinearLayout layout){
-        Animation animation = new TranslateAnimation(0,0,0,0);
-        animation.setDuration(1000);
-        animation.setFillAfter(true);
-        layout.startAnimation(animation);
-    }
-
-    private void moveKeyPadUpdated(LinearLayout keyPad){
-        ObjectAnimator mover = ObjectAnimator.ofFloat(keyPad,"translationY",0,-500);
-        mover.setDuration(300);
-        mover.start();
+    private DBFence getFence(Marker marker) {
+        return markerLocationMapping.get(marker.getId());
     }
 
     private Boolean createAlertDialog(String title, String question, String yes, String no) {
@@ -440,8 +437,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     public void onMarkerDragEnd(Marker marker) {
         LatLng latLong = marker.getPosition();
         Circle circle = markerCircelMapping.get(marker.getId());
+        DBFence fence = markerLocationMapping.get(marker.getId());
         circle.setCenter(latLong);
-        updateGeofences();
+        updateGeofences(fence, marker);
     }
 
     @Override
