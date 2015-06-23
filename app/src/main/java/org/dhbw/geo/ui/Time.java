@@ -54,7 +54,6 @@ public class Time extends ActionBarActivity {
         Intent i = getIntent();
         //get ruleId
         ruleID = i.getLongExtra("DBRuleID",-1);
-        Log.i("TIME","RULE ID: "+ruleID);
         long timeID = i.getLongExtra("DBConditionTimeID", -1);
         if (timeID != -1){
             time = DBConditionTime.selectFromDB(timeID);

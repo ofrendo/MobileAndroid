@@ -92,6 +92,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.dhbw.geo.ui.RuleFragments.RuleContainer" />
         </activity>
+        <activity
+            android:name=".ui.Import"
+            android:label="@string/title_activity_import"
+            android:parentActivityName=".ui.RuleFragments.RuleContainer" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.dhbw.geo.ui.RuleFragments.RuleContainer" />
+        </activity>
     </application>
 
 </manifest>

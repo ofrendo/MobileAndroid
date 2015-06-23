@@ -21,6 +21,7 @@ import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBRule;
+import org.dhbw.geo.ui.Import;
 import org.dhbw.geo.ui.Time;
 
 import java.util.ArrayList;
@@ -181,6 +182,18 @@ public class RuleCondition extends ListFragment {
                     }
                 }).show();
 
+            }
+        });
+
+        //Buttnhandler for import fence
+        Button importFence = (Button)activity.findViewById(R.id.rulecondition_importfence);
+        importFence.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent nextScreen = new Intent(activity.getApplicationContext(), Import.class);
+                nextScreen.putExtra("DBRuleID", rule.getId());
+                            // Intent starten und zur zweiten Activity wechseln
+                startActivity(nextScreen);
             }
         });
 
