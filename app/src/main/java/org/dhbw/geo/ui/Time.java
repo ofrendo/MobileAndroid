@@ -184,7 +184,8 @@ public class Time extends ActionBarActivity {
 
         //weekday togglebuttons
         FlowLayout weekdayLayout = (FlowLayout) findViewById(R.id.time_weekdays);
-        String [] weekdays = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+        String [] weekdays = {getString(R.string.time_mon),getString(R.string.time_tue),getString(R.string.time_wed),getString(R.string.time_thu),getString(R.string.time_fri),
+                getString(R.string.time_sat),getString(R.string.time_sun)};
         final int [] indWeekdays = {Calendar.MONDAY,Calendar.TUESDAY,Calendar.WEDNESDAY,Calendar.THURSDAY,Calendar.FRIDAY,Calendar.SATURDAY,Calendar.SUNDAY};
 
         ArrayList<Integer> activeDays = time.getDays();
