@@ -111,6 +111,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                 handleUpdateGeofence(intent);
             default:
                 // check if geofenceevent was triggerd
+                NotificationFactory.createNotification(this, "Geofence", "Geofence triggert", false);
                 handleGeofence(intent);
         }
     }
@@ -328,7 +329,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
             Log.e("ERROR", "Register Geofences failed");
             e.printStackTrace();
         }
-        Log.d("ConditionService/Reg","Geofence Registration succ");
+        Log.d("ConditionService/Reg", "Geofence Registration succ");
 
     }
 
