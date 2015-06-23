@@ -66,5 +66,14 @@
     <string name="time_end_time">End time</string>
     <string name="time_weekdays">Weekdays</string>
 
+    <string name="time_mon">Mon</string>
+    <string name="time_tue">Tue</string>
+    <string name="time_wed">Wed</string>
+    <string name="time_thu">Thu</string>
+    <string name="time_fri">Fri</string>
+    <string name="time_sat">Sat</string>
+    <string name="time_sun">Sun</string>
+
+
 
 </resources>
