@@ -155,7 +155,7 @@ public class DBFence extends DBObject {
         values.put(DBHelper.COLUMN_LONGITUDE, longitude);
         values.put(DBHelper.COLUMN_RADIUS, radius);
         values.put(DBHelper.COLUMN_CONDITION_FENCE_ID, getConditionFence().getId());
-        String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
+        String where = DBHelper.COLUMN_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};
         db.update(DBHelper.TABLE_FENCE, values, where, whereArgs);
     }
