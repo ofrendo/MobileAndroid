@@ -191,11 +191,13 @@ public class Time extends ActionBarActivity {
 
         // Build button for each day.
         for (int index = 0; index < 7; index++) {
-
+            Log.d("Time", "add button" + String.valueOf(index + 1));
             final ToggleButton button = new ToggleButton(this);
             button.setText(weekdays[index]);
             button.setTextOn(weekdays[index]);
             button.setTextOff(weekdays[index]);
+            button.setScaleX((float) 0.8);
+            button.setScaleY((float) 0.8);
             weekdayLayout.addView(button);
             //setActive
             if (activeDays.contains(new Integer(indWeekdays[index]))){
@@ -217,6 +219,7 @@ public class Time extends ActionBarActivity {
                 }
             });
         }
+        Log.d("Time", "Number of buttons: " + String.valueOf(weekdayLayout.getChildCount()));
 
 
     }
