@@ -10,6 +10,14 @@ import android.view.ViewGroup;
 
 import org.dhbw.geo.R;
 
+
+/**
+ * Created by Chet Guy and Romain Haase, Google
+ *
+ * @chethaase
+ * @romainguy
+ */
+
 public class FlowLayout extends ViewGroup {
 	private int mHorizontalSpacing;
 	private int mVerticalSpacing;
