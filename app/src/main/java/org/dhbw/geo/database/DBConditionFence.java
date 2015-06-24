@@ -38,13 +38,14 @@ public class DBConditionFence extends DBCondition {
         String query = "SELECT " +
                 DBHelper.COLUMN_CONDITION_FENCE_ID + ", " +
                 DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
-                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE + ", " +
+                DBHelper.COLUMN_SERVER_ID +
                 " FROM " + DBHelper.TABLE_CONDITION_FENCE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION;
         Cursor cursor = db.rawQuery(query, new String[]{});
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBConditionFence fence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+            DBConditionFence fence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
             conditions.add(fence);
             cursor.moveToNext();
         }
@@ -63,13 +64,14 @@ public class DBConditionFence extends DBCondition {
         String query = "SELECT " +
                 DBHelper.COLUMN_CONDITION_FENCE_ID + ", " +
                 DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
-                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE + ", " +
+                DBHelper.COLUMN_SERVER_ID +
                 " FROM " + DBHelper.TABLE_CONDITION_FENCE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_RULE_ID + " = ?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(ruleId)});
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){
-            DBConditionFence fence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+            DBConditionFence fence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
             conditions.add(fence);
             cursor.moveToNext();
         }
@@ -87,7 +89,8 @@ public class DBConditionFence extends DBCondition {
         String[] columns = {
                 DBHelper.COLUMN_CONDITION_FENCE_ID,
                 DBHelper.COLUMN_NAME,
-                DBHelper.COLUMN_TYPE
+                DBHelper.COLUMN_TYPE,
+                DBHelper.COLUMN_SERVER_ID
         };
         String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
         String[] whereArgs = {String.valueOf(id)};
@@ -95,7 +98,7 @@ public class DBConditionFence extends DBCondition {
         // read result
         cursor.moveToFirst();
         if(cursor.isAfterLast()) return null;
-        DBConditionFence conditionFence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2));
+        DBConditionFence conditionFence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
         return conditionFence;
     }
 
@@ -111,9 +114,10 @@ public class DBConditionFence extends DBCondition {
      * @param name the name of the geofence
      * @param type the type of the geofence
      */
-    public DBConditionFence(long id, String name, String type){
+    public DBConditionFence(long id, String name, String type, int serverId){
         super(id, name);
         this.type = type;
+        this.serverId = serverId;
     }
 
     /**
