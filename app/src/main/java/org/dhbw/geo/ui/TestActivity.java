@@ -78,22 +78,29 @@ public class TestActivity extends ActionBarActivity {
         });
         backendController.getAllFenceGroups();
 
+        // Test create fencegroup, create fence and delete fence
         BackendController backendController2 = new BackendController(new BackendCallback() {
             public void actionPerformed(String result) {
                 Log.i("Test BackendCallback", "createFenceGroup: " + result);
                 DBConditionFence fenceGroup = JSONConverter.getFenceGroup(result);
-                int server_fence_group_id = fenceGroup.getServerId();
+                final int server_fence_group_id = fenceGroup.getServerId();
 
                 BackendController backendController3 = new BackendController(new BackendCallback() {
                     public void actionPerformed(String result) {
                         Log.i("Test BackendCallback", "createFence: " + result);
                         DBFence fence = JSONConverter.getFence(result);
+                        int fence_id = (int) fence.getId();
+
+                        BackendController backendController4 = new BackendController(new BackendCallback() {
+                            public void actionPerformed(String result) {
+                                Log.i("Test BackendCallback", "deleteFence: " + result);
+                            }
+                        });
+                        backendController4.deleteFence(server_fence_group_id, fence_id);
+
                     }
                 });
-                DBFence testFence = new DBFence();
-                testFence.setLatitude(-1);
-                testFence.setLatitude(-1);
-                testFence.setRadius(-1);
+                DBFence testFence = new DBFence(4, 1, 1, 1);
                 backendController3.createFence(server_fence_group_id, testFence);
             }
         });
@@ -101,6 +108,7 @@ public class TestActivity extends ActionBarActivity {
         testFenceGroup.setType("testType");
         testFenceGroup.setName("testName");
         backendController2.createFenceGroup(testFenceGroup);
+
     }
 
     @Override

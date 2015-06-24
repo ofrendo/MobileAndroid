@@ -88,10 +88,12 @@ public class JSONConverter {
     private static DBFence createFence(JSONObject obj) {
         DBFence result = null;
         try {
-            result = new DBFence();
-            result.setLatitude(Float.parseFloat((String) obj.get("lat")));
-            result.setLongitude(Float.parseFloat((String) obj.get("lng")));
-            result.setRadius((int) obj.get("radius"));
+            result = new DBFence(
+                    (int) obj.get("fence_id"),
+                    Float.parseFloat((String) obj.get("lat")),
+                    Float.parseFloat((String) obj.get("lng")),
+                    (int) obj.get("radius")
+            );
         }
         catch (Exception e) {
             Log.i("JSONConverter", "Error: " + e.getMessage());
@@ -117,6 +119,7 @@ public class JSONConverter {
         JSONObject outerObj = new JSONObject();
         JSONObject fenceObj = new JSONObject();
         try {
+            fenceObj.put("fence_id", fence.getId());
             fenceObj.put("lat", fence.getLatitude());
             fenceObj.put("lng", fence.getLongitude());
             fenceObj.put("radius", fence.getRadius());
