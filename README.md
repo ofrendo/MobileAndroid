@@ -21,12 +21,16 @@ Der erste Tab der Rule-Seite ist das RuleGeneral Fragment, es ermöglicht das L�
 Das RuleCondition Fragment ist der zweite Teil der Rule-Activity. Sie enthält eine Liste mit allen Bedingungen, die in der Regel enthalten sind. Wiederum wird hierbei ein ListView mit einem speziellen Adapter ("ConditionAdapter") verwendet, der den Namen sowie ein Icon für den Typ (Location oder Zeit) der Bedingung anzeigt.
 
 ##### Time-Condition
+Die Activity Time wird aufgerufen sobald eine Zeitbedingung aufgerufen oder erstellt wird. Hierbei ist es möglich einen Zeitraum oder Zeitpunkt auszuwählen, sowie die Wochentage an denen diese Bedingung aktiviert werden soll. Für die Anzeige der Wochentage wurden mehrere Toggle-Buttons erstellt, die in einem Flowlayout (keine Eigenentwicklung) angeordnet werden.
 
 ##### Location-Condition
 
 ##### Location Import
 
 #### Rule-Action
+Der dritte Reiter der Regel ist das Action Fragment. Dieses enthält ein Expandable Listview mit allen Aktionen, die bei dem Eintreten der zuvor erstellten Bedingungen ausgelöst werden sollen. Dazu wurde ein ExpandableListViewAdapter erstellt, der das Verhalten der Liste steuert. Zunächst wird für jede mögliche Aktion eine Gruppe (Group.java) erstellt. Diese Gruppen (Message, Notification, Sound, WLAN, Bluetooth) enthalten jeweils Child-Objekte die die einzelnen Konfigurationsmöglichkeiten der Gruppe enthalten (Beispielsweise enthält Message ein Kind für die Nummer des Empfängers und ein Kind für die Nachricht selbst). 
+Sobald die Gruppen und Kinder erstellt wurden, wird die Liste im UI aufgebaut. Dabei enthält jede Gruppe eine Header Zeile mit Namen und Aktiv-Zustand (listrow_group.xml). Diese Header Rows werden bei einem Klick auf den Namen aufgeklappt, wonach die Kinder angezeigt werden. Diese sind je nach Art beispielsweise ein Textinput (row_textinput.xml) oder ein Switch (row_switch.xml).
+Sobald der User in diesen Kindern einen Input vornimmt, werden die Daten in die jeweiligen Group/Child Objekte geschrieben und die Group wird in die lokale Datenbank übertragen.
 
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco
