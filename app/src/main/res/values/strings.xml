@@ -29,9 +29,10 @@
     <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">AIzaSyB5yE4r6Y8VCaBqn6fCAGmCx7wamcYjLbY</string>
     <string name="mapRadius">Radius</string>
     <string name="map_unit">M</string>
-    <string name="map_marker_name">Name</string>
+    <string name="map_marker_name">Name: </string>
     <string name="map_marker_edit_name">Edit Name</string>
     <string name="newMarker">New Marker</string>
+    <string name="upload">Upload to Server</string>
     <string name="MapsQuestionDeleteGeofence">You want to remove this geofence?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>

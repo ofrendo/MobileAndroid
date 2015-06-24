@@ -1,20 +1,16 @@
 package org.dhbw.geo.Map;
 
-import android.animation.ObjectAnimator;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -35,8 +31,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.dhbw.geo.R;
+import org.dhbw.geo.backend.BackendCallback;
+import org.dhbw.geo.backend.BackendController;
+import org.dhbw.geo.backend.JSONConverter;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBFence;
+import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.ui.MainActivity;
@@ -67,7 +67,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     private TextView mapMarkerName;
     private TextView mapMarkerEditName;
     private ImageButton deleteMarkerButton;
-    private LinearLayout mapLayout;
+    private Button uploadServer;
 
     long ruleID;
     DBConditionFence fenceGroup;
@@ -152,7 +152,6 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     }
 
     private void getUIObjects() {
-        mapLayout = (LinearLayout) findViewById(R.id.map_layout);
         radius = (SeekBar) findViewById(R.id.map_radius_seekbar);
         radiusText = (TextView) findViewById(R.id.map_radius);
         radiusTextDescription = (TextView) findViewById(R.id.map_radius_description);
@@ -160,6 +159,63 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         mapMarkerName = (TextView) findViewById(R.id.map_marker_name);
         mapMarkerEditName = (TextView) findViewById(R.id.map_marker_edit_name);
         deleteMarkerButton = (ImageButton) findViewById(R.id.deleteMarkerButton);
+        uploadServer = (Button) findViewById(R.id.map_upload_button);
+    }
+
+    private void initalUploadFencesToServer() {
+        Log.d("Maps/Upload", "Upload FenceGroupe to Server");
+        BackendController backendController1 = new BackendController(new BackendCallback() {
+            public void actionPerformed(String result) {
+                Log.i("BackendCallback", "createFenceGroup: " + result);
+                DBConditionFence resultFenceGroup = JSONConverter.getFenceGroup(result);
+                fenceGroup.setServerId(resultFenceGroup.getServerId());
+                updateConditionFencesOnDB();
+                DBHelper.getInstance().logTable(DBHelper.TABLE_CONDITION_FENCE);
+                sendAllFencesToServer();
+            }
+        });
+        backendController1.createFenceGroup(fenceGroup);
+    }
+
+    private void sendAllFencesToServer() {
+        for (final DBFence fence : mDBFenceList){
+            BackendController backendController = new BackendController(new BackendCallback() {
+                public void actionPerformed(String result) {
+                    Log.i("BackendCallback", "createFence: " + result);
+                }
+            });
+            backendController.createFence(fenceGroup.getServerId(), fence);
+        }
+    }
+
+    private void deltaSyncWithServer() {
+        BackendController backendController = new BackendController(new BackendCallback() {
+            public void actionPerformed(String result) {
+                Log.i("BackendCallback", "GetAllFences: " + result);
+                ArrayList<DBFence> serverFences = JSONConverter.getFences(result);
+                //delete old fences
+                deleteAllFencesServer(serverFences);
+                // send new fences
+                sendAllFencesToServer();
+            }
+        });
+        backendController.getFencesForGroup(fenceGroup.getServerId());
+    }
+
+    private void deleteAllFencesServer(ArrayList<DBFence> serverFences) {
+        for (DBFence fence : serverFences){
+            Log.d("Maps/ServerCall", "Delete Fence: " + fence.toString());
+            BackendController backendController2 = new BackendController(new BackendCallback() {
+                public void actionPerformed(String result) {
+                    Log.i("BackendCallback", "deleteFence: " + result);
+                }
+            });
+            backendController2.deleteFence(fenceGroup.getServerId(), (int)fence.getId());
+        }
+    }
+
+    private void updateConditionFencesOnDB() {
+        fenceGroup.writeToDB();
     }
 
     private void setUpSeekerBar() {
@@ -168,11 +224,14 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 setTextViewSeekbarText(progress);
-                // change radius
-                Circle circle = markerCircelMapping.get(activeMarker.getId());
-                circle.setRadius(progress);
-                //update database
-                markerLocationMapping.get(activeMarker.getId()).setRadius(progress);
+                try {
+                    // change radius
+                    Circle circle = markerCircelMapping.get(activeMarker.getId());
+                    circle.setRadius(progress);
+                    //update database
+                    markerLocationMapping.get(activeMarker.getId()).setRadius(progress);
+                } catch (Exception e) {
+                }
             }
 
             @Override
@@ -349,7 +408,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     }
 
     private void updateFenceInDB(Marker marker) {
-        Log.d("Maps/UpdateDB","Update Fence in DB");
+        Log.d("Maps/UpdateDB", "Update Fence in DB");
         DBFence fence = getFence(marker);
         fence.setLatitude(marker.getPosition().latitude);
         fence.setLongitude(marker.getPosition().longitude);
@@ -456,5 +515,18 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         setCameraFocus();
         // remove listener
         mMap.setOnCameraChangeListener(null);
+    }
+
+    public void onClickUploadToServer(View view) {
+        //check if serverID is -1
+        if (fenceGroup.getServerId() == -1){
+            Log.d("Maps/Upload", "Initial upload");
+            initalUploadFencesToServer();
+        }else{
+            Log.d("Maps/Upload", "Delta Sync");
+            //delete old and set new version
+            deltaSyncWithServer();
+        }
+        DBHelper.getInstance().logTable(DBHelper.TABLE_CONDITION_FENCE);
     }
 }
