@@ -26,6 +26,7 @@ Die Activity Time wird aufgerufen sobald eine Zeitbedingung aufgerufen oder erst
 ##### Location-Condition
 
 ##### Location Import
+Falls der User nich seine eigene Locations erstellen möchte, hat er die Möglichkeit von einem Zentralen Server, Locations von anderen Nutzern zu Importieren. Dafür öffnet er die Import Seite, wo alle Location-Bedingungen des Servers in einer Liste angezeigt werden. Diese Liste ist zudem nach dem Namen filterbar (Adapter und Filter in ImportFilter). Wählt er eine Location aus und bestätigt den Import, werden die Daten von dem Server geladen und in die lokale Datenbank übertragen.
 
 #### Rule-Action
 Der dritte Reiter der Regel ist das Action Fragment. Dieses enthält ein Expandable Listview mit allen Aktionen, die bei dem Eintreten der zuvor erstellten Bedingungen ausgelöst werden sollen. Dazu wurde ein ExpandableListViewAdapter erstellt, der das Verhalten der Liste steuert. Zunächst wird für jede mögliche Aktion eine Gruppe (Group.java) erstellt. Diese Gruppen (Message, Notification, Sound, WLAN, Bluetooth) enthalten jeweils Child-Objekte die die einzelnen Konfigurationsmöglichkeiten der Gruppe enthalten (Beispielsweise enthält Message ein Kind für die Nummer des Empfängers und ein Kind für die Nachricht selbst). 
