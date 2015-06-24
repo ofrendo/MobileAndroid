@@ -225,6 +225,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 setTextViewSeekbarText(progress);
                 try {
+                    if (progress < 1){
+                        progress = 1;
+                        radius.setProgress(progress);
+                    }
                     // change radius
                     Circle circle = markerCircelMapping.get(activeMarker.getId());
                     circle.setRadius(progress);
@@ -241,7 +245,6 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                seekBar.getProgress();
                 updateFenceInDB(activeMarker);
             }
         });

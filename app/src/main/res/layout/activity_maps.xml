@@ -80,7 +80,7 @@
         android:id="@+id/map_radius_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:progress="200"/>
+        android:max="250"/>
     <LinearLayout
         android:id="@+id/map_layout"
         android:layout_width="wrap_content"
