@@ -287,12 +287,10 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     }
 
     /**
-     * handle start app
+     * handle start app to get current position
      * @param intent
      */
     private void handleStartApp(Intent intent) {
-        // set up geofenceList
-        setUpGeofenceList();
         //connect to Google
         connectToGoogleAPI();
     }
