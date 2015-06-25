@@ -1,7 +1,6 @@
 package org.dhbw.geo.ui.RuleFragments;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,12 @@ import android.widget.TextView;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
-import org.dhbw.geo.database.DBRule;
 
 import java.util.ArrayList;
 
 /**
- * Created by Joern on 19.06.2015.
+ * Arrayadapter for Conditions-Listview
+ * @author Joern
  */
 public class ConditionAdapter extends ArrayAdapter<DBCondition> {
     ArrayList<DBCondition> items;
