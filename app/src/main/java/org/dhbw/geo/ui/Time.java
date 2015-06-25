@@ -6,7 +6,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
-
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBRule;
@@ -184,7 +182,6 @@ public class Time extends ActionBarActivity {
 
         // Build button for each day.
         for (int index = 0; index < 7; index++) {
-            Log.d("Time", "add button" + String.valueOf(index + 1));
             final ToggleButton button = new ToggleButton(this);
             button.setText(weekdays[index]);
             button.setTextOn(weekdays[index]);
@@ -211,9 +208,6 @@ public class Time extends ActionBarActivity {
                 }
             });
         }
-        Log.d("Time", "Number of buttons: " + String.valueOf(weekdayLayout.getChildCount()));
-
-
     }
 
     private void showAlert() {

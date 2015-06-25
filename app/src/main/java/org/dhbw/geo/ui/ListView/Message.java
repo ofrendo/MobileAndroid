@@ -1,7 +1,4 @@
 package org.dhbw.geo.ui.ListView;
-
-import android.util.Log;
-
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBActionMessage;
 import org.dhbw.geo.database.DBRule;

@@ -1,9 +1,5 @@
 package org.dhbw.geo.ui.ListView;
 
-/**
- * Created by Joern on 05.06.2015.
- */
-
 import java.util.ArrayList;
 import java.util.List;
 
