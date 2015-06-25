@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,17 +21,13 @@ import android.view.ViewGroup;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBRule;
 
-
+/**
+ * RuleContainer Activity which contains 3 slidable Tabs
+ * @author Joern
+ */
 public class RuleContainer extends ActionBarActivity implements ActionBar.TabListener, RuleGeneral.OnFragmentInteractionListener, RuleCondition.OnFragmentInteractionListener,RuleAction.OnFragmentInteractionListener{
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -68,7 +63,7 @@ public class RuleContainer extends ActionBarActivity implements ActionBar.TabLis
         }
         else{
             rule = new DBRule();
-            rule.setActive(false);
+            rule.setActive(true);
             rule.setName("");
             rule.writeToDB();
 

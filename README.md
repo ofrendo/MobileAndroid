@@ -1,16 +1,13 @@
-# MobileAndroid
-Native mobile Android project 6th semester
-
-#GEO
+# GEO
 Der Generische Event Organizer (GEO) soll es ermöglichen auf Basis von Locations (Geofences) und Zeiträumen verschiedene Events auf einem Handy zu erstellen.
 Beispielsweise ist es möglich ein Event so anzulegen, das während der Arbeit (Arbeitsort und Arbeitszeit) der Ton das Handys auf leise gestellt wird, sodass Anrufe nicht bei der Arbeit stören. Auch eine automatische Ein-/Ausschaltung des WLAN-Adapters des Handys ist möglich, sodass diese Funktion immer dann agestellt wird, wenn der Nutzer zu Hause ist.
 
-##Benutzeroberfläche
+## Benutzeroberfläche
 Die Benutzeroberfläche ist im Ordner "UI" des Android Projektes enthalten.
-###Main-Page
+### Main-Page
 Die Hauptseite enthält eine Übersicht über alle Regeln die ein Nutzer angelegt hat. Diese werden in einem Listview, welches mit einem speziellen ArrayAdapter ("DBRuleAdapter") erstellt wird. Zusätzlich zu dem Namen der Regel wird noch ein Icon angezeigt, welches symbolisiert ob die Regel aktiv ist oder nicht.
 
-###Rule-Page
+### Rule-Page
 Sobald eine Regel ausgewählt ist oder eine neue Regel erstellt wird, wird die Regel-Seite aufgerufen.
 Diese Seite ist ein Konstrukt aus 3 unterschiedlichen Tabs, die mit der Tableiste oder per "swipen" der Seite aufrufbar sind. Die Haupt-Activity, die die 3 Fragments für die Tabs enthält ist die RuleContainer-Activity.
 
@@ -45,6 +42,17 @@ Das Package "database" enthält dabei alle Java-Klassen, die zum Laden und Speic
 Das dazugehörige Klassendiagramm verdeutlicht den Aufbau der Klassen:
 ![Alt text](/documentation/class-diagram-database.png?raw=true "Klassendiagram des database-Packages")
 
+## Hardwareeinstellungen
+Die eigentlichen Hardwareeinstellungen werden im Paket `hardware` verändert. Hier befindet sich der `HardwareController`, der die Einstellungen verändert bzw. den aktuellen Status zurückgibt, die `NotificationFactory` zum erstellen von Notifications und die `SMSFactory`, mit der SMS verschickt werden können. 
+
+## Backend
+Um das Teilen von Geofences zu ermöglichen wurde ein Backend entwickelt. Dieses nutzt eine Kombination aus NodeJS und PostgreSQL, um Daten zentral in einem Server zu speichern. 
+
+Das Github-Repository mit den entsprechenden REST API Aufrufen befindet sich unter https://github.com/ofrendo/MobileAndroidBackend.
+
+Um das Aufrufen der REST API Aufrufe auszulagern wurde das Package `backend` verwendet. Hier befindet sich die zentrale Klasse `BackendController`, mit der ein Aufruf getätigt werden und eine Callback-Funktion definiert kann.
+
+
 # JavaDoc
 Die App wurde unter anderem mit JavaDoc dokumentiert. Die Dokumentation ist hier erreichbar:
 [JavaDoc](https://cdn.rawgit.com/ofrendo/MobileAndroid/master/documentation/JavaDoc/index.html)
@@ -52,11 +60,11 @@ Die App wurde unter anderem mit JavaDoc dokumentiert. Die Dokumentation ist hier
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco
 
-#Mockups
+# Mockups
 https://www.fluidui.com/editor/live/preview/p_nCXqi4gkSKM7vOWaqdReJT5UI3fNi1eU.1433147650261
 
 
-# Use Google Maps
+# How to use Google Maps
 Change Google keystore to use Google Maps.
 
 - Open directory User/.android 
