@@ -110,7 +110,7 @@ public class DBActionMessage extends DBAction {
      * @return the id of the inserted message action
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NUMBER, number);
         values.put(DBHelper.COLUMN_MESSAGE, message);
@@ -124,7 +124,7 @@ public class DBActionMessage extends DBAction {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NUMBER, number);
         values.put(DBHelper.COLUMN_MESSAGE, message);
