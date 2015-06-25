@@ -17,7 +17,13 @@ import java.util.ArrayList;
  * @author Matthias
  */
 public class DBActionSimple extends DBAction {
+    /**
+     * the type for turning on / off WiFi connections
+     */
     public static final String TYPE_WIFI = "wifi";              // turn wifi on / off
+    /**
+     * the type for turning on / off Bluetooth connections
+     */
     public static final String TYPE_BLUETOOTH = "bluetooth";    // turn bluetooth on / off
     /**
      * the setting which shall be turned on / off

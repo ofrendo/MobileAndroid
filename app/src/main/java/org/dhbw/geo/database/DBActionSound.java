@@ -17,9 +17,14 @@ import java.util.ArrayList;
 public class DBActionSound extends DBAction {
     // the sound types are now used from class AudioManager
 
-    // the sound statuses
+    /**
+     * the sound status for "unmute"
+     */
     public static final String STATUS_SOUND = "Sound";
     //public static final String STATUS_VIBRATE = "Vibrate";
+    /**
+     * the sound status for "mute"
+     */
     public static final String STATUS_MUTE = "Mute";
 
     /**
