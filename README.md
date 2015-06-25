@@ -39,8 +39,15 @@ Sobald der User in diesen Kindern einen Input vornimmt, werden die Daten in die 
 
 ## Datenbank
 In einer mit der App verknüpften SQLite-Datenbank werden sämtliche Regeln, Aktionen und Bedingungen persistent gespeichert.
-Die Datenbank hat dabei folgenden Aufbau:
+Die Datenbank hat dabei den im folgenden ER-Diagramm dargestellten Aufbau:
 ![Alt text](/documentation/client-erd.png?raw=true "ER-Diagramm SQLite-Datenbank")
+Das Package "database" enthält dabei alle Java-Klassen, die zum Laden und Speichern der Objekte in der Datenbank benötigt werden. Die Objekte dienen zum Einen als Schnittstelle für die CRUD-Operationen, zum Anderen verwalten sie aber auch die Objekte während der Laufzeit in der App.
+Das dazugehörige Klassendiagramm verdeutlicht den Aufbau der Klassen:
+![Alt text](/documentation/class-diagram-database.png?raw=true "Klassendiagram des database-Packages")
+
+# JavaDoc
+Die App wurde unter anderem mit JavaDoc dokumentiert. Die Dokumentation ist hier erreichbar:
+[JavaDoc](https://cdn.rawgit.com/ofrendo/MobileAndroid/master/documentation/JavaDoc/index.html)
 
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco

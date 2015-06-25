@@ -1,21 +1,12 @@
 package org.dhbw.geo.ui.ListView;
 
-/**
- * Created by Joern on 05.06.2015.
- */
 import android.app.Activity;
-import android.content.Context;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
@@ -76,8 +67,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
         final String childName = childObject.name;
         TextView text = null;
 
-        Log.i(tag, groupPosition + " "+childPosition+ "created");
-
         switch (childObject.type){
             case Child.SWITCH:
                 convertView = inflater.inflate(R.layout.rule_switch, null);
@@ -124,7 +113,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         int checkedIndex = (checkedId - 1) % childObject.options.size();
-                        Log.i(tag, childObject.name + "selected  to " + childObject.options.get(checkedIndex));
                         childObject.selectedOption = childObject.options.get(checkedIndex);
                     }
                 });
