@@ -46,14 +46,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+/**
+ * Activity Class for map view
+ * handle hole interaction with the map and marker
+ */
+public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //Geofencing
     private PendingIntent mGeofencePendingIntent;
     private ArrayList mGeofenceList = new ArrayList();
     private ArrayList<DBFence> mDBFenceList = new ArrayList<DBFence>();
-    private List<TestLocation> testLocations;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
@@ -78,7 +81,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * automatically handle clicks on the Home/Up button, so long
      * as you specify a parent activity in AndroidManifest.xml.
      * @param item
-     * @return
+     * @return if an item is selected or not
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -112,7 +115,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * onCreate - starting the activity
      * first of all get reference to the DBRule and save the DBConditionFence object
      * initialise map
-     * @param savedInstanceState
+     * @param savedInstanceState needs extras with "DBRuleID" and "DBConditionFenceID"
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +151,6 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         // start setup mapping variables
         markerCircelMapping = new HashMap<String, Circle>();
         markerLocationMapping = new HashMap<String, DBFence>();
-        testLocations = new ArrayList<TestLocation>();
         // start setup map
         getLocations();
         getUIObjects();
@@ -242,7 +244,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Delete all given fences from server
-     * @param serverFences
+     * @param serverFences give all fences witch are tracked on server to delete them all
      */
     private void deleteAllFencesServer(ArrayList<DBFence> serverFences) {
         for (DBFence fence : serverFences){
@@ -302,7 +304,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Set TextView with current seekbar-value
-     * @param progress
+     * @param progress - current value of radius
      */
     private void setTextViewSeekbarText(int progress) {
         Log.d("Maps/Seekbar", String.valueOf(progress));
@@ -312,24 +314,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Set current Marker name
-     * @param name
+     * @param name - name of the ConditionFence group
      */
     private void setMarkerNameTextView(String name) {
         mapMarkerEditName.setText(name);
-    }
-
-    /**
-     * get Last Location
-     * @return
-     */
-    public Location getCurrentLocation(){
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-        return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     /**
@@ -383,9 +371,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Add new marker to map
-     * @param loc
-     * @param name
-     * @return
+     * @param loc - location of the new marker
+     * @param name - name of the new marker / set if needed
+     * @return the new marker
      */
     private Marker addMarkerToMap(LatLng loc, String name){
         int initialRadius = 50;
@@ -412,9 +400,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Create new DBFence object with params loc Location /initialRadius int
-     * @param loc
-     * @param initialRadius
-     * @return
+     * @param loc location of the new fence
+     * @param initialRadius radius of the new fence
+     * @return the new fence object
      */
     private DBFence createDBFence(LatLng loc, int initialRadius) {
         DBFence fence = new DBFence();
@@ -427,7 +415,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Save new marker and write it to DB
-     * @param dbFence
+     * @param dbFence a DBFence object you want to write to DB
      */
     private void writeNewMarkerToDB(DBFence dbFence) {
         //write new Geofence to DB
@@ -437,7 +425,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * add a singel geofence
-     * @param dbFence
+     * @param dbFence a DBFence object you want to add
      */
     private void addSingleGeofence(DBFence dbFence) {
         Intent addFence = new Intent(this, ConditionService.class);
@@ -450,12 +438,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Delete a single marker
-     * @param marker
+     * @param marker marker you want to delete
      */
     private void deleteMarker(Marker marker){
         DBFence fence = markerLocationMapping.get(marker.getId());
         Circle circle = markerCircelMapping.get(marker.getId());
-        testLocations.remove(fence);
         markerLocationMapping.remove(marker.getId());
         markerCircelMapping.remove(marker.getId());
         circle.remove();
@@ -470,7 +457,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Delete geofence
-     * @param fence
+     * @param fence fence you want to delete
      */
     private void deleteGeofence(DBFence fence) {
         Intent removeFence = new Intent(this, ConditionService.class);
@@ -484,7 +471,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     /**
      * Change visibility
      * if a marker is selected show ui elements
-     * @param visibility
+     * @param visibility true for visibly false for invisible
      */
     private void setMarkerChangeVisibility(Boolean visibility){
         if (visibility){
@@ -505,8 +492,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * update selected fence, if the location or radius change
-     * @param fence
-     * @param marker
+     * @param fence new version of the fence object
+     * @param marker new version of the marker
      */
     private void updateGeofence(DBFence fence, Marker marker) {
         //update fence in db
@@ -521,7 +508,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Update selected fence in DB
-     * @param marker
+     * @param marker you want to update
      */
     private void updateFenceInDB(Marker marker) {
         Log.d("Maps/UpdateDB", "Update Fence in DB");
@@ -536,8 +523,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Returns DBFence object to given marker
-     * @param marker
-     * @return
+     * @param marker where you want to have the fence object
+     * @return the fence object witch is mapped to the marker
      */
     private DBFence getFence(Marker marker) {
         return markerLocationMapping.get(marker.getId());
@@ -579,7 +566,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     /**
      * Delete marker from map/DB/geofencelist
-     * @param view
+     * @param view ui element
      */
     public void onClickDeleteButton(View view){
         deleteMarker(activeMarker);
@@ -590,8 +577,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * Handle event onMarkerClick event
      * set active Marker
      * change seekbar progress and set visibility of ui elements true
-     * @param marker
-     * @return
+     * @param marker marker that was pressed
+     * @return not used
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -608,7 +595,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     /**
      * Handle event onMapLongClick
      * create new Marker
-     * @param latLng
+     * @param latLng location where the long click was done
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
@@ -623,7 +610,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     /**
      * Handdle event onMarkerDragStart
      * get dragged marker and change circlecenter
-     * @param marker
+     * @param marker marker that is dragged
      */
     @Override
     public void onMarkerDragStart(Marker marker) {
@@ -635,7 +622,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     /**
      * Handle event onMarkerDrag
      * get dragged marker and change circlecenter
-     * @param marker
+     * @param marker marker that is dragged
      */
     @Override
     public void onMarkerDrag(Marker marker) {
@@ -648,7 +635,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * Handle event onMarkerDragEnd
      * get dragged marker and change circlecenter
      * save new position --> on DB and update geofence
-     * @param marker
+     * @param marker marker that is dragged
      */
     @Override
     public void onMarkerDragEnd(Marker marker) {
@@ -662,7 +649,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     /**
      * Handle event onMapClick
      * set activeMarker = null and visibility of ui elements false
-     * @param latLng
+     * @param latLng location where the map was clicked --> not used
      */
     @Override
     public void onMapClick(LatLng latLng) {
@@ -675,7 +662,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     /**
      * Handle event onCameraChange
      * if map is initiated change cameraposition to all markers and delete onCameraChangeListener
-     * @param cameraPosition
+     * @param cameraPosition current cameraposition
      */
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
@@ -691,7 +678,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * check if there is already a version
      * yes : update server
      * no : create new
-     * @param view
+     * @param view ui element
      */
     public void onClickUploadToServer(View view) {
         //check if serverID is -1
@@ -704,20 +691,5 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             deltaSyncWithServer();
         }
         DBHelper.getInstance().logTable(DBHelper.TABLE_CONDITION_FENCE);
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 }

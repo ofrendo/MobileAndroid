@@ -82,8 +82,6 @@
                 android:value="org.dhbw.geo.ui.MainActivity" />
         </activity>
 
-        <service android:name=".Map.GeofenceTransistionsIntentService" />
-
         <activity
             android:name=".ui.Time"
             android:label="@string/title_activity_time"

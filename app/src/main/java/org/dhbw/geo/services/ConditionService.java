@@ -17,7 +17,6 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import org.dhbw.geo.Map.TestLocation;
 import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBConditionTime;
@@ -58,9 +57,6 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     //mappingtable
     private HashMap<String , Integer> typeMapping ;
-
-    // just for testing
-    private List<TestLocation> testLocations;
 
     public ConditionService() {
         super(TAG);
@@ -108,7 +104,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     }
     /**
      * Handles the intent either fired by an alarm triggered or an autostart.
-     * @param intent
+     * @param intent informations that are given to the service, can has the attributes Action
      */
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -146,7 +142,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * update geofences
-     * @param intent
+     * @param intent informations that are given to the service
      */
     private void handleUpdateGeofence(Intent intent) {
         updateFence = true;
@@ -163,7 +159,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     /**
      * handle event geofence triggerd
      * check conditions and perform action
-     * @param intent
+     * @param intent informations that are given to the service
      */
     private void handleGeofence(Intent intent) {
         Log.d("ConditionService", "Handle Geofence!");
@@ -209,7 +205,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * remove geofence
-     * @param intent
+     * @param intent informations that are given to the service
      */
     private void handleRemoveGeofence(Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -253,7 +249,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * add geofence to googleAPI
-     * @param intent
+     * @param intent informations that are given to the service
      */
     private void handleAddGeofence(Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -288,7 +284,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * handle start app to get current position
-     * @param intent
+     * @param intent informations that are given to the service
      */
     private void handleStartApp(Intent intent) {
         //connect to Google
@@ -325,18 +321,6 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     }
 
     /**
-     * get geofence details
-     * @param geofenceTransistionsIntentService
-     * @param geofenceTransition
-     * @param triggeringGeofences
-     * @return
-     */
-    private String getGeofenceTransitionDetails(ConditionService geofenceTransistionsIntentService, int geofenceTransition, List triggeringGeofences) {
-        Geofence geo = (Geofence) triggeringGeofences.get(geofenceTransition);
-        return geo.getRequestId();
-    }
-
-    /**
      * Checks the conditions and fires the actions if all conditions are met after an alarm was triggered.
      */
     private void handleCheckConditionTime(Intent intent){
@@ -353,7 +337,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * performe action if event trigger
-     * @param condition
+     * @param condition a DBCondition Object that has to be checked
      */
     private void performAction(DBCondition condition) {
 
@@ -384,7 +368,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * registers all alarms after a reboot of the phone.
-     * @param intent
+     * @param intent informations that are given to the service
      */
     private void handleAutoStart(Intent intent){
         NotificationFactory.createNotification(this, "Autostart", "Willkommen!", false);
@@ -428,7 +412,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * create geofencingrequest
-     * @return
+     * @return a geofencingRequest with all information about the geofences
      */
     private GeofencingRequest getGeofencingRequest(){
         // create GeofenceRequest
@@ -446,7 +430,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
 
     /**
      * performe action if connection to googleAPI is successful
-     * @param bundle
+     * @param bundle added information about the connection
      */
     @Override
     public void onConnected(Bundle bundle) {
@@ -463,6 +447,9 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         }
     }
 
+    /**
+     * set last known location in var gLastLocation
+     */
     private void getLastLocation() {
         try {
             gLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
