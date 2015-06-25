@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.dhbw.geo.services.AlarmReceiver;
 import org.dhbw.geo.services.ContextManager;
@@ -236,7 +237,7 @@ public class DBConditionTime extends DBCondition {
      * @return the id of the inserted condition time
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         // Create ConditionTime entry
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
@@ -258,7 +259,7 @@ public class DBConditionTime extends DBCondition {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         // update ConditionTime entry
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
@@ -280,14 +281,19 @@ public class DBConditionTime extends DBCondition {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        // delete DayStatus entries
-        deleteDayStatusFromDB(db);
-        // delete ConditionTime entry
-        String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_CONDITION_TIME, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            db.execSQL("PRAGMA foreign_keys = ON;");
+            // delete DayStatus entries
+            deleteDayStatusFromDB(db);
+            // delete ConditionTime entry
+            String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_CONDITION_TIME, where, whereArgs);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete from time condition from database!", Toast.LENGTH_SHORT);
+        }
     }
 
     /**
@@ -296,10 +302,15 @@ public class DBConditionTime extends DBCondition {
      */
     @Override
     public void removeRuleFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
-        db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
+            db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't remove rule from time condition on database!", Toast.LENGTH_SHORT);
+        }
     }
 
     /**
@@ -307,12 +318,17 @@ public class DBConditionTime extends DBCondition {
      */
     @Override
     protected void writeRuleToDB() {
-        removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
-        values.put(DBHelper.COLUMN_CONDITION_TIME_ID, getId());
-        db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
+        try {
+            removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+            values.put(DBHelper.COLUMN_CONDITION_TIME_ID, getId());
+            db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't write rule to time condition on database!", Toast.LENGTH_SHORT);
+        }
     }
 
     /**
@@ -363,7 +379,7 @@ public class DBConditionTime extends DBCondition {
      * Inserts all assigned workdays to the database.
      * @param db
      */
-    private void insertDayStatusIntoDB(SQLiteDatabase db){
+    private void insertDayStatusIntoDB(SQLiteDatabase db) throws Exception {
         for(int i = 0; i < days.size(); i++){
             ContentValues values = new ContentValues();
             values.put(DBHelper.COLUMN_CONDITION_TIME_ID, getId());
@@ -376,7 +392,7 @@ public class DBConditionTime extends DBCondition {
      * Deletes all assigned workdays from the database.
      * @param db
      */
-    private void deleteDayStatusFromDB(SQLiteDatabase db){
+    private void deleteDayStatusFromDB(SQLiteDatabase db) throws Exception {
         if(!existsOnDB()) return;   // if the ConditionTime doesn't exist, there shouldn't be any DayStatuses
         String where = DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
         String[] whereArgs = {String.valueOf(getId())};

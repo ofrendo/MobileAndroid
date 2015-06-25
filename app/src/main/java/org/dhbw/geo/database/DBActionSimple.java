@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.dhbw.geo.hardware.HardwareController;
+import org.dhbw.geo.services.ContextManager;
 
 import java.util.ArrayList;
 
@@ -119,7 +121,7 @@ public class DBActionSimple extends DBAction {
      * @return the id of the inserted simple action
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_TYPE, type);
         values.put(DBHelper.COLUMN_STATUS, status);
@@ -133,7 +135,7 @@ public class DBActionSimple extends DBAction {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_TYPE, type);
         values.put(DBHelper.COLUMN_STATUS, status);
@@ -151,10 +153,15 @@ public class DBActionSimple extends DBAction {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_ACTION_SIMPLE, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            String where = DBHelper.COLUMN_ACTION_SIMPLE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_ACTION_SIMPLE, where, whereArgs);
+        } catch(Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete simple action from database!", Toast.LENGTH_SHORT);
+        }
     }
 
     public String getType() {

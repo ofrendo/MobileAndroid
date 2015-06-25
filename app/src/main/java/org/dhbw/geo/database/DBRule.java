@@ -4,6 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
+
+import org.dhbw.geo.services.ContextManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +107,7 @@ public class DBRule extends DBObject {
      * @return the id of the inserted rule
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, name);
         values.put(DBHelper.COLUMN_ACTIVE, active);
@@ -116,7 +119,7 @@ public class DBRule extends DBObject {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, name);
         values.put(DBHelper.COLUMN_ACTIVE, active);
@@ -130,11 +133,16 @@ public class DBRule extends DBObject {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        String where = DBHelper.COLUMN_RULE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_RULE, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            db.execSQL("PRAGMA foreign_keys = ON;");
+            String where = DBHelper.COLUMN_RULE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_RULE, where, whereArgs);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete rule from database!", Toast.LENGTH_SHORT);
+        }
     }
 
     /**

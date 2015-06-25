@@ -1,0 +1,8 @@
+org.dhbw.geo.Map
+org.dhbw.geo.backend
+org.dhbw.geo.database
+org.dhbw.geo.hardware
+org.dhbw.geo.services
+org.dhbw.geo.ui
+org.dhbw.geo.ui.ListView
+org.dhbw.geo.ui.RuleFragments

@@ -310,7 +310,6 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         for(int i = 0; i < rules.size(); i++){
             rules.get(i).registerAllAlarms();
         }
-        // TODO: set geofences for all rules
     }
 
     public Location getLastLocation(){
