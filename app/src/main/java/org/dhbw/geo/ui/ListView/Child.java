@@ -1,7 +1,6 @@
 package org.dhbw.geo.ui.ListView;
 
 import android.media.AudioManager;
-import android.util.Log;
 
 import org.dhbw.geo.database.DBActionSound;
 
@@ -28,7 +27,13 @@ public class Child {
     //checkbox / switch
     public boolean checked;
 
-    //checkbox/switch
+    /**
+     * Constructor for Checkboxes/Switches
+     * @param parent
+     * @param name
+     * @param checked
+     * @param checkBox if False, Switch will be Created instead
+     */
     public Child(Group parent, String name, boolean checked, boolean checkBox){
         this.parent = parent;
         if (checkBox)
@@ -47,11 +52,23 @@ public class Child {
     public ArrayList<String> options;
     public String selectedOption;
 
+    /**
+     * Constructor for Radiobuttons
+     * @deprecated
+     * @param name
+     * @param options
+     */
     public Child (String name, ArrayList<String> options){
         type = RADIOBUTTONS;
         this.name = name;
         this.options = options;
     }
+    /**
+     * Constructor for Radiobuttons
+     * @deprecated
+     * @param name
+     * @param options
+     */
     public Child (String name, String [] options){
         type = RADIOBUTTONS;
         this.name = name;
@@ -64,6 +81,15 @@ public class Child {
     public int min;
     public int max;
     public int range;
+
+    /**
+     * Construcctor for Slider
+     * @deprecated
+     * @param name
+     * @param min
+     * @param max
+     * @param value
+     */
     public Child(String name, int min , int max , int value){
         type = SLIDER;
         this.name=name;
@@ -72,6 +98,14 @@ public class Child {
         this.value = value;
         this.range = max-min;
     }
+
+    /**
+     * Constructor for Sider
+     * @deprecated
+     * @param name
+     * @param min
+     * @param max
+     */
     public Child(String name, int min , int max){
         type = SLIDER;
         this.name=name;
@@ -84,6 +118,13 @@ public class Child {
 
     //text
     String text;
+
+    /**
+     * Construcor for Textinput
+     * @param parent
+     * @param name
+     * @param inputText
+     */
     public Child( Group parent,String name, String inputText){
         this.parent = parent;
         type = TEXTINPUT;
@@ -99,6 +140,14 @@ public class Child {
 
     //numbertext
     String numberText;
+
+    /**
+     * Constructor for NumberInput
+     * @param parent
+     * @param name
+     * @param input
+     * @param number
+     */
     public Child(Group parent, String name, String input, boolean number){
         this.parent = parent;
         this.name = name;
@@ -127,6 +176,14 @@ public class Child {
     boolean active;
     int soundMax = 100;
 
+    /**
+     * Construcr for Soundinput
+     * @param parent
+     * @param soundtype
+     * @param actual
+     * @param active
+     * @param status
+     */
     public Child(Group parent, int soundtype, int actual, boolean active, String status){
 
 
