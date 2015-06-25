@@ -47,7 +47,7 @@ Das dazugehörige Klassendiagramm verdeutlicht den Aufbau der Klassen:
 
 # JavaDoc
 Die App wurde unter anderem mit JavaDoc dokumentiert. Die Dokumentation ist hier erreichbar:
-[JavaDoc](documentation/JavaDoc/index.html?raw=true)
+[JavaDoc](https://cdn.rawgit.com/ofrendo/MobileAndroid/master/documentation/JavaDoc/index.html)
 
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco
