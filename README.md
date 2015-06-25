@@ -45,6 +45,10 @@ Das Package "database" enthält dabei alle Java-Klassen, die zum Laden und Speic
 Das dazugehörige Klassendiagramm verdeutlicht den Aufbau der Klassen:
 ![Alt text](/documentation/class-diagram-database.png?raw=true "Klassendiagram des database-Packages")
 
+# JavaDoc
+Die App wurde unter anderem mit JavaDoc dokumentiert. Die Dokumentation ist hier erreichbar:
+[JavaDoc](https://cdn.rawgit.com/ofrendo/MobileAndroid/master/documentation/JavaDoc/index.html)
+
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco
 

@@ -1,13 +1,9 @@
 package org.dhbw.geo.services;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.util.Log;
-
-import org.dhbw.geo.hardware.NotificationFactory;
 
 /**
  * The autostart creates the system triggers after startup (geofences and alarms).

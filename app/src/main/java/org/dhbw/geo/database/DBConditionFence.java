@@ -14,8 +14,17 @@ import java.util.ArrayList;
  * @author Matthias
  */
 public class DBConditionFence extends DBCondition {
+    /**
+     * the type for entering a geofence
+     */
     public static final String TYPE_ENTER = "Enter";   // The condition is triggered when you enter one of the geofences
+    /**
+     * the type for leaving a geofence
+     */
     public static final String TYPE_LEAVE = "Leave";   // The condition is triggered when you leave one of the geofences
+    /**
+     * the type for staying in a geofence
+     */
     public static final String TYPE_STAY = "Stay";     // The condition is triggered when you stay in the geofence
     /**
      * the type of the geofences. Can be Enter, Leave or Stay

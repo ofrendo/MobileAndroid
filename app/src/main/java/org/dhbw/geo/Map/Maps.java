@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import com.google.android.gms.location.LocationRequest;
@@ -45,7 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener {
+public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     //Geofencing
@@ -72,11 +73,15 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
     long ruleID;
     DBConditionFence fenceGroup;
 
+    /**
+     * Handle action bar item clicks here. The action bar will
+     * automatically handle clicks on the Home/Up button, so long
+     * as you specify a parent activity in AndroidManifest.xml.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == android.R.id.home) {
             onBackPressed();
@@ -90,8 +95,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         return super.onOptionsItemSelected(item);
     }
 
-
-        @Override
+    /**
+     * Handle Back navigation
+     */
+    @Override
     public void onBackPressed() {
         Intent parent = getParentActivityIntent();
         //pls enter ruleID
@@ -101,6 +108,12 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         startActivity(parent);
     }
 
+    /**
+     * onCreate - starting the activity
+     * first of all get reference to the DBRule and save the DBConditionFence object
+     * initialise map
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,11 +144,12 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         Log.i("FENCE", "ID: " + fenceGroup.getId());
         Log.i("FENCE", "NAME: " + fenceGroup.getName());
 
-
         setContentView(R.layout.activity_maps);
+        // start setup mapping variables
         markerCircelMapping = new HashMap<String, Circle>();
         markerLocationMapping = new HashMap<String, DBFence>();
         testLocations = new ArrayList<TestLocation>();
+        // start setup map
         getLocations();
         getUIObjects();
         setUpSeekerBar();
@@ -144,13 +158,27 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         setMarkerChangeVisibility(false);
     }
 
+    /**
+     * resume map
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUpMap();
+    }
 
+    /**
+     * Load all locations from DB
+     */
     private void getLocations() {
         // load locations from DB
         fenceGroup.loadAllFences();
         mDBFenceList = fenceGroup.getFences();
     }
 
+    /**
+     * get all UI elements
+     */
     private void getUIObjects() {
         radius = (SeekBar) findViewById(R.id.map_radius_seekbar);
         radiusText = (TextView) findViewById(R.id.map_radius);
@@ -162,6 +190,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         uploadServer = (Button) findViewById(R.id.map_upload_button);
     }
 
+    /**
+     * Create a new ConditionGroup on serverside an send all fences
+     */
     private void initalUploadFencesToServer() {
         Log.d("Maps/Upload", "Upload FenceGroupe to Server");
         BackendController backendController1 = new BackendController(new BackendCallback() {
@@ -177,6 +208,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         backendController1.createFenceGroup(fenceGroup);
     }
 
+    /**
+     * send all fences to server
+     */
     private void sendAllFencesToServer() {
         for (final DBFence fence : mDBFenceList){
             BackendController backendController = new BackendController(new BackendCallback() {
@@ -188,6 +222,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
+    /**
+     * Get all fences from server and replace them with the current status
+     */
     private void deltaSyncWithServer() {
         BackendController backendController = new BackendController(new BackendCallback() {
             public void actionPerformed(String result) {
@@ -202,6 +239,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         backendController.getFencesForGroup(fenceGroup.getServerId());
     }
 
+    /**
+     * Delete all given fences from server
+     * @param serverFences
+     */
     private void deleteAllFencesServer(ArrayList<DBFence> serverFences) {
         for (DBFence fence : serverFences){
             Log.d("Maps/ServerCall", "Delete Fence: " + fence.toString());
@@ -214,10 +255,17 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
+    /**
+     * Write current fenceGroup (DBConditionFence) to DB
+     */
     private void updateConditionFencesOnDB() {
         fenceGroup.writeToDB();
     }
 
+    /**
+     * Set Up the seekbar
+     * add onProgressChanged Listener to seekbar and handle the changes
+     */
     private void setUpSeekerBar() {
         setTextViewSeekbarText(50);
         radius.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -225,7 +273,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 setTextViewSeekbarText(progress);
                 try {
-                    if (progress < 1){
+                    if (progress < 1) {
                         progress = 1;
                         radius.setProgress(progress);
                     }
@@ -250,22 +298,41 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         });
     }
 
+    /**
+     * Set TextView with current seekbar-value
+     * @param progress
+     */
     private void setTextViewSeekbarText(int progress) {
         Log.d("Maps/Seekbar", String.valueOf(progress));
         radiusText.setText(String.valueOf(progress));
         radius.setProgress(progress);
     }
 
+    /**
+     * Set current Marker name
+     * @param name
+     */
     private void setMarkerNameTextView(String name) {
         mapMarkerEditName.setText(name);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getUpMap();
+    /**
+     * get Last Location
+     * @return
+     */
+    public Location getCurrentLocation(){
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+        return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
+    /**
+     * get mMap object
+     */
     private void getUpMap() {
         // Do a null check to confirm that we have not already instantiated the Map.
         if (mMap == null) {
@@ -280,6 +347,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
+    /**
+     * add Listener to the Map-Object
+     */
     private void setUpMap() {
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapLongClickListener(this);
@@ -288,6 +358,9 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         mMap.setOnCameraChangeListener(this);
     }
 
+    /**
+     * Add all markers from DB to the map
+     */
     private void addInitialMarkersToMap() {
         for (int i = 0 ; i < mDBFenceList.size(); i++){
             Marker m = mMap.addMarker(new MarkerOptions()
@@ -306,6 +379,12 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
+    /**
+     * Add new marker to map
+     * @param loc
+     * @param name
+     * @return
+     */
     private Marker addMarkerToMap(LatLng loc, String name){
         int initialRadius = 50;
         Marker m = mMap.addMarker(new MarkerOptions()
@@ -329,6 +408,12 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         return m;
     }
 
+    /**
+     * Create new DBFence object with params loc Location /initialRadius int
+     * @param loc
+     * @param initialRadius
+     * @return
+     */
     private DBFence createDBFence(LatLng loc, int initialRadius) {
         DBFence fence = new DBFence();
         fence.setLongitude(loc.longitude);
@@ -338,12 +423,20 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         return fence;
     }
 
+    /**
+     * Save new marker and write it to DB
+     * @param dbFence
+     */
     private void writeNewMarkerToDB(DBFence dbFence) {
         //write new Geofence to DB
         dbFence.writeToDB();
         addSingleGeofence(dbFence);
     }
 
+    /**
+     * add a singel geofence
+     * @param dbFence
+     */
     private void addSingleGeofence(DBFence dbFence) {
         Intent addFence = new Intent(this, ConditionService.class);
         addFence.setAction(ConditionService.ADDGEO);
@@ -353,6 +446,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         startService(addFence);
     }
 
+    /**
+     * Delete a single marker
+     * @param marker
+     */
     private void deleteMarker(Marker marker){
         DBFence fence = markerLocationMapping.get(marker.getId());
         Circle circle = markerCircelMapping.get(marker.getId());
@@ -369,6 +466,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         setMarkerChangeVisibility(false);
     }
 
+    /**
+     * Delete geofence
+     * @param fence
+     */
     private void deleteGeofence(DBFence fence) {
         Intent removeFence = new Intent(this, ConditionService.class);
         removeFence.setAction(ConditionService.REMOVEGEO);
@@ -378,6 +479,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         startService(removeFence);
     }
 
+    /**
+     * Change visibility
+     * if a marker is selected show ui elements
+     * @param visibility
+     */
     private void setMarkerChangeVisibility(Boolean visibility){
         if (visibility){
             radius.setVisibility(View.VISIBLE);
@@ -399,6 +505,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
+    /**
+     * update selected fence, if the location or radius change
+     * @param fence
+     * @param marker
+     */
     private void updateGeofences(DBFence fence, Marker marker) {
         //update fence in db
         updateFenceInDB(marker);
@@ -410,6 +521,10 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         startService(updateFenceIntent);
     }
 
+    /**
+     * Update selected fence in DB
+     * @param marker
+     */
     private void updateFenceInDB(Marker marker) {
         Log.d("Maps/UpdateDB", "Update Fence in DB");
         DBFence fence = getFence(marker);
@@ -421,15 +536,18 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         fence.writeToDB();
     }
 
+    /**
+     * Returns DBFence object to given marker
+     * @param marker
+     * @return
+     */
     private DBFence getFence(Marker marker) {
         return markerLocationMapping.get(marker.getId());
     }
 
-    private Boolean createAlertDialog(String title, String question, String yes, String no) {
-        //AlertDialog.Builder builder = new AlertDialog(getAc);
-        return false;
-    }
-
+    /**
+     * Set camera fokus to all markers
+     */
     private void setCameraFocus() {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         if (mDBFenceList.size() >= 1){
@@ -443,21 +561,22 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }
     }
 
-    public Location getCurrentLocation(){
-        // check mGoogleApiClient
-       Location location = LocationServices.FusedLocationApi.getLastLocation(
-               mGoogleApiClient);
-        return location;
-    }
-
+    /**
+     * Delete marker from map/DB/geofencelist
+     * @param view
+     */
     public void onClickDeleteButton(View view){
-        // show dialog --> are you shure to delete this geofence?
-        Boolean delete = createAlertDialog(getString(R.string.MapsTitleDeleteGeofence), getString(R.string.MapsQuestionDeleteGeofence), getString(R.string.yes), getString(R.string.no));
         deleteMarker(activeMarker);
         activeMarker = null;
     }
 
-
+    /**
+     * Handle event onMarkerClick event
+     * set active Marker
+     * change seekbar progress and set visibility of ui elements true
+     * @param marker
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
         // set Name/Radius visible
@@ -470,7 +589,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         return false;
     }
 
-
+    /**
+     * Handle event onMapLongClick
+     * create new Marker
+     * @param latLng
+     */
     @Override
     public void onMapLongClick(LatLng latLng) {
         //create new marker
@@ -481,6 +604,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
     }
 
+    /**
+     * Handdle event onMarkerDragStart
+     * get dragged marker and change circlecenter
+     * @param marker
+     */
     @Override
     public void onMarkerDragStart(Marker marker) {
         LatLng latLong = marker.getPosition();
@@ -488,6 +616,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         circle.setCenter(latLong);
     }
 
+    /**
+     * Handle event onMarkerDrag
+     * get dragged marker and change circlecenter
+     * @param marker
+     */
     @Override
     public void onMarkerDrag(Marker marker) {
         LatLng latLong = marker.getPosition();
@@ -495,6 +628,12 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         circle.setCenter(latLong);
     }
 
+    /**
+     * Handle event onMarkerDragEnd
+     * get dragged marker and change circlecenter
+     * save new position --> on DB and update geofence
+     * @param marker
+     */
     @Override
     public void onMarkerDragEnd(Marker marker) {
         LatLng latLong = marker.getPosition();
@@ -504,6 +643,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         updateGeofences(fence, marker);
     }
 
+    /**
+     * Handle event onMapClick
+     * set activeMarker = null and visibility of ui elements false
+     * @param latLng
+     */
     @Override
     public void onMapClick(LatLng latLng) {
         // unselect active Marker
@@ -512,6 +656,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         setMarkerChangeVisibility(false);
     }
 
+    /**
+     * Handle event onCameraChange
+     * if map is initiated change cameraposition to all markers and delete onCameraChangeListener
+     * @param cameraPosition
+     */
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         // move camera
@@ -520,6 +669,14 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         mMap.setOnCameraChangeListener(null);
     }
 
+    /**
+     * Handle event onClickUploadToServer
+     * trigger upload of current fences to server
+     * check if there is already a version
+     * yes : update server
+     * no : create new
+     * @param view
+     */
     public void onClickUploadToServer(View view) {
         //check if serverID is -1
         if (fenceGroup.getServerId() == -1){
@@ -531,5 +688,20 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             deltaSyncWithServer();
         }
         DBHelper.getInstance().logTable(DBHelper.TABLE_CONDITION_FENCE);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }
