@@ -1,6 +1,9 @@
 package org.dhbw.geo.database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
+
+import org.dhbw.geo.services.ContextManager;
 
 /**
  * Represents any database object of this application. It contains a method to write the object to the sqlite database and stores the id of the object.
@@ -29,14 +32,19 @@ public abstract class DBObject {
      * Writes the object to the sqlite database. It is used for inserts and updates.
      */
     public void writeToDB(){
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        if(!existsOnDB){
-            long id = insertIntoDB(db);
-            setId(id);  // just to be sure
-        } else {
-            updateOnDB(db);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            if(!existsOnDB){
+                long id = insertIntoDB(db);
+                setId(id);  // just to be sure
+            } else {
+                updateOnDB(db);
+            }
+            db.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't write object to database!", Toast.LENGTH_SHORT);
         }
-        db.close();
     }
 
     protected void setId(long id){
@@ -62,14 +70,14 @@ public abstract class DBObject {
      * @return the id of the inserted object
      * @see #writeToDB()
      */
-    protected abstract long insertIntoDB(SQLiteDatabase db);
+    protected abstract long insertIntoDB(SQLiteDatabase db) throws Exception;
 
     /**
      * Updates the object in the corresponding database table.
      * @param db the reference to the sqlite database
      * @see #writeToDB()
      */
-    protected abstract void updateOnDB(SQLiteDatabase db);
+    protected abstract void updateOnDB(SQLiteDatabase db) throws Exception;
 
     /**
      * Deletes the object from the corresponding database table.

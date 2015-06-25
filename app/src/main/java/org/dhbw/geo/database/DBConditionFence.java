@@ -3,6 +3,9 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
+
+import org.dhbw.geo.services.ContextManager;
 
 import java.util.ArrayList;
 
@@ -159,7 +162,7 @@ public class DBConditionFence extends DBCondition {
      * @return the id of the inserted geofence condition
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
@@ -177,7 +180,7 @@ public class DBConditionFence extends DBCondition {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_NAME, getName());
         values.put(DBHelper.COLUMN_TYPE, type);
@@ -195,11 +198,16 @@ public class DBConditionFence extends DBCondition {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_CONDITION_FENCE, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            db.execSQL("PRAGMA foreign_keys = ON;");
+            String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_CONDITION_FENCE, where, whereArgs);
+        } catch(Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete fence condition from database!", Toast.LENGTH_SHORT);
+        }
     }
 
     /**
@@ -208,10 +216,15 @@ public class DBConditionFence extends DBCondition {
      */
     @Override
     public void removeRuleFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
-        db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            String where = DBHelper.COLUMN_CONDITION_FENCE_ID + " = ? AND " + DBHelper.COLUMN_RULE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId()), String.valueOf(getRule().getId())};
+            db.delete(DBHelper.TABLE_RULE_CONDITION, where, whereArgs);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't remove rule from fence condition on database!", Toast.LENGTH_SHORT);
+        }
     }
 
     /**
@@ -219,12 +232,18 @@ public class DBConditionFence extends DBCondition {
      */
     @Override
     protected void writeRuleToDB() {
-        removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
-        values.put(DBHelper.COLUMN_CONDITION_FENCE_ID, getId());
-        db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
+        try {
+            removeRuleFromDB(); // in case it was already written on the database; avoid duplicates
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DBHelper.COLUMN_RULE_ID, getRule().getId());
+            values.put(DBHelper.COLUMN_CONDITION_FENCE_ID, getId());
+            db.insert(DBHelper.TABLE_RULE_CONDITION, null, values);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't write rule to fence condition on database!", Toast.LENGTH_SHORT);
+        }
+
     }
 
     /**

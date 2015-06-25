@@ -3,6 +3,7 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.hardware.SMSFactory;
@@ -141,10 +142,15 @@ public class DBActionMessage extends DBAction {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        String where = DBHelper.COLUMN_ACTION_MESSAGE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_ACTION_MESSAGE, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            String where = DBHelper.COLUMN_ACTION_MESSAGE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_ACTION_MESSAGE, where, whereArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete message action from database!", Toast.LENGTH_SHORT);
+        }
     }
 
     public String getNumber() {

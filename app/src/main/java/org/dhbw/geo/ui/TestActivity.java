@@ -47,7 +47,7 @@ public class TestActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // register context
-        ContextManager.setContext(this);
+        ContextManager.setContext(getApplicationContext());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
@@ -215,7 +215,7 @@ public class TestActivity extends ActionBarActivity {
         db.execSQL("DELETE FROM sqlite_sequence");
 
         // test action start and stop
-        DBRule rule = new DBRule();
+        /*DBRule rule = new DBRule();
         rule.setActive(true);
         rule.setName("Test rule");
         rule.writeToDB();
@@ -347,6 +347,11 @@ public class TestActivity extends ActionBarActivity {
         // TODO: if geofencsetup is working delete this
 
         mconditionFence = conditionFence;*/
+
+        // write rule without name to database
+        DBRule rule = new DBRule();
+        //rule.setName("test");
+        rule.writeToDB();
 
         // log database
         dbHelper.logDB();

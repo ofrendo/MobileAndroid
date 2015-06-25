@@ -3,6 +3,7 @@ package org.dhbw.geo.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import org.dhbw.geo.hardware.NotificationFactory;
 import org.dhbw.geo.services.ContextManager;
@@ -100,7 +101,7 @@ public class DBActionNotification extends DBAction {
      * @return the id of the inserted notification action
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_MESSAGE, message);
         values.put(DBHelper.COLUMN_ACTIVE, isActive());
@@ -113,7 +114,7 @@ public class DBActionNotification extends DBAction {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_MESSAGE, message);
         values.put(DBHelper.COLUMN_ACTIVE, isActive());
@@ -130,10 +131,15 @@ public class DBActionNotification extends DBAction {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        String where = DBHelper.COLUMN_ACTION_NOTIFICATION_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_ACTION_NOTIFICATION, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            String where = DBHelper.COLUMN_ACTION_NOTIFICATION_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_ACTION_NOTIFICATION, where, whereArgs);
+        } catch(Exception e) {
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete notification action from Server!", Toast.LENGTH_SHORT);
+        }
     }
 
     public String getMessage() {

@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import org.dhbw.geo.Map.Maps;
+import org.dhbw.geo.services.ContextManager;
 
 import java.util.ArrayList;
 
@@ -135,7 +137,7 @@ public class DBFence extends DBObject {
      * @return the id of the inserted fence
      */
     @Override
-    protected long insertIntoDB(SQLiteDatabase db) {
+    protected long insertIntoDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_LATITUDE, latitude);
         values.put(DBHelper.COLUMN_LONGITUDE, longitude);
@@ -149,7 +151,7 @@ public class DBFence extends DBObject {
      * @param db the reference to the sqlite database
      */
     @Override
-    protected void updateOnDB(SQLiteDatabase db) {
+    protected void updateOnDB(SQLiteDatabase db) throws Exception {
         ContentValues values = new ContentValues();
         values.put(DBHelper.COLUMN_LATITUDE, latitude);
         values.put(DBHelper.COLUMN_LONGITUDE, longitude);
@@ -165,10 +167,15 @@ public class DBFence extends DBObject {
      */
     @Override
     public void deleteFromDB() {
-        SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
-        String where = DBHelper.COLUMN_FENCE_ID + " = ?";
-        String[] whereArgs = {String.valueOf(getId())};
-        db.delete(DBHelper.TABLE_FENCE, where, whereArgs);
+        try {
+            SQLiteDatabase db = DBHelper.getInstance().getWritableDatabase();
+            String where = DBHelper.COLUMN_FENCE_ID + " = ?";
+            String[] whereArgs = {String.valueOf(getId())};
+            db.delete(DBHelper.TABLE_FENCE, where, whereArgs);
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(ContextManager.getContext(), "Couldn't delete fence from database!", Toast.LENGTH_SHORT);
+        }
     }
 
     public DBConditionFence getConditionFence() {
