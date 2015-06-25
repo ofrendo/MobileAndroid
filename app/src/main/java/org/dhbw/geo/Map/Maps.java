@@ -156,6 +156,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         getUpMap();
         addInitialMarkersToMap();
         setMarkerChangeVisibility(false);
+        setMarkerNameTextView(fenceGroup.getName());
     }
 
     /**
@@ -294,7 +295,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 DBFence fence = markerLocationMapping.get(activeMarker.getId());
-                updateGeofence(fence,activeMarker);
+                updateGeofence(fence, activeMarker);
             }
         });
     }
@@ -491,8 +492,6 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             radiusTextUnit.setVisibility(View.VISIBLE);
             radiusText.setVisibility(View.VISIBLE);
             radiusTextDescription.setVisibility(View.VISIBLE);
-            mapMarkerName.setVisibility(View.VISIBLE);
-            mapMarkerEditName.setVisibility(View.VISIBLE);
             deleteMarkerButton.setVisibility(View.VISIBLE);
 
         }else{
@@ -500,8 +499,6 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
             radiusTextUnit.setVisibility(View.INVISIBLE);
             radiusText.setVisibility(View.INVISIBLE);
             radiusTextDescription.setVisibility(View.INVISIBLE);
-            mapMarkerName.setVisibility(View.INVISIBLE);
-            mapMarkerEditName.setVisibility(View.INVISIBLE);
             deleteMarkerButton.setVisibility(View.INVISIBLE);
         }
     }
@@ -558,19 +555,26 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
                 Log.e("ERROR","Error while positioning camera");
                 e.printStackTrace();
             }
+        }else if (mDBFenceList.size() == 1) {
+            try {
+                DBFence fence = mDBFenceList.get(mDBFenceList.size() - 1);
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(fence.getLatLng(), 14, 0, 0)));
+            }catch (Exception e) {
+                Log.e("ERROR", "Error while positioning camera");
+                e.printStackTrace();
+            }
         }else {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            if (mDBFenceList.size() >= 1) {
-                for (DBFence fence : mDBFenceList) {
-                    builder.include(fence.getLatLng());
-                }
-                LatLngBounds bounds = builder.build();
-                int padding = 100;
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-                mMap.moveCamera(cameraUpdate);
+            for (DBFence fence : mDBFenceList) {
+                builder.include(fence.getLatLng());
             }
+            LatLngBounds bounds = builder.build();
+            int padding = 100;
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.moveCamera(cameraUpdate);
         }
-    }
+        }
+
 
     /**
      * Delete marker from map/DB/geofencelist
@@ -596,7 +600,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         activeMarker = marker;
         // set current data
         setTextViewSeekbarText((int) markerCircelMapping.get(marker.getId()).getRadius());
-        setMarkerNameTextView(fenceGroup.getName());
+
         return false;
     }
 
