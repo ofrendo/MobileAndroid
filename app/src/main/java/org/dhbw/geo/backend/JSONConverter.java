@@ -120,12 +120,17 @@ public class JSONConverter {
     private static DBFence createFence(JSONObject obj) {
         DBFence result = null;
         try {
+            /* Matthias ist doof
             result = new DBFence(
                     (int) obj.get("fence_id"),
                     Float.parseFloat((String) obj.get("lat")),
                     Float.parseFloat((String) obj.get("lng")),
                     (int) obj.get("radius")
-            );
+            );*/
+            result = new DBFence();
+            result.setLatitude(Float.parseFloat((String) obj.get("lat")));
+            result.setLongitude(Float.parseFloat((String) obj.get("lng")));
+            result.setRadius((int) obj.get("radius"));
         }
         catch (Exception e) {
             Log.i("JSONConverter", "Error: " + e.getMessage());
