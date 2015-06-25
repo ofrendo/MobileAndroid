@@ -114,6 +114,29 @@ public class DBConditionFence extends DBCondition {
         return conditionFence;
     }
 
+    /**
+     * Selects a specific geofence condition from the database to which the given fence belongs.
+     * @param fence the fence
+     * @return the geofence condition fetched from the database
+     */
+    public static DBConditionFence selectFromDB(DBFence fence) {
+        ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();
+        // read from database
+        SQLiteDatabase db = DBHelper.getInstance().getReadableDatabase();
+        String query = "SELECT " +
+                DBHelper.COLUMN_CONDITION_FENCE_ID + ", " +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
+                DBHelper.TABLE_CONDITION_FENCE + "." + DBHelper.COLUMN_TYPE + " AS " + DBHelper.COLUMN_TYPE + ", " +
+                DBHelper.COLUMN_SERVER_ID +
+                " FROM " + DBHelper.TABLE_CONDITION_FENCE + " NATURAL JOIN " + DBHelper.TABLE_FENCE + " WHERE " + DBHelper.COLUMN_FENCE_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(fence.getId())});
+        // read result
+        cursor.moveToFirst();
+        if(cursor.isAfterLast()) return null;
+        DBConditionFence conditionFence = new DBConditionFence(cursor.getLong(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
+        return conditionFence;
+    }
+
     public DBConditionFence(){
         super();
         this.type = TYPE_ENTER; // set a default type
