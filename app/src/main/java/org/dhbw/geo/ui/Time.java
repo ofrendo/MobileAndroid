@@ -270,11 +270,6 @@ public class Time extends ActionBarActivity {
             return true;
         }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }
