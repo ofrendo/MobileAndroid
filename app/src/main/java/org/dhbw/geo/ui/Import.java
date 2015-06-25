@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.backend.JSONConverter;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBFence;
+import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.database.DBRule;
 
 import java.util.ArrayList;
@@ -105,14 +107,13 @@ public class Import extends ActionBarActivity {
                                 conditionFence.setRule(DBRule.selectFromDB(ruleID));
                                 conditionFence.writeToDB();
 
-
                                 //call backend for single fences in fencegroup
                                 BackendController controller = new BackendController(new BackendCallback() {
                                     public void actionPerformed(String result) {
                                         //do stuff on callback with result
                                         ArrayList<DBFence> fences = JSONConverter.getFences(result);
-
                                         for (int i = 0; i < fences.size();i++){
+
                                             DBFence fence = fences.get(i);
                                             fence.setConditionFence(conditionFence);
                                             fence.writeToDB();
