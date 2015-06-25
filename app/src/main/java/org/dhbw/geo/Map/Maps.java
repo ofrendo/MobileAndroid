@@ -553,7 +553,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         if (mDBFenceList.size() == 0){
             try {
                 LatLng latLng = new LatLng(ConditionService.gLastLocation.getLatitude(), ConditionService.gLastLocation.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 14, 0, 0)));
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 17, 0, 0)));
             }catch (Exception e){
                 Log.e("ERROR","Error while positioning camera");
                 e.printStackTrace();
