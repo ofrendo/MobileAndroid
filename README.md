@@ -37,25 +37,17 @@ Der dritte Reiter der Regel ist das Action Fragment. Dieses enthält ein Expanda
 Sobald die Gruppen und Kinder erstellt wurden, wird die Liste im UI aufgebaut. Dabei enthält jede Gruppe eine Header Zeile mit Namen und Aktiv-Zustand (listrow_group.xml). Diese Header Rows werden bei einem Klick auf den Namen aufgeklappt, wonach die Kinder angezeigt werden. Diese sind je nach Art beispielsweise ein Textinput (row_textinput.xml) oder ein Switch (row_switch.xml).
 Sobald der User in diesen Kindern einen Input vornimmt, werden die Daten in die jeweiligen Group/Child Objekte geschrieben und die Group wird in die lokale Datenbank übertragen.
 
+## Datenbank
+In einer mit der App verknüpften SQLite-Datenbank werden sämtliche Regeln, Aktionen und Bedingungen persistent gespeichert.
+Die Datenbank hat dabei folgenden Aufbau:
+![Alt text](/documentation/client-erd.png?raw=true "ER-Diagramm SQLite-Datenbank")
+
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco
 
 #Mockups
 https://www.fluidui.com/editor/live/preview/p_nCXqi4gkSKM7vOWaqdReJT5UI3fNi1eU.1433147650261
 
-# Usage of DBObjects
-## Example Usage of DBRule;
-Create a new rule:
-```
-DBRule rule = new DBRule(); // Create object
-rule.setName("Notification Rule"); // set attributes
-rule.setActive(true);
-rule.writeToDB(); // write to database
-´´´
-load all rules:
-```
-
-´´´
 
 # Use Google Maps
 Change Google keystore to use Google Maps.
