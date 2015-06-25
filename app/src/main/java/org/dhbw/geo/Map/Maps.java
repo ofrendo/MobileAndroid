@@ -293,7 +293,8 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                updateFenceInDB(activeMarker);
+                DBFence fence = markerLocationMapping.get(activeMarker.getId());
+                updateGeofence(fence,activeMarker);
             }
         });
     }
@@ -549,15 +550,25 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * Set camera fokus to all markers
      */
     private void setCameraFocus() {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        if (mDBFenceList.size() >= 1){
-            for (DBFence fence : mDBFenceList){
-                builder.include(fence.getLatLng());
+        if (mDBFenceList.size() == 0){
+            try {
+                LatLng latLng = new LatLng(ConditionService.gLastLocation.getLatitude(), ConditionService.gLastLocation.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 14, 0, 0)));
+            }catch (Exception e){
+                Log.e("ERROR","Error while positioning camera");
+                e.printStackTrace();
             }
-            LatLngBounds bounds = builder.build();
-            int padding = 100;
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mMap.moveCamera(cameraUpdate);
+        }else {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            if (mDBFenceList.size() >= 1) {
+                for (DBFence fence : mDBFenceList) {
+                    builder.include(fence.getLatLng());
+                }
+                LatLngBounds bounds = builder.build();
+                int padding = 100;
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                mMap.moveCamera(cameraUpdate);
+            }
         }
     }
 

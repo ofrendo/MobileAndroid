@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.*;
+import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.services.ContextManager;
 import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 
@@ -100,6 +101,10 @@ public class MainActivity extends ActionBarActivity {
         adapter = new DBRuleAdapter(this,android.R.layout.simple_list_item_1,listItems);
         listView.setAdapter(adapter);
 
+        //set current location
+        Intent intent = new Intent(this, ConditionService.class);
+        intent.setAction(ConditionService.STARTAPP);
+        startService(intent);
     }
 
 
