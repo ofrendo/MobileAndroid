@@ -205,8 +205,8 @@ public class DBRule extends DBObject {
                 DBHelper.COLUMN_RULE_ID + ", " +
                 DBHelper.TABLE_RULE + "." + DBHelper.COLUMN_NAME + " AS " + DBHelper.COLUMN_NAME + ", " +
                 DBHelper.COLUMN_ACTIVE +
-                " FROM " + DBHelper.TABLE_RULE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_CONDITION_TIME_ID + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(condition.getId())});
+                " FROM " + DBHelper.TABLE_RULE + " NATURAL JOIN " + DBHelper.TABLE_RULE_CONDITION + " WHERE " + DBHelper.COLUMN_CONDITION_FENCE_ID + " = ? OR " + DBHelper.COLUMN_CONDITION_TIME_ID+ " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(condition.getId()), String.valueOf(condition.getId())});
         // read result
         cursor.moveToFirst();
         while(!cursor.isAfterLast()){

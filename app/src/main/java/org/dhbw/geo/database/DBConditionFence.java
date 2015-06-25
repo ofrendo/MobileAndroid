@@ -286,19 +286,22 @@ public class DBConditionFence extends DBCondition {
     @Override
     public boolean isConditionMet() {
         boolean condition;
-        if(type == TYPE_ENTER){
+        if (fences.size() == 0){
+            loadAllFences();
+        }
+        if(type.equals(TYPE_ENTER)){
             condition = false;
             for(int i = 0; i < fences.size(); i++){
                 if(fences.get(i).isInFence()) condition = true;
             }
-        } else if(type == TYPE_LEAVE){
+        } else if(type.equals(TYPE_LEAVE)){
             condition = true;
             for(int i = 0; i < fences.size(); i++){
                 if(fences.get(i).isInFence()) condition = false;
             }
         } else {
             condition = false;
-        }
+    }
         return condition;
     }
 

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.dhbw.geo.Map.Maps;
+import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.services.ContextManager;
 
 import java.util.ArrayList;
@@ -203,8 +204,10 @@ public class DBFence extends DBObject {
     public Boolean isInFence(){
         try {
             // get current Location
-            Maps maps = new Maps();
-            Location currentLocation = maps.getCurrentLocation();
+            Location currentLocation = ConditionService.gLastLocation;
+            if (currentLocation == null){
+                return false;
+            }
             // check if currentLocation is in geofence
             if(Math.pow(currentLocation.getLongitude() - longitude,2) + Math.pow((currentLocation.getLatitude() - latitude),2) < Math.pow(radius,2)){
                 return true;

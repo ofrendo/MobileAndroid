@@ -22,6 +22,7 @@ import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;
 import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBFence;
+import org.dhbw.geo.database.DBHelper;
 import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.hardware.NotificationFactory;
 
@@ -48,9 +49,11 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     private ArrayList mGeofenceList = new ArrayList();
     private LocationRequest mLocationRequest;
     private static PendingIntent mPendingIntent;
+    public static Location gLastLocation;
     private Boolean updateFence = false;
     private Boolean removeFence = false;
     private Boolean registerFence = false;
+    private Boolean connected = false;
     private DBFence fenceToRemove = null;
 
     //mappingtable
@@ -190,23 +193,17 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
                     if (id != -1) {
                         DBFence fence = DBFence.selectFromDB(id);
                         DBConditionFence conditionFence = DBConditionFence.selectFromDB(fence);
-                        performeAction(conditionFence);
+                        performAction(conditionFence);
                     }
                 }
 
-                // Get the transition details as a String.
-                String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                        this,
-                        geofenceTransition,
-                        triggeringGeofences
-                );
-
                 // Send notification and log the transition details.
-                Log.d("ConditionService/Geo", geofenceTransitionDetails);
+                Log.d("ConditionService/Geo", "Handle geofence finish");
             }
 
         }catch (Exception e){
-            NotificationFactory.createNotification(this, "Map/Geofence","Error:" + e.getMessage(), false);
+            Log.e("ERROR","Error handling Geofences");
+            e.printStackTrace();
         }
     }
 
@@ -353,14 +350,29 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
         Log.d(TAG, "Condition: " + condition.getName());
         // reset the alarm
         condition.updateAlarm();
-        performeAction(condition);
+        performAction(condition);
     }
 
     /**
      * performe action if event trigger
      * @param condition
      */
-    private void performeAction(DBCondition condition) {
+    private void performAction(DBCondition condition) {
+
+        try {
+            // get connection
+            connectToGoogleAPI();
+            for (int i = 0; i < 100; i++){
+                if (connected){
+                    break;
+                }else{
+                    Thread.sleep(100);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        DBHelper.getInstance().logDB();
         // get the corresponding rules
         ArrayList<DBRule> rules = DBRule.selectFromDB(condition);
         Log.d(TAG, "Number of rules to be checked: " + rules.size());
@@ -440,6 +452,8 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
      */
     @Override
     public void onConnected(Bundle bundle) {
+        connected = true;
+        getLastLocation();
         Log.d("ConditionService", "Connection to GoogleAPI successful");
         if (mPendingIntent != null){
             if (removeFence){
@@ -448,6 +462,14 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
             if (registerFence){
                 registerGeofences();
             }
+        }
+    }
+
+    private void getLastLocation() {
+        try {
+            gLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
