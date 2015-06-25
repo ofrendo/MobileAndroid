@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -200,12 +201,17 @@ public class DBFence extends DBObject {
      * @return
      */
     public Boolean isInFence(){
-        // get current Location
-        Maps maps = new Maps();
-        Location currentLocation = maps.getCurrentLocation();
-        // check if currentLocation is in geofence
-        if(Math.pow(currentLocation.getLongitude() - longitude,2) + Math.pow((currentLocation.getLatitude() - latitude),2) < Math.pow(radius,2)){
-            return true;
+        try {
+            // get current Location
+            Maps maps = new Maps();
+            Location currentLocation = maps.getCurrentLocation();
+            // check if currentLocation is in geofence
+            if(Math.pow(currentLocation.getLongitude() - longitude,2) + Math.pow((currentLocation.getLatitude() - latitude),2) < Math.pow(radius,2)){
+                return true;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("DBFence/GetLoc","Get Location failed");
         }
         return false;
     }
