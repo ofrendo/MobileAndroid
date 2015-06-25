@@ -8,7 +8,8 @@ import org.dhbw.geo.database.DBRule;
 import org.dhbw.geo.services.ContextManager;
 
 /**
- * Created by Joern on 15.06.2015.
+ * Group-Class for WLAN
+ * @author Joern
  */
 public class Message extends Group {
     Child number;

@@ -17,7 +17,9 @@ import org.dhbw.geo.database.DBConditionFence;
 import java.util.ArrayList;
 
 /**
- * Created by Joern on 23.06.2015.
+ * ArrayAdapter for importing DBConditionFences
+ * Additionally contains a filterClass
+ * @author Joern
  */
 public class ImportFilter extends BaseAdapter implements Filterable {
 

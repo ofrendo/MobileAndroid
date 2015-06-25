@@ -12,12 +12,9 @@ import org.dhbw.geo.R;
 
 
 /**
- * Created by Chet Guy and Romain Haase, Google
- *
- * @chethaase
- * @romainguy
+ * Allows to Create a Flowlayout in Android
+ * @author Chet Guy and Romain Haase, Google
  */
-
 public class FlowLayout extends ViewGroup {
 	private int mHorizontalSpacing;
 	private int mVerticalSpacing;
