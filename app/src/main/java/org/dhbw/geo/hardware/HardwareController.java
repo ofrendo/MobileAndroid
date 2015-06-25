@@ -10,6 +10,7 @@ import org.dhbw.geo.ui.MainActivity;
 
 /**
  * Created by Oliver on 23.05.2015.
+ * Class used to control hardware settings such as Wifi, Bluetooth and Audio.
  */
 public class HardwareController {
 
@@ -24,6 +25,10 @@ public class HardwareController {
        context = ContextManager.getContext();
     }
 
+    /**
+     * Access point for the singleton
+     * @return
+     */
     public static HardwareController getInstance() {
         if (instance == null) {
             instance = new HardwareController();
@@ -31,15 +36,19 @@ public class HardwareController {
         return instance;
     }
 
-    /*public void setContext(Context context) {
-        this.context = context;
-    }*/
-
+    /**
+     * Returns the current status of the Wifi setting.
+     * @return True: Wifi is on, false: Wifi is off
+     */
     public boolean isWifiEnabled() {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return wifiManager.isWifiEnabled();
     }
 
+    /**
+     * Sets the status of the Wifi setting.
+     * @param newStatus True: Turn Wifi on, false: Turn Wifi off
+     */
     public void setWifi(boolean newStatus) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
@@ -52,14 +61,14 @@ public class HardwareController {
         wifiManager.setWifiEnabled(newStatus);
     }
 
+    /**
+     * Gets the current status of a specific audio stream
+     * @param stream stream ID: AudioManager.STREAM_MUSIC, AudioManager.STREAM_RING, AudioManager.STREAM_ALARM
+     * @return true for sound on, false for mute
+     */
     public boolean getAudioStatus(int stream) {
         AudioManager audioManager = (AudioManager) context.getSystemService(context.AUDIO_SERVICE);
         return audioManager.getStreamVolume(stream) != 0;
-        /*int currentVolume = audioManager.getStreamVolume(stream);
-        if (currentVolume > 0) {
-            return AUDIO_ON;
-        }
-        if (audioManager.setR)*/
     }
 
     /**
@@ -85,10 +94,18 @@ public class HardwareController {
         audioManager.setStreamVolume(stream, volume, 0);
     }
 
+    /**
+     * Returns the current status of the Bluetooth setting.
+     * @return True: Bluetooth is on, false: Bluetooth is off
+     */
     public boolean getBluetoothStatus() {
         return BluetoothAdapter.getDefaultAdapter().isEnabled();
     }
 
+    /**
+     * Sets the status of the Bluetooth setting.
+     * @param status True: Turn Bluetooth on, false: Turn Bluetooth off
+     */
     public void setBluetoothStatus(boolean status) {
         if (status == true && getBluetoothStatus() == false) {
             BluetoothAdapter.getDefaultAdapter().enable();

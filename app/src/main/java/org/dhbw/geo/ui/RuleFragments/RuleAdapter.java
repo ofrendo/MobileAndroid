@@ -1,21 +1,16 @@
 package org.dhbw.geo.ui.RuleFragments;
 
-/**
- * Created by Joern on 13.06.2015.
- */
-
 import android.support.v4.app.FragmentPagerAdapter;
 
 
-import org.dhbw.geo.ui.RuleFragments.RuleGeneral;
-import org.dhbw.geo.ui.RuleFragments.RuleCondition;
-//import info.androidhive.tabsswipe.GamesFragment;
-//import info.androidhive.tabsswipe.MoviesFragment;
-//import info.androidhive.tabsswipe.TopRatedFragment;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 
+/**
+ * Adapter for the Tabs
+ * @author Joern
+ */
 public class RuleAdapter extends FragmentPagerAdapter {
 
     public RuleAdapter(FragmentManager fm) {

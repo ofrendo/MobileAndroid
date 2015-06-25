@@ -373,7 +373,7 @@ public class ConditionService extends IntentService implements GoogleApiClient.C
     }
 
     /**
-     * Sets all geofences and alarms after a reboot of the phone.
+     * registers all alarms after a reboot of the phone.
      * @param intent
      */
     private void handleAutoStart(Intent intent){

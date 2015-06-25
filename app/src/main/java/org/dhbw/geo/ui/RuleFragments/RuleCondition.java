@@ -7,7 +7,6 @@ import android.support.v4.app.ListFragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +26,8 @@ import org.dhbw.geo.ui.Time;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RuleCondition.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RuleCondition# factory method to
- * create an instance of this fragment.
+ * Fragment for Condition Tab of Rules
+ * @author Joern
  */
 public class RuleCondition extends ListFragment {
     ArrayList<DBCondition> conditions = new ArrayList<DBCondition>();

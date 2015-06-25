@@ -1,15 +1,14 @@
 package org.dhbw.geo.ui.RuleFragments;
 
 import android.app.Activity;
-import android.media.AudioManager;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import org.dhbw.geo.database.DBAction;
@@ -18,7 +17,6 @@ import org.dhbw.geo.database.DBActionNotification;
 import org.dhbw.geo.database.DBActionSimple;
 import org.dhbw.geo.database.DBActionSound;
 import org.dhbw.geo.ui.ListView.Bluetooth;
-import org.dhbw.geo.ui.ListView.Child;
 import org.dhbw.geo.ui.ListView.Group;
 import org.dhbw.geo.ui.ListView.Message;
 import org.dhbw.geo.ui.ListView.MyExpandableListAdapter;
@@ -30,12 +28,8 @@ import org.dhbw.geo.ui.ListView.WLAN;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RuleAction.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RuleAction} factory method to
- * create an instance of this fragment.
+ * Fragmnent for the ActionsTab for Rules
+ * @author Joern
  */
 public class RuleAction extends Fragment {
 
