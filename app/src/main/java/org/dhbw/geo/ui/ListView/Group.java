@@ -7,6 +7,11 @@ package org.dhbw.geo.ui.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Group-Class for the ExpandableListAdapter
+ * @author Joern
+ */
 public class Group {
 
     public String name;

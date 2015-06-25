@@ -34,6 +34,13 @@ import org.dhbw.geo.database.DBActionSound;
 
 import java.util.ArrayList;
 
+/**
+ * Expandable ListAdapter
+ * Creats an Expandable List with
+ * Parents: Group Object, will show as a Header Bar
+ * Childs: Each Group contains Children where the User Input is saved
+ * @author Joern
+ */
 public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
     private final ArrayList<Group> groups;

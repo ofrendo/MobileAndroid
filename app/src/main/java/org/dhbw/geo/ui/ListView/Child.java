@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by Joern on 05.06.2015.
+ * Child Class for Groups
+ * Depending on the Called Constructor, a different type  of Child is created
+ * @author Joern
  */
 public class Child {
     public String name;
