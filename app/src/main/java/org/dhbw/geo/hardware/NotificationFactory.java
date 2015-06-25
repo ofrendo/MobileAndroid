@@ -16,6 +16,9 @@ import org.dhbw.geo.ui.MainActivity;
  */
 public class NotificationFactory {
 
+    /**
+     * Id of the current notification. Will be changed for a new notification.
+     */
     private static int notificationID = 0;
 
     private static int getNextNotificationID() {

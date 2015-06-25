@@ -28,6 +28,7 @@ import java.net.URL;
 /**
  * Created by Oliver on 18.06.2015.
  * Adapted from http://www.techrepublic.com/blog/software-engineer/calling-restful-services-from-your-android-app/
+ * Extends AsyncTask to do the actual REST API call to the backend.
  */
 public class APICaller extends AsyncTask<String, String, String> {
 

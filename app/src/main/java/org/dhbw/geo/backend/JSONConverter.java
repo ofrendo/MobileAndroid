@@ -11,9 +11,15 @@ import java.util.ArrayList;
 
 /**
  * Created by Oliver on 21.06.2015.
+ * Class which exposes static methods for constructing Java objects from JSON strings and vica versa.
  */
 public class JSONConverter {
 
+    /**
+     * Constructs a DBFence object from a JSON string from the backend.
+     * @param jsonResult The JSON string resulting from the REST API call to the backend
+     * @return A DBFence object
+     */
     public static DBFence getFence(String jsonResult) {
         DBFence result = null;
         try {
@@ -25,6 +31,12 @@ public class JSONConverter {
         }
         return result;
     }
+
+    /**
+     * Constructs a list of DBFence object from a JSON string from the backend.
+     * @param jsonResult The JSON string resulting from the REST API call to the backend
+     * @return An ArrayList of DBFence objects
+     */
     public static ArrayList<DBFence> getFences(String jsonResult) {
         ArrayList<DBFence> result = new ArrayList<DBFence>();
         try {
@@ -41,6 +53,11 @@ public class JSONConverter {
         return result;
     }
 
+    /**
+     * Constructs a DBConditionFence object from a JSON string from the backend.
+     * @param jsonResult The JSON string resulting from the REST API call to the backend
+     * @return A DBConditionFence object
+     */
     public static DBConditionFence getFenceGroup(String jsonResult) {
         DBConditionFence result = null;
         try {
@@ -53,6 +70,11 @@ public class JSONConverter {
         return result;
     }
 
+    /**
+     * Constructs a list of DBConditionFence object from a JSON string from the backend.
+     * @param jsonResult The JSON string resulting from the REST API call to the backend
+     * @return An ArrayList of DBConditionFence objects
+     */
     public static ArrayList<DBConditionFence> getFenceGroups(String jsonResult) {
         ArrayList<DBConditionFence> result = new ArrayList<DBConditionFence>();
         try {
@@ -69,6 +91,11 @@ public class JSONConverter {
         return result;
     }
 
+    /**
+     * Creates a DBConditionFence group from a JSONObject.
+     * @param obj The JSONObject
+     * @return A DBConditionFence object
+     */
     private static DBConditionFence createFenceGroup(JSONObject obj) {
         DBConditionFence result = null;
         try {
@@ -85,6 +112,11 @@ public class JSONConverter {
         }
         return result;
     }
+    /**
+     * Creates a DBFence group from a JSONObject.
+     * @param obj The JSONObject
+     * @return A DBFence object
+     */
     private static DBFence createFence(JSONObject obj) {
         DBFence result = null;
         try {
@@ -102,6 +134,11 @@ public class JSONConverter {
     }
 
 
+    /**
+     * Converts a DBConditionFence object to a JSON string to send to the backend in a REST API call.
+     * @param fenceGroup The DBConditionFence to send
+     * @return The JSON String
+     */
     public static String toJSONString(DBConditionFence fenceGroup) {
         JSONObject outerObj = new JSONObject();
         JSONObject fenceGroupObj = new JSONObject();
@@ -115,6 +152,11 @@ public class JSONConverter {
         }
         return outerObj.toString();
     }
+    /**
+     * Converts a DBFence object to a JSON string to send to the backend in a REST API call.
+     * @param fence The DBFence to send
+     * @return The JSON String
+     */
     public static String toJSONString(DBFence fence) {
         JSONObject outerObj = new JSONObject();
         JSONObject fenceObj = new JSONObject();
