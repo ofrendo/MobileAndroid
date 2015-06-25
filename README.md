@@ -24,6 +24,10 @@ Das RuleCondition Fragment ist der zweite Teil der Rule-Activity. Sie enthält e
 Die Activity Time wird aufgerufen sobald eine Zeitbedingung aufgerufen oder erstellt wird. Hierbei ist es möglich einen Zeitraum oder Zeitpunkt auszuwählen, sowie die Wochentage an denen diese Bedingung aktiviert werden soll. Für die Anzeige der Wochentage wurden mehrere Toggle-Buttons erstellt, die in einem Flowlayout (keine Eigenentwicklung) angeordnet werden.
 
 ##### Location-Condition
+Bereits beim Start der App wird ein Service gestartet, der für den Umgang mit Geofences verantwortlich ist. Hier werden die alle Geofences registriert, aktualisiert und gelöscht. Wenn ein Geofence betreten wird, wird das Ereignis an den Service übergeben und die zutreffende Regel wird ausgeführt.
+
+##### Map-Page
+Wenn ein neuer Geofence hinzugefügt werden soll, wird dazu Google Maps geöffnet. Mit einem langen Klick auf die Map wird ein neuer Geofence angelegt. So lange der Geofence ausgewählt ist kann dieser bearbeitet werden. Der Radius kann mit einem Slider verändert werden. Den Marker kann man mit Hilfe eines langen Klicks auf den Marker auf der Map verschieben. Um den aktiven Marker abzuwählen wird einfach auf die Karte geklickt. 
 
 ##### Location Import
 Falls der User nich seine eigene Locations erstellen möchte, hat er die Möglichkeit von einem Zentralen Server, Locations von anderen Nutzern zu Importieren. Dafür öffnet er die Import Seite, wo alle Location-Bedingungen des Servers in einer Liste angezeigt werden. Diese Liste ist zudem nach dem Namen filterbar (Adapter und Filter in ImportFilter). Wählt er eine Location aus und bestätigt den Import, werden die Daten von dem Server geladen und in die lokale Datenbank übertragen.
