@@ -33,7 +33,11 @@ import org.dhbw.geo.ui.RuleFragments.RuleContainer;
 import java.util.ArrayList;
 
 
-
+/**
+ * Mainactivity and First Screen for the User
+ * Contains a dynamic ListView with all existing rules
+ * @author Joern
+ */
 public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";

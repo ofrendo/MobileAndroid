@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.CompoundButton;
-import android.widget.GridLayout;
-
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -27,6 +23,11 @@ import org.dhbw.geo.database.DBRule;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * Activity Class for Adding a Timecondition to a Rule
+ * Reads user input for a timeframe and specific weekdays
+ * @author Joern
+ */
 public class Time extends ActionBarActivity {
 
     Activity activity;
@@ -37,13 +38,11 @@ public class Time extends ActionBarActivity {
     public void onBackPressed() {
         Intent parent = getParentActivityIntent();
         //pls enter ruleID
-        parent.putExtra("RuleID",ruleID);
-        parent.putExtra("ScreenID",1);
+        parent.putExtra("RuleID", ruleID);
+        parent.putExtra("ScreenID", 1);
         startActivity(parent);
         finish();
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +52,16 @@ public class Time extends ActionBarActivity {
 
         Intent i = getIntent();
         //get ruleId
-        ruleID = i.getLongExtra("DBRuleID",-1);
+        ruleID = i.getLongExtra("DBRuleID", -1);
         long timeID = i.getLongExtra("DBConditionTimeID", -1);
-        if (timeID != -1){
+        if (timeID != -1) {
             time = DBConditionTime.selectFromDB(timeID);
-        }
-        else{
+        } else {
             time = new DBConditionTime();
             time.setRule(DBRule.selectFromDB(ruleID));
             time.setName(i.getStringExtra("DBConditionTimeName"));
             time.setStart(0, 0);
-            time.setEnd(0,1);
+            time.setEnd(0, 1);
             time.writeToDB();
 
             i.putExtra("DBConditionTimeID", time.getId());
@@ -71,8 +69,8 @@ public class Time extends ActionBarActivity {
 
         setTitle("" + time.getName());
 
-        final TextView textEnd = (TextView)findViewById(R.id.timeEnd);
-        final TextView textStart = (TextView)findViewById(R.id.timeStart);
+        final TextView textEnd = (TextView) findViewById(R.id.timeEnd);
+        final TextView textStart = (TextView) findViewById(R.id.timeStart);
 
 
         final Calendar calendarStart = time.getStart();
@@ -87,15 +85,13 @@ public class Time extends ActionBarActivity {
                 .append(pad(calendarStart.get(Calendar.MINUTE))));
 
 
-
         //disable/enable timeframe
-        final Switch enabler = (Switch)findViewById(R.id.time_enableFrame);
-        if (calendarStart.get(Calendar.HOUR_OF_DAY) == calendarEnd.get(Calendar.HOUR_OF_DAY)&&
-                calendarStart.get(Calendar.MINUTE) == calendarEnd.get(Calendar.MINUTE)){
-                enabler.setChecked(false);
-                textEnd.setEnabled(false);
-        }else
-        {
+        final Switch enabler = (Switch) findViewById(R.id.time_enableFrame);
+        if (calendarStart.get(Calendar.HOUR_OF_DAY) == calendarEnd.get(Calendar.HOUR_OF_DAY) &&
+                calendarStart.get(Calendar.MINUTE) == calendarEnd.get(Calendar.MINUTE)) {
+            enabler.setChecked(false);
+            textEnd.setEnabled(false);
+        } else {
             enabler.setChecked(true);
         }
 
@@ -113,7 +109,6 @@ public class Time extends ActionBarActivity {
                 }
             }
         });
-
 
 
         //timeDialog for Starttime
@@ -137,7 +132,7 @@ public class Time extends ActionBarActivity {
                         }
 
                         //if end is smaller start
-                        if (!isEndGreaterStart(hourOfDay, minute, getHour(calendarEnd), getMinute(calendarEnd))){
+                        if (!isEndGreaterStart(hourOfDay, minute, getHour(calendarEnd), getMinute(calendarEnd))) {
                             time.setEnd(hourOfDay, minute);
                             textEnd.setText(pad(hourOfDay) + ":" + pad(minute));
                             setHour(calendarEnd, hourOfDay);
@@ -160,7 +155,7 @@ public class Time extends ActionBarActivity {
                 TimePickerDialog pickStart = new TimePickerDialog(activity, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if (!isEndGreaterStart(getHour(calendarStart),getMinute(calendarStart),hourOfDay,minute)){
+                        if (!isEndGreaterStart(getHour(calendarStart), getMinute(calendarStart), hourOfDay, minute)) {
                             hourOfDay = getHour(calendarStart);
                             minute = getMinute(calendarStart);
                             showAlert();
@@ -179,13 +174,11 @@ public class Time extends ActionBarActivity {
         });
 
 
-
-
         //weekday togglebuttons
         FlowLayout weekdayLayout = (FlowLayout) findViewById(R.id.time_weekdays);
-        String [] weekdays = {getString(R.string.time_mon),getString(R.string.time_tue),getString(R.string.time_wed),getString(R.string.time_thu),getString(R.string.time_fri),
-                getString(R.string.time_sat),getString(R.string.time_sun)};
-        final int [] indWeekdays = {Calendar.MONDAY,Calendar.TUESDAY,Calendar.WEDNESDAY,Calendar.THURSDAY,Calendar.FRIDAY,Calendar.SATURDAY,Calendar.SUNDAY};
+        String[] weekdays = {getString(R.string.time_mon), getString(R.string.time_tue), getString(R.string.time_wed), getString(R.string.time_thu), getString(R.string.time_fri),
+                getString(R.string.time_sat), getString(R.string.time_sun)};
+        final int[] indWeekdays = {Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY};
 
         ArrayList<Integer> activeDays = time.getDays();
 
@@ -200,7 +193,7 @@ public class Time extends ActionBarActivity {
             button.setScaleY((float) 0.8);
             weekdayLayout.addView(button);
             //setActive
-            if (activeDays.contains(new Integer(indWeekdays[index]))){
+            if (activeDays.contains(new Integer(indWeekdays[index]))) {
                 button.setChecked(true);
             }
 
@@ -209,10 +202,9 @@ public class Time extends ActionBarActivity {
             button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked){
+                    if (isChecked) {
                         time.addDay(indWeekdays[finalIndex]);
-                    }
-                    else {
+                    } else {
                         time.removeDay(indWeekdays[finalIndex]);
                     }
                     time.writeToDB();
@@ -223,34 +215,38 @@ public class Time extends ActionBarActivity {
 
 
     }
-    private void showAlert(){
+
+    private void showAlert() {
         new AlertDialog.Builder(this)
                 .setTitle(this.getString(R.string.alert_title))
                 .setMessage(this.getString(R.string.alert_start_greater_end))
-                .setPositiveButton(R.string.ok,null)
+                .setPositiveButton(R.string.ok, null)
                 .show();
     }
-    private boolean isEndGreaterStart(int startHour,int startMinute,int endHour, int endMinute){
-        if (endHour>startHour){
+
+    private boolean isEndGreaterStart(int startHour, int startMinute, int endHour, int endMinute) {
+        if (endHour > startHour) {
             return true;
-        }
-        else if (endHour == startHour && endMinute>=startMinute){
+        } else if (endHour == startHour && endMinute >= startMinute) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
-    private void setHour(Calendar c,int hour){
-        c.set(Calendar.HOUR_OF_DAY,hour);
+
+    private void setHour(Calendar c, int hour) {
+        c.set(Calendar.HOUR_OF_DAY, hour);
     }
-    private void setMinute(Calendar c, int min){
-        c.set(Calendar.MINUTE,min);
+
+    private void setMinute(Calendar c, int min) {
+        c.set(Calendar.MINUTE, min);
     }
-    private int getMinute(Calendar c){
+
+    private int getMinute(Calendar c) {
         return c.get(Calendar.MINUTE);
     }
-    private int getHour(Calendar c){
+
+    private int getHour(Calendar c) {
         return c.get(Calendar.HOUR_OF_DAY);
     }
 
@@ -275,7 +271,7 @@ public class Time extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == android.R.id.home){
+        if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }

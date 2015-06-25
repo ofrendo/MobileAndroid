@@ -8,27 +8,26 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import org.dhbw.geo.R;
 import org.dhbw.geo.backend.BackendCallback;
 import org.dhbw.geo.backend.BackendController;
 import org.dhbw.geo.backend.JSONConverter;
 import org.dhbw.geo.database.DBConditionFence;
-import org.dhbw.geo.database.DBConditionTime;
 import org.dhbw.geo.database.DBFence;
 import org.dhbw.geo.database.DBRule;
 
 import java.util.ArrayList;
 
+/**
+ * ImportActivity Class for importing LocationConditions from the server
+ * @author Joern
+ */
 public class Import extends ActionBarActivity {
     ArrayList<DBConditionFence> groups = new ArrayList<>();
     ImportFilter adapter;

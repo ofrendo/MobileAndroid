@@ -14,7 +14,8 @@ import org.dhbw.geo.database.DBRule;
 import java.util.ArrayList;
 
 /**
- * Created by Joern on 18.06.2015.
+ * Adapter for the lisView in the Mainactivity
+ * @author Joern
  */
 public class DBRuleAdapter extends ArrayAdapter<DBRule> {
     ArrayList<DBRule> items;
