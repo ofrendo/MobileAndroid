@@ -547,10 +547,11 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * Set camera fokus to all markers
      */
     private void setCameraFocus() {
+        int zoomLevel = 17;
         if (mDBFenceList.size() == 0){
             try {
                 LatLng latLng = new LatLng(ConditionService.gLastLocation.getLatitude(), ConditionService.gLastLocation.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 14, 0, 0)));
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, zoomLevel, 0, 0)));
             }catch (Exception e){
                 Log.e("ERROR","Error while positioning camera");
                 e.printStackTrace();
@@ -558,7 +559,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         }else if (mDBFenceList.size() == 1) {
             try {
                 DBFence fence = mDBFenceList.get(mDBFenceList.size() - 1);
-                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(fence.getLatLng(), 14, 0, 0)));
+                mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(fence.getLatLng(), zoomLevel, 0, 0)));
             }catch (Exception e) {
                 Log.e("ERROR", "Error while positioning camera");
                 e.printStackTrace();
