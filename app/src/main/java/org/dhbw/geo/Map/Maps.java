@@ -510,7 +510,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
      * @param fence
      * @param marker
      */
-    private void updateGeofences(DBFence fence, Marker marker) {
+    private void updateGeofence(DBFence fence, Marker marker) {
         //update fence in db
         updateFenceInDB(marker);
         Intent updateFenceIntent = new Intent(this, ConditionService.class);
@@ -640,7 +640,7 @@ public class Maps extends ActionBarActivity implements GoogleMap.OnMarkerClickLi
         Circle circle = markerCircelMapping.get(marker.getId());
         DBFence fence = markerLocationMapping.get(marker.getId());
         circle.setCenter(latLong);
-        updateGeofences(fence, marker);
+        updateGeofence(fence, marker);
     }
 
     /**
