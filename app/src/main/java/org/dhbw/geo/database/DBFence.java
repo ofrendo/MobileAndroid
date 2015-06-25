@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.dhbw.geo.Map.Maps;
 import org.dhbw.geo.services.ConditionService;
 import org.dhbw.geo.services.ContextManager;
 

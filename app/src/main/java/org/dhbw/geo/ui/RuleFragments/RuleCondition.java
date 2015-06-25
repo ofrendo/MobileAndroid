@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import org.dhbw.geo.Map.Maps;
+import org.dhbw.geo.map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.database.DBCondition;
 import org.dhbw.geo.database.DBConditionFence;

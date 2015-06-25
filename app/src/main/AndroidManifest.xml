@@ -57,7 +57,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Map.Maps"
+            android:name=".map.Maps"
             android:label="@string/title_activity_maps"
             android:parentActivityName=".ui.RuleFragments.RuleContainer" >
         </activity>

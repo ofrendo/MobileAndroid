@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 
-import org.dhbw.geo.Map.Maps;
+import org.dhbw.geo.map.Maps;
 import org.dhbw.geo.R;
 import org.dhbw.geo.backend.BackendCallback;
 import org.dhbw.geo.backend.BackendController;

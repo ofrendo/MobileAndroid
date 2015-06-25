@@ -1,4 +1,4 @@
-package org.dhbw.geo.Map;
+package org.dhbw.geo.map;
 
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -14,11 +14,9 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,7 +42,6 @@ import org.dhbw.geo.ui.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Activity Class for map view
