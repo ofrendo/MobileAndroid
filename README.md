@@ -57,6 +57,9 @@ Um das Aufrufen der REST API Aufrufe auszulagern wurde das Package `backend` ver
 Die App wurde unter anderem mit JavaDoc dokumentiert. Die Dokumentation ist hier erreichbar:
 [JavaDoc](https://cdn.rawgit.com/ofrendo/MobileAndroid/master/documentation/JavaDoc/index.html)
 
+# Präsentation
+Die Präsentation liegt unter https://cdn.rawgit.com/ofrendo/MobileAndroid/master/Praesentation%20GEO.html#/.
+
 # Google docs
 https://docs.google.com/document/d/17CKXoovYEVOGd0I7jC6lP1RXxDGdKBsRTpvCP-Szjw0/edit#heading=h.ajzkjcangzco
 
